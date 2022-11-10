@@ -25,21 +25,6 @@ app.post('/events', (req, res) => {
   axios.post('http://localhost:4003/events', event).catch((err) => {
     console.log(err.message);
   });
-  axios.post('http://localhost:4004/events', event).catch((err) => {
-    console.log(err.message);
-  });
-  axios.post('http://localhost:4006/events', event).catch((err) => {
-    console.log(err.message);
-  });
-  axios.post('http://localhost:4007/events', event).catch((err) => {
-    console.log(err.message);
-  });
-  axios.post('http://localhost:4008/events', event).catch((err) => {
-    console.log(err.message);
-  });
-  axios.post('http://localhost:4009/events', event).catch((err) => {
-    console.log(err.message);
-  });
 });
 
 app.listen(4005, () => {
