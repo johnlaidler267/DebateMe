@@ -8,3 +8,7 @@ const app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
+
+app.listen(4001, () => {
+    console.log('Listening on 4001');
+  });
