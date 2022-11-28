@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
+import Debate from "./pages/debate";
 import ElectionSearch from "./pages/election-search";
 import SignUp from "./pages/signup";
 import Profile from "./pages/profile";
@@ -15,8 +15,8 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Debate />} />
+        <Route path="/debate" element={<Debate />} />
         <Route path="/election-search" element={<ElectionSearch />} />
         <Route path="/create-election" element={<CreateElection />} />
         <Route path="/vote-history" element={<VoteHistory />} />
