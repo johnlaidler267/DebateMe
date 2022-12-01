@@ -6,10 +6,6 @@ import { CommentsDatabase } from './Comments-db.js';
 
 const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(cors());
-
 class Comment{
   userID
   parentID
@@ -25,9 +21,6 @@ class CommentServer{
     this.app.use(logger('dev'));
     this.app.use(express.json());
     this.app.use(cors());
-    //passport.use(strategy);
-    //this.app.use(passport.initialize());
-    //this.app.use(passport.session());
   }
   async initRoutes(){
     const self = this
