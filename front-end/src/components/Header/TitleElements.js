@@ -6,6 +6,7 @@ export const HeaderText = styled.nav`
   background: white;
   size: 100%;
   text-size: 100%;
+  text-shadow: 2px 2px 4px gray;
   font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-size: 3rem;
