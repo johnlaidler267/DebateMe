@@ -52,7 +52,8 @@ app.get('/posts/get', (req, res) => {
 });
 app.post('/events', (req, res) => {
     const { type } = req.body;
-    res.send(type);
+    console.log(type);
+    res.send({ type: type });
 });
 app.listen(port, () => {
     console.log('Listening on port 4006');

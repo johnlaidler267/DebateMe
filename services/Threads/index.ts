@@ -59,13 +59,31 @@ app.get('/posts/all', (req: Request, res: Response) => {
 
 app.get('/posts/get', (req: Request, res: Response) => {
     const { postId } : { postId: string } = req.body;
+    if (postId == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
     const post: Post = posts[postId];
-    res.status(200).send(post);
+    if (post == undefined) {
+        res.status(404).send(`Post ${postId} not found`);
+    } else {
+        res.status(200).send(post);
+    }
 });
+
+app.put('/posts/update', (req: Request, res: Response) => {
+    const { userId, postId, title, content } : { userId: string, postId: string, title: string, content: string } = req.body;
+    if (userId == undefined || title == undefined || content == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
+    const post: Post = posts[postId];
+    
+    res.status(200).send(post);
+})
 
 app.post('/events', (req: Request, res: Response) => {
   const { type }: { type: string } = req.body;
-  res.send(type);
+  console.log(type);
+  res.send({type: type});
 });
 
 app.listen(port, () => {
