@@ -13,8 +13,7 @@ export class CommentsDatabase {
   async connect() {
 
     this.pool = new Pool({
-      connectionString: this.dburl,
-      ssl: { rejectUnauthorized: false }, // Required for Heroku connections
+      connectionString: this.dburl 
     });
 
     // Create the pool.
@@ -36,7 +35,6 @@ export class CommentsDatabase {
         `
 
     const res = await this.client.query(queryText);
-    //await this.clearWorkouts();
   }
 
   // Close the pool.
