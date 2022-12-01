@@ -30,13 +30,13 @@ class CommentServer{
       const comment = await self.db.createComment(options.userID, options.parentID, options.commentID, options.postID, options.content)
       res.status(200).send(JSON.stringify(comment))
     });
-
-    this.app.get("/comments/get"), (req, res) => {
+    //get all comments for a given postID
+    this.app.get("/comments/get" , async (req, res) => {
       //doc says get by CommentID, probably should be by postID
-      //get postID
-      //get all comments with same postID from database
-      //send response
-    }
+      const options = req.query
+      const postComments = await self.db.getPostComments(options.postID)
+      res.status(200).send(JSON.stringify(postComments))
+    });
     this.app.post("/events", (req, res) => {
       console.log(req.body.type);
       res.send({});
