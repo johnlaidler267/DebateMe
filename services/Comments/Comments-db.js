@@ -27,10 +27,12 @@ export class CommentsDatabase {
     //if you change any values in a table, either name or type of the variable or just deleting or adding values
     //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
-      create table if not exists exercises (
-        name varchar(30),
-        diffuculty integer,
-        parts text[] 
+      create table if not exists comments (
+        userID varchar(30),
+        parentID varchar(30),
+        commentID varchar(30),
+        postID varchar(30),
+        content varchar(130) 
       );
         `
 
@@ -43,11 +45,7 @@ export class CommentsDatabase {
     await this.pool.end();
   }
 
-  async users(){
-    const queryText = `SELECT * FROM users`
-    const res = await this.client.query(queryText); 
-    return res.rows; 
-  }
+
 
   async findName(username){
     const queryText = 
@@ -93,11 +91,11 @@ export class CommentsDatabase {
     return res.rows;
   }
 
-  // create user 
-  async createPerson(username, email, password, schoolYear, major, gender, club) {
-    console.log(username, email, password, schoolYear, major, gender, club)
-    const queryText = 'INSERT INTO users (username, email, password, schoolYear, major, gender, club) VALUES ($1, $2, $3, $4, $5, $6, $7)';
-    const res = await this.client.query(queryText, [username, email, password, schoolYear, major, gender, club]);
+  // create comment
+  async createComment(userID, parentID, commentID, postID, content) {
+    //console.log(userID, parentID, commentID, postID, content)
+    const queryText = 'INSERT INTO comments (userID, parentID, commentID, postID, content) VALUES ($1, $2, $3, $4, $5)';
+    const res = await this.client.query(queryText, [userID, parentID, commentID, postID, content]);
     return res.rows;
   };
 
