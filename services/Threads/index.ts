@@ -34,6 +34,9 @@ const posts: Posts = {};
 
 app.post('/posts/create', async (req: Request, res: Response) => {
     const { userId, title, content }: { userId: string, title: string, content: string }  = req.body;
+    if (userId == undefined || title == undefined || content == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
     const postId: string = uuidv4();
     const data: Data = { 
         userId: userId,
@@ -42,13 +45,10 @@ app.post('/posts/create', async (req: Request, res: Response) => {
         content: content,
     };
 
-    if (userId == undefined || title == undefined || content == undefined) {
-        res.status(400).send("Request data is incomplete");
-    }
     await axios.post('http://localhost:4010/events', {
         type: 'PostCreated',
         data: data,
-    });
+    }).catch((err) => console.log(err.message));
 
     res.status(201).send(data);
 });
