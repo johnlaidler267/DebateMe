@@ -1,17 +1,21 @@
 import express, { Express, Request, Response } from 'express';
 import logger from 'morgan';
-import { randomBytes } from 'crypto';
+import {v4 as uuidv4} from 'uuid';
 import cors from 'cors';
 import axios from 'axios';
 
 interface Data {
-  id: string,
-  title: string
+    userId: string,
+    postId: string,
+    title: string,
+    content: string,
 }
 
 interface Post {
-  id: string,
-  title: string
+    userId: string,
+    postId: string,
+    title: string,
+    content: string,
 }
 
 interface Posts {
@@ -19,43 +23,51 @@ interface Posts {
 }
 
 const app: Express = express();
+const port = process.env.PORT || 4006;
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 
 const posts: Posts = {};
+// const users: Users = {}
 
-app.get('/posts', (req: Request, res: Response) => {
-  res.send(posts);
+app.post('/posts/create', async (req: Request, res: Response) => {
+    const { userId, title, content }: { userId: string, title: string, content: string }  = req.body;
+    const postId: string = uuidv4();
+    const data: Data = { 
+        userId: userId,
+        postId: postId,
+        title: title,
+        content: content,
+    };
+
+    if (userId == undefined || title == undefined || content == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
+    await axios.post('http://localhost:4010/events', {
+        type: 'PostCreated',
+        data: data,
+    });
+
+    res.status(201).send(data);
 });
 
-app.post('/posts', async (req: Request, res: Response) => {
-  const id = randomBytes(4).toString('hex');
-  const { title }: { title: string } = req.body;
+app.get('/posts/all', (req: Request, res: Response) => {
+    res.status(200).send(posts);
+});
 
-  posts[id] = {
-    id,
-    title,
-  };
-
-  await axios.post('http://eventbus:4010/events', {
-    type: 'PostCreated',
-    data: {
-      id,
-      title,
-    },
-  });
-
-  res.status(201).send(posts[id]);
+app.get('/posts/get', (req: Request, res: Response) => {
+    const { postId } : { postId: string } = req.body;
+    const post: Post = posts[postId];
+    res.status(200).send(post);
 });
 
 app.post('/events', (req: Request, res: Response) => {
-  const { type, data }: { type: string, data: Data } = req.body;
-  console.log(type);
-  res.send(data);
+  const { type }: { type: string } = req.body;
+  res.send(type);
 });
 
-app.listen(4000, () => {
-  console.log('Listening on port 4000');
+app.listen(port, () => {
+  console.log('Listening on port 4006');
 });
