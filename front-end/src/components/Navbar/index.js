@@ -11,7 +11,7 @@ const Navbar = () => {
                         Debate
                     </NavLink>
                     <NavLink to="/election-search" activeStyle>
-                        🔍
+                        Search
                     </NavLink>
                     <NavLink to="/create-election" activeStyle>
                         Create Election
@@ -20,10 +20,10 @@ const Navbar = () => {
                         Voting History
                     </NavLink>
                     <NavLink to="/view-profile" activeStyle>
-                        Profile
+                        Manage Profile
                     </NavLink>
                     <NavLink to="/messages" activeStyle>
-                        💬
+                        Messages
                     </NavLink>
                     <NavLink to="/sign-up" activeStyle>
                         Sign Up

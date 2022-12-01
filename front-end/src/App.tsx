@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import Header from "./components/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Debate from "./pages/debate";
 import ElectionSearch from "./pages/election-search";
@@ -13,6 +14,7 @@ import Messages from "./pages/messages";
 function App() {
   return (
     <Router>
+      <Header />
       <Navbar />
       <Routes>
         <Route path="/" element={<Debate />} />
