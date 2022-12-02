@@ -46,6 +46,8 @@ app.post('/events', (req, res) => {
     console.log(err.message);
   });
 
+  console.log(event.type);
+  res.send();
 });
 
 app.listen(4010, () => {

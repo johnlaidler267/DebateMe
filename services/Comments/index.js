@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
@@ -6,16 +6,12 @@ import { CommentsDatabase } from './Comments-db.js';
 
 const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(cors());
-
 class Comment{
   userID
   parentID
   commentID
+  postID 
   content
-  postID //for getting all comments 
   //parentType? Is this neccessary? 
 }
 class CommentServer{
@@ -24,25 +20,25 @@ class CommentServer{
     this.app = express();
     this.app.use(logger('dev'));
     this.app.use(express.json());
-    this.app.use(cors());
-    //passport.use(strategy);
-    //this.app.use(passport.initialize());
-    //this.app.use(passport.session());
+    this.app.use(cors())
   }
   async initRoutes(){
-    const self = this
-    this.app.post("/comments/create"), (req,res) => {
-      //get params 
-      //add to database 
-      //send responset
-    }
+    const self = this;
 
-    this.app.get("/comments/get"), (req, res) => {
+    this.app.post('/addComment', async (req,res) => {
+      const options = req.query
+      const comment = await self.db.createComment(options.userID, options.parentID, options.commentID, options.postID, options.content)
+      res.status(200).send(JSON.stringify(comment))
+      //send to event bus
+    });
+    //get all comments for a given postID
+    this.app.get("/comments/get" , async (req, res) => {
       //doc says get by CommentID, probably should be by postID
-      //get postID
-      //get all comments with same postID from database
-      //send response
-    }
+      const options = req.query
+      const postComments = await self.db.getPostComments(options.postID)
+      res.status(200).send(JSON.stringify(postComments))
+      //send to event bus
+    });
     this.app.post("/events", (req, res) => {
       console.log(req.body.type);
       res.send({});
