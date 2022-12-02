@@ -14,8 +14,6 @@ const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
         users = await client.db("Users").collection('users');
-        console.log(client);
-        console.log(users);
         // posts = await client.db("Posts").collection('posts');
     }
     catch (err) {
@@ -71,7 +69,7 @@ app.put('/posts/update', (req, res) => {
         res.status(404).send(`Post ${postId} not found`);
     }
     // if (userId not exist || post.userId !== userId) {
-    //     res.status(401).send(`Access is denied due to invalid credentials.`);
+    //     res.status(401).send(`Access is denied due to invalid credentials`);
     // }
     // mongo Update
     res.status(200).send(post);

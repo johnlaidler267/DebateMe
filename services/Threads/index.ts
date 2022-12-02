@@ -24,10 +24,6 @@ interface Posts {
   [key: string]: Post
 }
 
-interface ProcessEnv {
-    [key: string]: string | undefined
-}
-
 const app: Express = express();
 const port = process.env.PORT || 4006;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
@@ -38,7 +34,7 @@ const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
         
-        users = await client.db("Users").collection('users');
+        users = client.db("Users").collection('users');
         // posts = await client.db("Posts").collection('posts');
     } catch (err) {
         console.log(err);
