@@ -1,5 +1,7 @@
+import 'dotenv/config';
 import express, { Express, Request, Response } from 'express';
 import logger from 'morgan';
+import { MongoClient } from 'mongodb';
 import {v4 as uuidv4} from 'uuid';
 import cors from 'cors';
 import axios from 'axios';
@@ -22,15 +24,32 @@ interface Posts {
   [key: string]: Post
 }
 
+interface ProcessEnv {
+    [key: string]: string | undefined
+}
+
 const app: Express = express();
 const port = process.env.PORT || 4006;
+const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
+let posts: Posts = {};
+let users = {};
+
+const connectDB = async () => {
+    try {
+        const client = await MongoClient.connect(DATABASE_URL);
+        
+        users = await client.db("Users").collection('users');
+        // posts = await client.db("Posts").collection('posts');
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+await connectDB();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
-
-const posts: Posts = {};
-// const users: Users = {}
 
 app.post('/posts/create', async (req: Request, res: Response) => {
     const { userId, title, content }: { userId: string, title: string, content: string }  = req.body;
@@ -44,6 +63,8 @@ app.post('/posts/create', async (req: Request, res: Response) => {
         title: title,
         content: content,
     };
+
+    // mongo insert post
 
     await axios.post('http://localhost:4010/events', {
         type: 'PostCreated',
@@ -76,7 +97,17 @@ app.put('/posts/update', (req: Request, res: Response) => {
         res.status(400).send("Request data is incomplete");
     }
     const post: Post = posts[postId];
-    
+
+    if (post == undefined) {
+        res.status(404).send(`Post ${postId} not found`);
+    }
+
+    // if (userId not exist || post.userId !== userId) {
+    //     res.status(401).send(`Access is denied due to invalid credentials.`);
+    // }
+
+    // mongo Update
+
     res.status(200).send(post);
 })
 
