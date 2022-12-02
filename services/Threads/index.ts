@@ -103,7 +103,7 @@ app.put('/posts/update', (req: Request, res: Response) => {
     }
 
     // if (userId not exist || post.userId !== userId) {
-    //     res.status(401).send(`Access is denied due to invalid credentials.`);
+    //     res.status(401).send(`Access is denied due to invalid credentials`);
     // }
 
     // mongo Update
