@@ -29,6 +29,7 @@ class CommentServer{
       const options = req.query
       const comment = await self.db.createComment(options.userID, options.parentID, options.commentID, options.postID, options.content)
       res.status(200).send(JSON.stringify(comment))
+      //send to event bus
     });
     //get all comments for a given postID
     this.app.get("/comments/get" , async (req, res) => {
@@ -36,6 +37,7 @@ class CommentServer{
       const options = req.query
       const postComments = await self.db.getPostComments(options.postID)
       res.status(200).send(JSON.stringify(postComments))
+      //send to event bus
     });
     this.app.post("/events", (req, res) => {
       console.log(req.body.type);
