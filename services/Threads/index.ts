@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express, { Express, Request, Response } from 'express';
 import logger from 'morgan';
-import { Collection, MongoClient } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import {v4 as uuidv4} from 'uuid';
 import cors from 'cors';
 import axios from 'axios';
@@ -30,6 +30,8 @@ const port = process.env.PORT || 4006;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let postDB: Posts = {};
 let userDB = {};
+
+let isUserLoggedIn = false;
 
 const connectDB = async () => {
     try {
@@ -194,6 +196,10 @@ app.delete('/posts/delete', async (req: Request, res: Response) => {
 app.post('/events', (req: Request, res: Response) => {
   const { type }: { type: string } = req.body;
   console.log(type);
+  if (type === "UserLoggedIn") {
+      isUserLoggedIn = true;
+      console.log("User is currently logged in");
+  }
   res.send({type: type});
 });
 
