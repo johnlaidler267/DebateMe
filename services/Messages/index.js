@@ -4,19 +4,21 @@ import logger from 'morgan';
 import { MongoClient } from 'mongodb';
 import {v4 as uuidv4} from 'uuid';
 import cors from 'cors';
-import axios from 'axios';
 
 const app = express();
 const port = process.env.PORT || 4003;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let userDB = [];
-let messagesDB = [];
+let messageDB = [];
+
+let isUserLoggedIn = false;
 
 const connectDB = async () => {
   try {
       const client = await MongoClient.connect(DATABASE_URL);
       
       userDB = client.db("Users").collection('users');
+      messageDB = client.db("Messages").collection('messages');
   } catch (err) {
       console.log(err);
   }
@@ -47,87 +49,38 @@ app.post('/messages/create', async (req, res) => {
         content: content,
       }
 
-      messagesDB.insertOne(data);
+      messageDB.insertOne(data);
       res.status(201).send(data);
     }
 });
 
-app.post('/messages/all', async (req, res) => {
+app.get('/messages/all', async (req, res) => {
   const { userId, friendId } = req.body;
   if (userId == undefined || friendId == undefined) {
     res.status(400).send("Request data is incomplete");
   };
   
-  const user = await userDB.findOne({ username: username });
+  const usersExist = await userDB.findOne({ userId: userId }) && await userDB.findOne({ userId: friendId });
 
-  if (!user) {
-    res.status(404).send(`User ${userId} not found`);
+  if (!usersExist) {
+    res.status(404).send(`User not found`);
   } else {
-      if (user.password !== password) {
-        res.status(401).send("Access is denied due to invalid credentials");
-      } else {
-          if (user.hasOwnProperty('_id')) {
-            delete user._id;
-          }
-          await axios.post('http://localhost:4010/events', {
-            type: 'UserLoggedIn',
-            data: user
-          }).catch((err) => console.log(err.message));
+      const messages = await messageDB.find({ 
+        "senderId": { "$in": [userId, friendId] },
+        "receiverId": { "$in": [userId, friendId] }
+       }).toArray();
 
-          res.status(200).send(user);
+        res.status(200).send(messages);
       }
-  }
 });
-
-app.put('/users/update', async (req, res) => {
-  const { userId, username, name, password, email, age, race } = req.body;
-  if (username == undefined || name == undefined || password == undefined || email == undefined || age == undefined || race == undefined) {
-    res.status(400).send("Request data is incomplete");
-  }
-  
-  const CurrentUser = await userDB.findOne({ userId: userId });
-
-  const NewUser = await userDB.findOne({ username: username });
-  
-  const data = { 
-    username: username,
-    name: name,
-    password: password,
-    email: email,
-    age: age,
-    race: race
-  };
-
-  if (CurrentUser) {
-    if (NewUser) {
-      if (CurrentUser.userId === NewUser.userId) {
-        userDB.updateOne(
-          { userId: userId },
-          { $set: {...data} },
-          { upsert: true }
-        );
-        res.status(201).send(data);
-      } else {
-        res.status(409).send("User already exists");
-      }
-    } else {
-        userDB.updateOne(
-          { userId: userId },
-          { $set: {...data} },
-          { upsert: true }
-        );
-        res.status(201).send(data);
-      }
-    } else {
-      res.status(404).send(`User ${userId} not found`);
-  };
-});
-
-
 
 app.post('/events', (req, res) => {
   const { type } = req.body;
   console.log(type);
+  if (type === "UserLoggedIn") {
+    isUserLoggedIn = true;
+    console.log("User is currently logged in");
+  }
   res.send({ type: type });
 });
 
