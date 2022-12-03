@@ -9,13 +9,13 @@ import axios from 'axios';
 const app = express();
 const port = process.env.PORT || 4008;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
-let users = {};
+let userDB = [];
 
 const connectDB = async () => {
   try {
       const client = await MongoClient.connect(DATABASE_URL);
       
-      users = client.db("Users").collection('users');
+      userDB = client.db("Users").collection('users');
   } catch (err) {
       console.log(err);
   }
@@ -33,7 +33,7 @@ app.post('/users/register', async (req, res) => {
     res.status(400).send("Request data is incomplete");
   }
   
-  const user = await users.findOne({ username: username });
+  const user = await userDB.findOne({ username: username });
   const userId = uuidv4();
   const data = {
     userId: userId,
@@ -49,7 +49,7 @@ app.post('/users/register', async (req, res) => {
   if (user) {
     res.status(409).send("User already exists");
   } else {
-    users.insertOne(data);
+    userDB.insertOne(data);
     res.status(201).send(data);
   }
 });
@@ -60,7 +60,7 @@ app.post('/users/login', async (req, res) => {
     res.status(400).send("Request data is incomplete");
   };
   
-  const user = await users.findOne({ username: username });
+  const user = await userDB.findOne({ username: username });
 
   if (!user) {
     res.status(404).send("User not found");
@@ -68,6 +68,9 @@ app.post('/users/login', async (req, res) => {
       if (user.password !== password) {
         res.status(401).send("Access is denied due to invalid credentials");
       } else {
+          if (user.hasOwnProperty('_id')) {
+            delete user._id;
+          }
           await axios.post('http://localhost:4010/events', {
             type: 'UserLoggedIn',
             data: user
@@ -84,9 +87,9 @@ app.put('/users/update', async (req, res) => {
     res.status(400).send("Request data is incomplete");
   }
   
-  const CurrentUser = await users.findOne({ userId: userId });
+  const CurrentUser = await userDB.findOne({ userId: userId });
 
-  const NewUser = await users.findOne({ username: username });
+  const NewUser = await userDB.findOne({ username: username });
   
   const data = { 
     username: username,
@@ -100,7 +103,7 @@ app.put('/users/update', async (req, res) => {
   if (CurrentUser) {
     if (NewUser) {
       if (CurrentUser.userId === NewUser.userId) {
-        users.updateOne(
+        userDB.updateOne(
           { userId: userId },
           { $set: {...data} },
           { upsert: true }
@@ -110,7 +113,7 @@ app.put('/users/update', async (req, res) => {
         res.status(409).send("User already exists");
       }
     } else {
-        users.updateOne(
+        userDB.updateOne(
           { userId: userId },
           { $set: {...data} },
           { upsert: true }
