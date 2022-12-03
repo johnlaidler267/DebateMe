@@ -12,7 +12,6 @@ export const HeaderText = styled.nav`
   font-size: 3rem;
   text-align: center;
   display: flex;
-  justify-content: center;
 `;
 
 export const Header = styled.nav`

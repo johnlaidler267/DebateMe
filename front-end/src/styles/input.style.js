@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 const inputStySearch = `
-    height: 40px;
-    width: 45vw;
+    height: 45px;
+    width: 28vw;
     font-size: 16px;
     padding-left: 18px;
-    border-top-left-radius: 0.3rem;
-    border-bottom-left-radius: 0.3rem;
+    border-top-left-radius: 1.25rem;
+    border-bottom-left-radius: 1.25rem;
     border: none;
 
     &:focus, &:active {
@@ -36,4 +36,6 @@ const InputStyle = props => {
 
 export const Input = styled.input`
     ${InputStyle};
+    background-color: ${props => props.bg};
+    color: ${props => props.color};
 `
