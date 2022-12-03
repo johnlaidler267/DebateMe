@@ -63,7 +63,7 @@ app.post('/users/login', async (req, res) => {
   const user = await userDB.findOne({ username: username });
 
   if (!user) {
-    res.status(404).send("User not found");
+    res.status(404).send(`User ${userId} not found`);
   } else {
       if (user.password !== password) {
         res.status(401).send("Access is denied due to invalid credentials");
@@ -121,7 +121,7 @@ app.put('/users/update', async (req, res) => {
         res.status(201).send(data);
       }
     } else {
-      res.status(404).send("User not found");
+      res.status(404).send(`User ${userId} not found`);
   };
 });
 

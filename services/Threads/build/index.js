@@ -47,7 +47,7 @@ app.post('/posts/create', async (req, res) => {
         res.status(201).send(data);
     }
     else {
-        res.status(404).send("User not found");
+        res.status(404).send(`User ${userId} not found`);
     }
 });
 app.get('/posts/all', async (req, res) => {
@@ -56,34 +56,54 @@ app.get('/posts/all', async (req, res) => {
     });
     res.status(200).send(posts);
 });
-app.get('/posts/get', (req, res) => {
+app.get('/posts/get', async (req, res) => {
     const { postId } = req.body;
     if (postId == undefined) {
         res.status(400).send("Request data is incomplete");
     }
-    const post = postDB.findOne({ postId: postId });
-    if (post == undefined) {
-        res.status(404).send(`Post ${postId} not found`);
-    }
-    else {
+    const post = await postDB.findOne({ postId: postId });
+    if (post) {
         res.status(200).send(post);
     }
-});
-app.put('/posts/update', (req, res) => {
-    const { userId, postId, title, content } = req.body;
-    if (userId == undefined || title == undefined || content == undefined) {
-        res.status(400).send("Request data is incomplete");
-    }
-    const post = {};
-    // const post: Post = posts.findOne({ postId: postId });
-    if (post == undefined) {
+    else {
         res.status(404).send(`Post ${postId} not found`);
     }
-    // if (userId not exist || post.userId !== userId) {
-    //     res.status(401).send(`Access is denied due to invalid credentials`);
-    // }
-    // mongo Update
-    res.status(200).send(post);
+});
+app.put('/posts/update', async (req, res) => {
+    const { userId, postId, title, content } = req.body;
+    if (userId == undefined || postId == undefined || title == undefined || content == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
+    const user = await userDB.findOne({ userId: userId });
+    if (user) {
+        const post = await postDB.findOne({ postId: postId });
+        if (post) {
+            if (post.userId === user.userId) {
+                const data = {
+                    userId: userId,
+                    postId: postId,
+                    username: user.username,
+                    title: title,
+                    content: content,
+                };
+                postDB.updateOne({ postId: postId }, { $set: { ...data } }, { upsert: true });
+                await axios.post('http://localhost:4010/events', {
+                    type: 'PostUpdated',
+                    data: data,
+                }).catch((err) => console.log(err.message));
+                res.status(201).send(data);
+            }
+            else {
+                res.status(401).send("Access is denied due to invalid credentials");
+            }
+        }
+        else {
+            res.status(404).send(`Post ${postId} not found`);
+        }
+    }
+    else {
+        res.status(404).send(`User ${userId} not found`);
+    }
 });
 app.delete('/posts/delete', (req, res) => {
     const { userId, postId, title, content } = req.body;
