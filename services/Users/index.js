@@ -32,12 +32,21 @@ app.post('/users/register', async (req, res) => {
     res.status(400).send("Request data is incomplete");
   }
   
-  const user = await users.findOne(username);
+  const user = await users.findOne({ username: username });
+  const data = {
+    username: username,
+    name: name,
+    password: password,
+    email: email,
+    age: age,
+    race: race
+  }
+  
   if (user) {
     res.status(409).send("User already exists");
   } else {
-    users.insertOne(user);
-    res.status(200).send({ username: username, name: name, password: password, email: email, age: age, race: race });
+    users.insertOne(data);
+    res.status(200).send(data);
   }
 });
 
