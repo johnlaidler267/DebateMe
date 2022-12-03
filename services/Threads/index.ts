@@ -145,25 +145,50 @@ app.put('/posts/update', async (req: Request, res: Response) => {
     }
 });
 
-app.delete('/posts/delete', (req: Request, res: Response) => {
-    const { userId, postId, title, content } : { userId: string, postId: string, title: string, content: string } = req.body;
-    if (userId == undefined || title == undefined || content == undefined) {
+app.delete('/posts/delete', async (req: Request, res: Response) => {
+    const { userId, postId } : { userId: string, postId: string } = req.body;
+    if (userId == undefined || postId == undefined) {
         res.status(400).send("Request data is incomplete");
     }
-    const post = {}
-    // const post: Post = posts[postId];
 
-    if (post == undefined) {
-        res.status(404).send(`Post ${postId} not found`);
+    const user = await userDB.findOne({ userId: userId });
+
+    if (user) {
+        const post: Post = await postDB.findOne({ postId: postId });
+        
+        if (post) {
+            if (post.userId === user.userId) {
+                const data: Data = { 
+                    userId: userId,
+                    postId: postId,
+                    username: user.username,
+                    title: post.title,
+                    content: post.content,
+                };
+                
+                postDB.deleteOne({ postId: postId });
+        
+                await axios.post('http://localhost:4010/events', {
+                    type: 'PostDeleted',
+                    data: data,
+                }).catch((err) => console.log(err.message));
+        
+                const message = {
+                    userId: userId,
+                    postId: postId,
+                    message: `Thread title "${post.title}" has been deleted successfully!`
+                }
+
+                res.status(201).send({ message });
+            } else {
+                res.status(401).send("Access is denied due to invalid credentials");
+            }
+        } else {
+            res.status(404).send(`Post ${postId} not found`);
+        }
+    } else {
+        res.status(404).send(`User ${userId} not found`);
     }
-
-    // if (userId not exist || post.userId !== userId) {
-    //     res.status(401).send(`Access is denied due to invalid credentials`);
-    // }
-
-    // mongo Update
-
-    res.status(200).send(post);
 });
 
 app.post('/events', (req: Request, res: Response) => {
