@@ -3,16 +3,22 @@ import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const HeaderText = styled.nav`
-  background: white;
+  background: #393f4d;
+  color: white;
   size: 100%;
   text-size: 100%;
-  text-shadow: 2px 2px 4px gray;
   font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-size: 3rem;
   text-align: center;
   display: flex;
 `;
+
+//Add a span element to the header text
+export const span = styled.span`
+  color: #feda6a;
+`;
+
 
 export const Header = styled.nav`
   background: white;
