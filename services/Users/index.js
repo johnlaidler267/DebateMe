@@ -84,9 +84,9 @@ app.put('/users/update', async (req, res) => {
     res.status(400).send("Request data is incomplete");
   }
   
-  const user = await users.findOne({ userId: userId });
+  const CurrentUser = await users.findOne({ userId: userId });
 
-  const UserExist = await users.findOne({ username: username });
+  const NewUser = await users.findOne({ username: username });
   
   const data = { 
     username: username,
@@ -97,9 +97,18 @@ app.put('/users/update', async (req, res) => {
     race: race
   };
 
-  if (user) {
-    if (!UserExist) {
+  if (CurrentUser) {
+    if (NewUser) {
+      if (CurrentUser.userId === NewUser.userId) {
+        users.updateOne(
+          { userId: userId },
+          { $set: {...data} },
+          { upsert: true }
+        );
+        res.status(201).send(data);
+      } else {
         res.status(409).send("User already exists");
+      }
     } else {
         users.updateOne(
           { userId: userId },
