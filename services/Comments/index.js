@@ -39,6 +39,14 @@ class CommentServer{
       res.status(200).send(JSON.stringify(postComments))
       //send to event bus
     });
+    
+    //get all comments for a given user
+    this.app.get("/comments/user", async (req,res) => {
+      const options = req.query
+      const userComments = await self.db.getUserComments(options.userID)
+      res.status(200).send(JSON.stringify(userComments))
+    });
+
     this.app.post("/events", (req, res) => {
       console.log(req.body.type);
       res.send({});

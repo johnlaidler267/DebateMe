@@ -20,6 +20,10 @@ class CommentStoredVotes{
   upvotes //array of user ID's
   downvotes //array of userID's 
 }
+class UserHistory{
+  userID //string
+  timesVoted // integer
+}
 
 
 class CommentVoteServer{
@@ -100,7 +104,7 @@ class CommentVoteServer{
       
       //send to event bus
     });
-    //get all comments for a given commentID
+    //get all votes for a given commentID
     this.app.get("/comments/getVotes" , async (req, res) => {
       const options = req.query;
       const storedVotes = await self.db.getCommentVotes(options.commentID);

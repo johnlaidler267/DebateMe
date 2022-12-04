@@ -73,5 +73,11 @@ export class CommentsDatabase {
     const res = await this.client.query(queryText); 
     return res.rows
   }
+  //get all comments for a given user
+  async getUserComments(userID) {
+    const queryText = `SELECT * FROM comments where userID = '${userID}'`
+    const res = await this.client.query(queryText); 
+    return res.rows
+  }
 
 }
