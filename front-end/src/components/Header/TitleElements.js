@@ -18,7 +18,6 @@ export const span = styled.span`
   color: #feda6a;
 `;
 
-
 export const Header = styled.nav`
   background: white;
   justify-content: center;

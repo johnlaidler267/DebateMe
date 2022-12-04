@@ -1,12 +1,32 @@
 .custom-btn {
-  background-color: #1d1e22;
+  background-image: linear-gradient(
+    to right,
+    #feda6a,
+    black,
+    #feda6a
+  ) !important;
   border: none;
-  color: white;
+  color: #feda6a !important;
   padding: 15px 32px;
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+  border: none !important;
+  font-weight: 500 !important;
+}
+
+.custom-btn:hover {
+  background-image: linear-gradient(to right, black, #feda6a, black) !important;
+  color: black !important;
+}
+
+.page-link {
+  color: black !important;
+}
+
+.pagination {
+  --bs-pagination-color: #feda6a !important;
+  --bs-pagination-hover-color: #feda6a !important;
+  --bs-pagination-focus-color: #feda6a !important;
+  --bs-pagination-active-bg: #feda6a !important;
 }

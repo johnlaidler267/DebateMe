@@ -1,10 +1,8 @@
 import React from "react";
-import "./App.css";
 import Navbar from "./components/Navbar";
 import Header from "./components/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Debate from "./pages/debate/debate";
-import SearchElection from "./pages/election-search";
 import SignUp from "./pages/signup";
 import Profile from "./pages/profile";
 import CreateElection from "./pages/create-election";
@@ -12,6 +10,7 @@ import VoteHistory from "./pages/vote-history";
 import Messages from "./pages/messages";
 // import bootstrap css file to make it available to all components
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 /*
   This is the main component of the app. It is the parent of all other components.
@@ -25,7 +24,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Debate />} />
         <Route path="/debate" element={<Debate />} />
-        <Route path="/election-search" element={<SearchElection />} />
         <Route path="/create-election" element={<CreateElection />} />
         <Route path="/vote-history" element={<VoteHistory />} />
         <Route path="/view-profile" element={<Profile />} />

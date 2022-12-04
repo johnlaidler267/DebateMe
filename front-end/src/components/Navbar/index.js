@@ -10,9 +10,6 @@ const Navbar = () => {
                     <NavLink to="/debate" activeStyle>
                         Debate
                     </NavLink>
-                    <NavLink to="/election-search" activeStyle>
-                        Search
-                    </NavLink>
                     <NavLink to="/create-election" activeStyle>
                         Create Election
                     </NavLink>
