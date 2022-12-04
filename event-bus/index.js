@@ -9,6 +9,7 @@ app.use(express.json());
 
 app.post('/events', (req, res) => {
   const event = req.body;
+  //make subscriptable here, need to check type of incoming event and send it only to services that care about that event. 
 
   axios.post('http://localhost:4000/events', event).catch((err) => {
     console.log(err.message);

@@ -124,7 +124,6 @@ class CommentVoteServer{
       console.log(`Comment Vote server started on ${port}`);
     });
   }
-
 }
 
 
