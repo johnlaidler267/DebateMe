@@ -6,7 +6,8 @@ import { ClockHistory } from "react-bootstrap-icons";
 const Debate = () => {
     return (
         <Container fluid style={{
-            backgroundColor: '#393f4d'
+            backgroundColor: '#393f4d',
+            width: '90%'
         }}>
             <br></br>
             <div style={{
@@ -16,7 +17,6 @@ const Debate = () => {
                     Debate of the Week.  <Badge bg="secondary" style={{ color: "#feda6a" }}>Hot 🔥</Badge>
                 </h2>
             </div>
-            <br></br>
             <Row>
                 <Col>
                     <Card className="mb-3">
@@ -38,7 +38,6 @@ const Debate = () => {
                     Explore Debates.
                 </h3>
             </div>
-            <br></br>
 
             <Row>
                 <Col>

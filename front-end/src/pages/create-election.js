@@ -7,7 +7,8 @@ const CreateElection = () => {
     return (
         <div className="App">
             <Container fluid style={{
-                backgroundColor: '#393f4d'
+                backgroundColor: '#393f4d',
+                width: '75%',
             }}>
                 <br></br>
                 <Card className="mb-3">
