@@ -2,7 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
-import { ElectionDatabase } from './election-db.js';
+import { BreakdownDatabase } from './breakdown-db.js';
 import { threadId } from 'worker_threads';
 
 const app = express();
@@ -11,7 +11,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 
-class ElectionServer {
+class ElectionBreakdownServer {
 
   constructor(dburl) {
     this.dburl = dburl;
@@ -26,17 +26,17 @@ class ElectionServer {
     const self = this
 
     // Cast a new vote
-    this.app.post("/vote/cast"), async (req, res) => {
+    this.app.post("/breakdown/update"), async (req, res) => {
       const { vote, electionID, userID } = req.query;
-      const Vote = await self.db.createVote(vote, electionID, userID)
+      const Vote = await self.db.updateBreakdown(vote, electionID, userID)
       res.status(200).send(JSON.stringify(Vote))
       //send to event bus
     }
 
-    this.app.get("/vote/get", async (req, res) => {
-      const { electionID, userID } = req.query
-      const userVote = await self.db.getVote(electionID, userID)
-      res.status(200).send(JSON.stringify(userVote))
+    this.app.get("/breakdown/get", async (req, res) => {
+      const { electionID } = req.query
+      const breakdown = await self.db.getBreakdown(electionID)
+      res.status(200).send(JSON.stringify(breakdown))
       //send to event bus
     });
 
@@ -64,5 +64,5 @@ class ElectionServer {
 }
 
 // Start the server
-const server = new ElectionServer(process.env.DATABASE_URL);
+const server = new ElectionBreakdownServer(process.env.DATABASE_URL);
 server.start()

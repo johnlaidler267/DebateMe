@@ -2,7 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
-import { ElectionDatabase } from './election-db.js';
+import { TrustDatabase } from './trust-db.js';
 import { threadId } from 'worker_threads';
 
 const app = express();
@@ -11,7 +11,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 
-class ElectionServer {
+class ElectionBreakdownServer {
 
   constructor(dburl) {
     this.dburl = dburl;
@@ -25,18 +25,17 @@ class ElectionServer {
   async initRoutes() {
     const self = this
 
-    // Cast a new vote
-    this.app.post("/vote/cast"), async (req, res) => {
-      const { vote, electionID, userID } = req.query;
-      const Vote = await self.db.createVote(vote, electionID, userID)
+    this.app.post("/user/trust/update"), async (req, res) => {
+      const req = req.query;
+      const Vote = await self.db.updateTrustScore(req.userID, req.debates, req.comments, req.upvoteRatio, req.upvotes, req.dowbvotes, req.flags)
       res.status(200).send(JSON.stringify(Vote))
       //send to event bus
     }
 
-    this.app.get("/vote/get", async (req, res) => {
-      const { electionID, userID } = req.query
-      const userVote = await self.db.getVote(electionID, userID)
-      res.status(200).send(JSON.stringify(userVote))
+    this.app.get("/user/trust/get", async (req, res) => {
+      const { userID } = req.query
+      const breakdown = await self.db.getTrustScore(userID)
+      res.status(200).send(JSON.stringify(breakdown))
       //send to event bus
     });
 
@@ -64,5 +63,5 @@ class ElectionServer {
 }
 
 // Start the server
-const server = new ElectionServer(process.env.DATABASE_URL);
+const server = new ElectionBreakdownServer(process.env.DATABASE_URL);
 server.start()

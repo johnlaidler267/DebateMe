@@ -5,7 +5,7 @@ import { HeaderText, Header, TM, span } from "./TitleElements";
 const Title = () => {
     return (
         <Header>
-            <HeaderText>Debate<span>Me</span><sup><TM>TM</TM></sup></HeaderText>
+            <HeaderText>Debate<span>Me🗳️</span><sup><TM>TM</TM></sup></HeaderText>
         </Header>
     );
 };
