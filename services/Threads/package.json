@@ -1,12 +1,14 @@
 {
-  "name": "thread-chi",
+  "name": "thread",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "start": "nodemon build/index.js index.ts"
+    "start:ts": "tsc -w",
+    "start:js": "nodemon build/index.js",
+    "start": "concurrently npm:start:*"
   },
   "keywords": [],
   "author": "",

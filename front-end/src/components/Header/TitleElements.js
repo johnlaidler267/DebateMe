@@ -1,5 +1,3 @@
-import { FaBars } from "react-icons/fa";
-import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const HeaderText = styled.nav`
@@ -12,7 +10,7 @@ export const HeaderText = styled.nav`
   font-size: 3rem;
   text-align: center;
   display: flex;
-  justify-content: center;
+  padding: 0px 20px;
 `;
 
 //Add a span element to the header text

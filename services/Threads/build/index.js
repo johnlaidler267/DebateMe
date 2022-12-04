@@ -8,15 +8,14 @@ import axios from 'axios';
 const app = express();
 const port = process.env.PORT || 4006;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
-let posts = {};
-let users = {};
+let postDB = {};
+let userDB = {};
+let isUserLoggedIn = false;
 const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
-        users = await client.db("Users").collection('users');
-        console.log(client);
-        console.log(users);
-        // posts = await client.db("Posts").collection('posts');
+        userDB = client.db("Users").collection('users');
+        postDB = client.db("Posts").collection('posts');
     }
     catch (err) {
         console.log(err);
@@ -31,54 +30,130 @@ app.post('/posts/create', async (req, res) => {
     if (userId == undefined || title == undefined || content == undefined) {
         res.status(400).send("Request data is incomplete");
     }
-    const postId = uuidv4();
-    const data = {
-        userId: userId,
-        postId: postId,
-        title: title,
-        content: content,
-    };
-    // mongo insert post
-    await axios.post('http://localhost:4010/events', {
-        type: 'PostCreated',
-        data: data,
-    }).catch((err) => console.log(err.message));
-    res.status(201).send(data);
+    const user = await userDB.findOne({ userId: userId });
+    if (user) {
+        const postId = uuidv4();
+        const data = {
+            userId: userId,
+            postId: postId,
+            username: user.username,
+            title: title,
+            content: content,
+        };
+        postDB.insertOne(data);
+        await axios.post('http://localhost:4010/events', {
+            type: 'PostCreated',
+            data: data,
+        }).catch((err) => console.log(err.message));
+        res.status(201).send(data);
+    }
+    else {
+        res.status(404).send(`User ${userId} not found`);
+    }
 });
-app.get('/posts/all', (req, res) => {
+app.get('/posts/all', async (req, res) => {
+    const posts = await postDB.find().toArray().catch((err) => {
+        console.log(err.message);
+    });
     res.status(200).send(posts);
 });
-app.get('/posts/get', (req, res) => {
+app.get('/posts/get', async (req, res) => {
     const { postId } = req.body;
     if (postId == undefined) {
         res.status(400).send("Request data is incomplete");
     }
-    const post = posts[postId];
-    if (post == undefined) {
-        res.status(404).send(`Post ${postId} not found`);
-    }
-    else {
+    const post = await postDB.findOne({ postId: postId });
+    if (post) {
         res.status(200).send(post);
     }
-});
-app.put('/posts/update', (req, res) => {
-    const { userId, postId, title, content } = req.body;
-    if (userId == undefined || title == undefined || content == undefined) {
-        res.status(400).send("Request data is incomplete");
-    }
-    const post = posts[postId];
-    if (post == undefined) {
+    else {
         res.status(404).send(`Post ${postId} not found`);
     }
-    // if (userId not exist || post.userId !== userId) {
-    //     res.status(401).send(`Access is denied due to invalid credentials.`);
-    // }
-    // mongo Update
-    res.status(200).send(post);
+});
+app.put('/posts/update', async (req, res) => {
+    const { userId, postId, title, content } = req.body;
+    if (userId == undefined || postId == undefined || title == undefined || content == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
+    const user = await userDB.findOne({ userId: userId });
+    if (user) {
+        const post = await postDB.findOne({ postId: postId });
+        if (post) {
+            if (post.userId === user.userId) {
+                const data = {
+                    userId: userId,
+                    postId: postId,
+                    username: user.username,
+                    title: title,
+                    content: content,
+                };
+                postDB.updateOne({ postId: postId }, { $set: { ...data } }, { upsert: true });
+                await axios.post('http://localhost:4010/events', {
+                    type: 'PostUpdated',
+                    data: data,
+                }).catch((err) => console.log(err.message));
+                res.status(201).send(data);
+            }
+            else {
+                res.status(401).send("Access is denied due to invalid credentials");
+            }
+        }
+        else {
+            res.status(404).send(`Post ${postId} not found`);
+        }
+    }
+    else {
+        res.status(404).send(`User ${userId} not found`);
+    }
+});
+app.delete('/posts/delete', async (req, res) => {
+    const { userId, postId } = req.body;
+    if (userId == undefined || postId == undefined) {
+        res.status(400).send("Request data is incomplete");
+    }
+    const user = await userDB.findOne({ userId: userId });
+    if (user) {
+        const post = await postDB.findOne({ postId: postId });
+        if (post) {
+            if (post.userId === user.userId) {
+                const data = {
+                    userId: userId,
+                    postId: postId,
+                    username: user.username,
+                    title: post.title,
+                    content: post.content,
+                };
+                postDB.deleteOne({ postId: postId });
+                await axios.post('http://localhost:4010/events', {
+                    type: 'PostDeleted',
+                    data: data,
+                }).catch((err) => console.log(err.message));
+                const message = {
+                    userId: userId,
+                    postId: postId,
+                    message: `Thread title "${post.title}" has been deleted successfully!`
+                };
+                res.status(201).send({ message });
+            }
+            else {
+                res.status(401).send("Access is denied due to invalid credentials");
+            }
+        }
+        else {
+            res.status(404).send(`Post ${postId} not found`);
+        }
+    }
+    else {
+        res.status(404).send(`User ${userId} not found`);
+    }
 });
 app.post('/events', (req, res) => {
     const { type } = req.body;
     console.log(type);
+    if (type === "UserLoggedIn") {
+        isUserLoggedIn = true;
+        console.log("User is currently logged in");
+    }
     res.send({ type: type });
 });
 app.listen(port, () => {
