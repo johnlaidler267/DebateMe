@@ -71,7 +71,7 @@ class ModerationServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    const port = process.env.PORT || 4001;
+    const port = process.env.PORT || 4005;
     this.app.listen(port, () => {
       console.log(`Comment server started on ${port}`);
     });

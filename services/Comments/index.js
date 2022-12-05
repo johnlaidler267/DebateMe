@@ -31,6 +31,7 @@ class CommentServer{
       res.status(200).send(JSON.stringify(comment))
       //send to event bus
     });
+
     //get all comments for a given postID
     this.app.get("/comments/get" , async (req, res) => {
       //doc says get by CommentID, probably should be by postID
@@ -48,6 +49,7 @@ class CommentServer{
     });
 
     this.app.post("/events", (req, res) => {
+      //what do I respond to in here? will getting user comments? Threading maybe and coloring? 
       console.log(req.body.type);
       res.send({});
     });
