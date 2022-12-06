@@ -1,9 +1,35 @@
 import "./debate.css"
-import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Button, Card, Form, Container, Row, Col, Heading, Pagination, Badge } from 'react-bootstrap';
 import { ClockHistory } from "react-bootstrap-icons";
 
 const Debate = () => {
+    const [ Threads, setThreads ] = useState([]);
+
+    const fetchThreads = async () => {
+        const res = await axios.get('http://localhost:4006/posts/all');
+        setThreads(res.data);
+      }
+
+    useEffect(() => {
+        fetchThreads();
+    }, [])
+    
+    const renderedThreads = Object.values(Threads).map((t) => {
+        return (
+            <div 
+                className='card'
+                style={{ width: '30%', marginBottom: '20px' }}
+                key={t.id}
+            >
+                <div className='card-body'>
+                    <h3>{t.title}</h3>
+                </div>
+            </div>
+        )
+      })
+
     return (
         <Container fluid style={{
             backgroundColor: '#393f4d',
@@ -38,7 +64,7 @@ const Debate = () => {
                     Explore Debates.
                 </h3>
             </div>
-
+            {renderedThreads}
             <Row>
                 <Col>
                     <Card className="mb-3">

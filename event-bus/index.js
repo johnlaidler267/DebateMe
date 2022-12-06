@@ -21,7 +21,7 @@ app.post('/subscribe', (req, res) => {
     if(eventArray.includes("commentCreated")){
       commentCreated.push(port);
     }
-    if(eventArraay.includes("moderated")){
+    if(eventArray.includes("moderated")){
       moderated.push(port);
     }
     if(eventArray.includes("commentVotes")){
@@ -38,9 +38,9 @@ app.post('/events', async (req, res) => {
   const event = req.query;
   //make subscriptable here, need to check type of incoming event and send it only to services that care about that event. 
   let eventType = event.type; //make sure type is the name of the array
-  if(eventType = commenntCreated){
+  if(eventType = commentCreated){
     for(let i = 0; i< commentCreated.length; i++){
-      await axios.post(`http://localhost:'${commentCreated[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${commentCreated[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
