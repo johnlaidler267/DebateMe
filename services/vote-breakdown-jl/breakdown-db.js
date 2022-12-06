@@ -6,6 +6,7 @@ import pg from 'pg';
 // The Pool class is used to create a pool of connections to the database.
 const { Pool } = pg;
 
+/* Initializes the demographic database */
 export class ElectionDatabase {
 
   constructor(dburl) {
@@ -30,26 +31,33 @@ export class ElectionDatabase {
     const queryText = `
       create table if not exists breakdowns (
         candidateID varchar(30),
-        candidateName varchar(30),
+        electionID varchar(30),
         voteCount int,
         ages int[],
-        race varchar(30)[],
+        numBlack int,
+        numHispanic int,
+        numAsian int,
+        numCaucasian int,
+        numRaceOther int,
         locations varchar(30)[],
         totalVotes int,
         numMen int,
-        numWomen int
+        numWomen int,
+        numGenderOther int
       );
         `;
     const res = await this.client.query(queryText);
   }
 
-  async updateBreakdown(candidateID, candidateName, age, race, location, gender) {
+  /* Updates the demographic breakdown for a given candidate */
+  async updateBreakdown(vote, candidateID, electionID, userID) {
+    //Get the demographic data of the user
 
     //Update gender count
-    let numMen, numWomen, numOther = 0
-    if (gender == "male") numMen = getGenderCount(candidateID, "male") + 1;
-    else if (gender == "female") numWomen = getGenderCount(candidateID, "female") + 1;
-    else numGenderOther = getGenderCount(candidateID, "other") + 1;
+    let numMen, numWomen, numGenderOther = getGenderCount(candidateID, electionID)
+    if (gender == "male") numMen++;
+    else if (gender == "female") numWomen++;
+    else numGenderOther++;
 
     //Update total votes
     let totalVotes = getVotes(candidateID) + 1
@@ -63,15 +71,16 @@ export class ElectionDatabase {
     locations.push(location)
 
     //Update race count
-    if (race == "black") numBlack = getRaceCount(candidateID, "black") + 1
-    else if (race == "hispanic") numHispanic = getRaceCount(candidateID, "hispanic") + 1
-    else if (race == "asian") numAsian = getRaceCount(candidateID, "asian") + 1
-    else if (race == "caucasian") numCaucasian = getRaceCount(candidateID, "caucasian") + 1
-    else numRaceOther = getRaceCount(candidateID, "other") + 1
+    let numBlack, numHispanic, numAsian, numCaucasian, numRaceOther = getRaceCount(candidateID, electionID);
+    if (race == "black") numBlack++;
+    else if (race == "hispanic") numHispanic++;
+    else if (race == "asian") numAsian++;
+    else if (race == "caucasian") numCaucasian++;
+    else numRaceOther++;
 
     //Construct query
     const queryText = `
-        insert into scores (candidateID, candidateName, voteCount, ages, numBlack, numHispanic, numAsian, numCaucasian, numRaceOther locations, totalVotes, numMen, numWomen, numGenderOther)
+        insert into scores (candidateID, electionID, voteCount, ages, numBlack, numHispanic, numAsian, numCaucasian, numRaceOther locations, totalVotes, numMen, numWomen, numGenderOther)
         values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         `;
 
@@ -80,12 +89,37 @@ export class ElectionDatabase {
     return res.rows;
   }
 
-  async getBreakdown(electionID) {
+  /* Gets the race breakdown for a given candidate */
+  async getRaceCount(candidateID, electionID) {
     const queryText = `
         select * from scores
-        where electionID = $1
+        where candidateID = $1
+        and
+        electionID = $2
         `;
-    const res = await this.client.query(queryText, [electionID]);
+    const res = await this.client.query(queryText, [candidateID, electionID]);
+    return res.rows;
+  }
+
+  /* Gets the age breakdown for a given candidate */
+  async getGenderCount(candidateID, electionID) {
+    const queryText = `
+        select * from scores
+        where candidateID = $1
+        and
+        electionID = $2
+        `;
+    const res = await this.client.query(queryText, [candidateID, electionID]);
+    return res.rows;
+  }
+
+  /* Gets the demographic breakdown for a given candidate */
+  async getBreakdown(candidateID, electionID) {
+    const queryText = `
+        select * from scores
+        where candidateID = $1
+        `;
+    const res = await this.client.query(queryText, [candidateID, electionID]);
     return res.rows;
   }
 }

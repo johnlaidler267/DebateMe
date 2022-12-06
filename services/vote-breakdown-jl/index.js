@@ -27,8 +27,8 @@ class ElectionBreakdownServer {
 
     // Cast a new vote
     this.app.post("/breakdown/update"), async (req, res) => {
-      const { vote, electionID, userID } = req.query;
-      const Vote = await self.db.updateBreakdown(vote, electionID, userID)
+      const { vote, candidateID, electionID, userID } = req.query;
+      const Vote = await self.db.updateBreakdown(vote, candidateID, electionID, userID)
       res.status(200).send(JSON.stringify(Vote))
       //send to event bus
     }
