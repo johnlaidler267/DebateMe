@@ -51,9 +51,9 @@ export class CommentsVoteDatabase {
 
 
   // create commentVote
-  async createCommentVote(commentID, upvotes, downvotes) {
-    const queryText = 'INSERT INTO commentVotes ( commentID, upvotes, downvotes) VALUES ($1, $2, $3)';
-    const res = await this.client.query(queryText, [commentID, upvotes, downvotes]);
+  async createCommentVote(commentID, upvotes, downvotes, ownerID) {
+    const queryText = 'INSERT INTO commentVotes ( commentID, upvotes, downvotes, ownerID) VALUES ($1, $2, $3, $4)';
+    const res = await this.client.query(queryText, [commentID, upvotes, downvotes, ownerID ]);
     return res.rows;
   };
 

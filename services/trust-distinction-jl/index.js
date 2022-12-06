@@ -27,15 +27,15 @@ class ElectionBreakdownServer {
 
     this.app.post("/user/trust/update"), async (req, res) => {
       const req = req.query;
-      const Vote = await self.db.updateTrustScore(req.userID, req.debates, req.comments, req.upvoteRatio, req.upvotes, req.dowbvotes, req.flags)
-      res.status(200).send(JSON.stringify(Vote))
+      const vote = await self.db.updateScore(req.userID, req.debates, req.comments, req.upvoteRatio, req.upvotes, req.dowbvotes, req.flags)
+      res.status(200).send(JSON.stringify(vote))
       //send to event bus
     }
 
     this.app.get("/user/trust/get", async (req, res) => {
       const { userID } = req.query
-      const breakdown = await self.db.getTrustScore(userID)
-      res.status(200).send(JSON.stringify(breakdown))
+      const score = await self.db.getScore(userID)
+      res.status(200).send(JSON.stringify(score))
       //send to event bus
     });
 
