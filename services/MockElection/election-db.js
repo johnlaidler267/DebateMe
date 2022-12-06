@@ -40,23 +40,10 @@ export class ElectionDatabase {
     const res = await this.client.query(queryText);
   }
 
+  /* Creates a new vote */
   async createVote(electionID, userID, vote) {
-    const queryText = `
-      insert into elections (electionID, ballots)
-      values ($1, ($2, $3))
-      `;
+    const queryText = `INSERT INTO elections (electionID, ballots) VALUES ($1, ($2, $3))`;
     const res = await this.client.query(queryText, [electionID, userID, vote]);
-    return res.rows;
-  }
-
-  async getVote(electionID, userID) {
-    const queryText = `
-      select vote from elections
-      where electionID = $1
-      and
-      votes.userID = $2
-      `;
-    const res = await this.client.query(queryText, [electionID, userID]);
     return res.rows;
   }
 }

@@ -35,45 +35,34 @@ export class TrustDatabase {
         reliability integer
       );
         `;
+    const res = await this.client.query(queryText);
   }
 
   /* Get the engagement score for a user */
   async getEngagement(userID) {
-    const queryText = `
-      select engagement from scores where userID = $1;
-    `;
-    const res = await
-      this.client.query(queryText, [userID]);
+    const queryText = `SELECT engagement FROM scores WHERE userID = $1;`;
+    const res = await this.client.query(queryText, [userID]);
     return res.rows[0];
   }
 
   /* Get the reliability score for a user */
   async getReliability(userID) {
-    const queryText = `
-      select reliability from scores where userID = $1;
-    `;
-    const res = await
-      this.client.query(queryText, [userID]);
+    const queryText = `SELECT reliability FROM scores WHERE userID = $1;`;
+    const res = await this.client.query(queryText, [userID]);
     return res.rows[0];
   }
 
   /* Update the engagement score for a user */
   async updateEngagement(userID, engagement) {
-    const queryText = `
-      update scores set engagement = $2 where userID = $1;
-    `;
-    const res = await
-      this.client.query(queryText, [userID, engagement]);
+    const queryText = `UPDATE scores SET engagement = $2 WHERE userID = $1;`;
+    const res = await this.client.query(queryText, [userID, engagement]);
     return res.rows[0];
   }
 
   /* Update the reliability score for a user */
   async updateReliability(userID, reliability) {
-    const queryText = `
-      update scores set reliability = $2 where userID = $1;
-    `;
-    const res = await
-      this.client.query(queryText, [userID, reliability]);
+    const queryText = `UPDATE scores SET reliability = $2 WHERE userID = $1;`;
+    const res = await this.client.query(queryText, [userID, reliability]);
     return res.rows[0];
   }
 }
