@@ -14,12 +14,15 @@ class CommentSingleVote{
   userID //string
   commentID //string
   vote//string Up or Down
+  ownerID //userID of the owner of this comment
 }
 class CommentStoredVotes{
   commentID // string
+  ownerID //string
   upvotes //array of user ID's
   downvotes //array of userID's 
 }
+
 
 
 class CommentVoteServer{
@@ -34,7 +37,6 @@ class CommentVoteServer{
     const self = this;
 
     this.app.post('/comments/vote', async (req,res) => {
-       //get the CommentStoredVotes for this commentID 
       const options = req.query;
       let storedVotes = await self.db.getCommentVotes(options.commentID); //should only ever be 1 object for each commemtID
       console.log(storedVotes)
@@ -52,7 +54,7 @@ class CommentVoteServer{
         else{
           //error handling, should this even be possible? 
         }
-        const voteObj = await self.db.createCommentVote(options.commentID, upvotes, downvotes)
+        const voteObj = await self.db.createCommentVote(options.commentID, upvotes, downvotes, options.ownerID)
         res.status(200).send(JSON.stringify(voteObj)) //voteObj not sending right object? need to debug
       }
       else{
@@ -96,17 +98,17 @@ class CommentVoteServer{
         console.log(voteObj)
         res.status(200).send(JSON.stringify(voteObj)) //voteObj not sending right object? need to debug
       }
-
-      
       //send to event bus
     });
-    //get all comments for a given commentID
+
+    //get all votes for a given commentID
     this.app.get("/comments/getVotes" , async (req, res) => {
       const options = req.query;
       const storedVotes = await self.db.getCommentVotes(options.commentID);
       res.status(200).send(JSON.stringify(storedVotes))
       //send to event bus
     });
+    
     this.app.post("/events", (req, res) => {
       console.log(req.body.type);
       res.send({});

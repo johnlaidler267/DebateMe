@@ -56,7 +56,7 @@ class ElectionServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    const port = process.env.PORT || 4002;
+    const port = process.env.PORT || 4004;
     this.app.listen(port, () => {
       console.log(`Election server started on ${port}`);
     });

@@ -31,7 +31,7 @@ export class ModerationDatabase {
         userID varchar(30),
         rejectedComments text[],
         acceptedComments text[] 
-      );
+      );  
         `
     const res = await this.client.query(queryText);
   }
