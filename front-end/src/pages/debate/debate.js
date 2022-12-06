@@ -1,11 +1,13 @@
 import "./debate.css"
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { Button, Card, Form, Container, Row, Col, Heading, Pagination, Badge } from 'react-bootstrap';
 import { ClockHistory } from "react-bootstrap-icons";
 
 const Debate = () => {
     const [ Threads, setThreads ] = useState([]);
+    const navigate = useNavigate();
 
     const fetchThreads = async () => {
         const res = await axios.get('http://localhost:4006/posts/all');
@@ -16,16 +18,20 @@ const Debate = () => {
         return (
             <Card className="mb-3" key={index}>
                 <br></br>
-                <Card.Title className="text-center">{t.title}</Card.Title>
+                <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">{t.title}</Card.Title>
                 <Card.Body>
                     <Container>
                         <p>{t.content}</p>
                     </Container>
                 </Card.Body>
-                <Button className="custom-btn">Debate</Button>
+                <Button onClick={() => postHandler(t.postId)} className="custom-btn">Debate</Button>
             </Card>
         );
     });
+
+    const postHandler = (postId) => {
+        navigate(`/post/${postId}`);
+      }
 
     useEffect(() => {
         fetchThreads();
