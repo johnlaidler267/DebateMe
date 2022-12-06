@@ -14,16 +14,15 @@ class CommentSingleVote{
   userID //string
   commentID //string
   vote//string Up or Down
+  ownerID //userID of the owner of this comment
 }
 class CommentStoredVotes{
   commentID // string
+  ownerID //string
   upvotes //array of user ID's
   downvotes //array of userID's 
 }
-class UserHistory{
-  userID //string
-  timesVoted // integer
-}
+
 
 
 class CommentVoteServer{
@@ -55,7 +54,7 @@ class CommentVoteServer{
         else{
           //error handling, should this even be possible? 
         }
-        const voteObj = await self.db.createCommentVote(options.commentID, upvotes, downvotes)
+        const voteObj = await self.db.createCommentVote(options.commentID, upvotes, downvotes, options.ownerID)
         res.status(200).send(JSON.stringify(voteObj)) //voteObj not sending right object? need to debug
       }
       else{
