@@ -12,47 +12,68 @@ export class TrustDatabase {
     this.dburl = dburl;
   }
 
+  /* Connects to the database server */
   async connect() {
+
+    // Create a new pool using the connection string (dburl)
     this.pool = new Pool({
       connectionString: this.dburl
     });
 
-    // Create the pool.
+    // Connect to the pool.
     this.client = await this.pool.connect();
 
-    // Init the database.
     await this.init();
   }
 
+  /* Initializes the trust database */
   async init() {
-    //if you change any values in a table, either name or type of the variable or just deleting or adding values
-    //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
       create table if not exists scores (
-        name varchar(30),
-        diffuculty integer,
-        parts text[] 
+        userID varchar(30),
+        engagement integer,
+        reliability integer
       );
         `;
   }
 
-  async updateScore(userID, debates, comments, upvoteRatio, upvotes, dowbvotes, flags) {
+  /* Get the engagement score for a user */
+  async getEngagement(userID) {
     const queryText = `
-        insert into scores (electionID, ballots)
-        values ($1, ($2, $3))
-        `;
-    const res = await this.client.query(queryText, [userID, debates, comments, upvoteRatio, upvotes, dowbvotes, flags]);
-    return res.rows;
+      select engagement from scores where userID = $1;
+    `;
+    const res = await
+      this.client.query(queryText, [userID]);
+    return res.rows[0];
   }
 
-  async getScore(userID) {
+  /* Get the reliability score for a user */
+  async getReliability(userID) {
     const queryText = `
-        select * from scores
-        where electionID = $1
-        and
-        votes.userID = $2
-        `;
-    const res = await this.client.query(queryText, [userID]);
-    return res.rows;
+      select reliability from scores where userID = $1;
+    `;
+    const res = await
+      this.client.query(queryText, [userID]);
+    return res.rows[0];
+  }
+
+  /* Update the engagement score for a user */
+  async updateEngagement(userID, engagement) {
+    const queryText = `
+      update scores set engagement = $2 where userID = $1;
+    `;
+    const res = await
+      this.client.query(queryText, [userID, engagement]);
+    return res.rows[0];
+  }
+
+  /* Update the reliability score for a user */
+  async updateReliability(userID, reliability) {
+    const queryText = `
+      update scores set reliability = $2 where userID = $1;
+    `;
+    const res = await
+      this.client.query(queryText, [userID, reliability]);
+    return res.rows[0];
   }
 }
