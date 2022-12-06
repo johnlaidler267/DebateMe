@@ -61,49 +61,49 @@ app.post('/events', async (req, res) => {
   }
   else if (eventType = "moderated"){
     for(let i = 0; i< moderated.length; i++){
-      await axios.post(`http://localhost:'${moderated[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${moderated[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
   }
  }
   else if (eventType = "commentVoted"){
     for(let i = 0; i< commentVoted.length; i++){
-      await axios.post(`http://localhost:'${commentVoted[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${commentVoted[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "voteCreated"){
     for(let i = 0; i< voteCreated.length; i++){
-      await axios.post(`http://localhost:'${voteCreated[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${voteCreated[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "postCreated"){
     for(let i = 0; i< postCreated.length; i++){
-      await axios.post(`http://localhost:'${postCreated[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${postCreated[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "postUpdated"){
     for(let i = 0; i< postUpdated.length; i++){
-      await axios.post(`http://localhost:'${postUpdated[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${postUpdated[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "postDeleted"){
     for(let i = 0; i< postDeleted.length; i++){
-      await axios.post(`http://localhost:'${postDeleted[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${postDeleted[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "userDataRequest"){
     for(let i = 0; i< userDataRequest.length; i++){
-      await axios.post(`http://localhost:'${userDataRequest[i]}'/events`, events).catch((err) => {
+      await axios.post(`http://localhost:${userDataRequest[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }

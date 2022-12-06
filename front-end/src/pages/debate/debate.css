@@ -25,6 +25,19 @@
   color: #feda6a !important;
 }
 
+.threads {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.threads p {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
 .page-link {
   color: black !important;
 }

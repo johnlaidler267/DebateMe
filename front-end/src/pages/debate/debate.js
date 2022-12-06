@@ -12,23 +12,24 @@ const Debate = () => {
         setThreads(res.data);
       }
 
+    const renderedThreads = Object.values(Threads).map((t, index) => {
+        return (
+            <Card className="mb-3" key={index}>
+                <br></br>
+                <Card.Title className="text-center">{t.title}</Card.Title>
+                <Card.Body>
+                    <Container>
+                        <p>{t.content}</p>
+                    </Container>
+                </Card.Body>
+                <Button className="custom-btn">Debate</Button>
+            </Card>
+        );
+    });
+
     useEffect(() => {
         fetchThreads();
     }, [])
-    
-    const renderedThreads = Object.values(Threads).map((t) => {
-        return (
-            <div 
-                className='card'
-                style={{ width: '30%', marginBottom: '20px' }}
-                key={t.id}
-            >
-                <div className='card-body'>
-                    <h3>{t.title}</h3>
-                </div>
-            </div>
-        )
-      })
 
     return (
         <Container fluid style={{
@@ -64,84 +65,9 @@ const Debate = () => {
                     Explore Debates.
                 </h3>
             </div>
-            {renderedThreads}
-            <Row>
-                <Col>
-                    <Card className="mb-3">
-                        <br></br>
-                        <Card.Title className="text-center">Election Name</Card.Title>
-                        <Card.Body>
-                            <Container>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            </Container>
-                        </Card.Body>
-                        <Button className="custom-btn">Debate</Button>
-                    </Card>
-                </Col>
-                <Col>
-                    <Card className="mb-3">
-                        <br></br>
-                        <Card.Title className="text-center">Election Name</Card.Title>
-                        <Card.Body>
-                            <Container>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            </Container>
-                        </Card.Body>
-                        <Button className="custom-btn">Debate</Button>
-                    </Card>
-                </Col>
-                <Col>
-                    <Card className="mb-3">
-                        <br></br>
-                        <Card.Title className="text-center">Election Name</Card.Title>
-                        <Card.Body>
-                            <Container>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            </Container>
-                        </Card.Body>
-                        <Button className="custom-btn">Debate</Button>
-                    </Card>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col>
-                    <Card className="mb-3">
-                        <br></br>
-                        <Card.Title className="text-center">Election Name</Card.Title>
-                        <Card.Body>
-                            <Container>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            </Container>
-                        </Card.Body>
-                        <Button className="custom-btn">Debate</Button>
-                    </Card>
-                </Col>
-                <Col>
-                    <Card className="mb-3">
-                        <br></br>
-                        <Card.Title className="text-center">Election Name</Card.Title>
-                        <Card.Body>
-                            <Container>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            </Container>
-                        </Card.Body>
-                        <Button className="custom-btn">Debate</Button>
-                    </Card>
-                </Col>
-                <Col>
-                    <Card className="mb-3">
-                        <br></br>
-                        <Card.Title className="text-center">Election Name</Card.Title>
-                        <Card.Body>
-                            <Container>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            </Container>
-                        </Card.Body>
-                        <Button className="custom-btn">Debate</Button>
-                    </Card>
-                </Col>
-            </Row>
+            <div className="threads">
+                {renderedThreads}
+            </div>
             <Pagination>
                 <Pagination.Item>1</Pagination.Item>
                 <Pagination.Item active>2</Pagination.Item>
