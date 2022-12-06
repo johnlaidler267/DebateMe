@@ -58,8 +58,8 @@ app.get('/posts/all', async (req, res) => {
     res.status(200).send(posts);
 });
 app.get('/posts/get', async (req, res) => {
-    const { postId } = req.body;
-    if (postId == undefined) {
+    const { postId } = req.query;
+    if (postId == undefined || typeof postId !== "string") {
         res.status(400).send("Request data is incomplete");
     }
     const post = await postDB.findOne({ postId: postId });

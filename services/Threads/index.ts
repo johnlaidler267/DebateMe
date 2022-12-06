@@ -89,8 +89,9 @@ app.get('/posts/all', async (req: Request, res: Response) => {
 });
 
 app.get('/posts/get', async (req: Request, res: Response) => {
-    const { postId } : { postId: string } = req.body;
-    if (postId == undefined) {
+    const { postId } = req.query;
+
+    if (postId == undefined || typeof postId !== "string") {
         res.status(400).send("Request data is incomplete");
     }
     

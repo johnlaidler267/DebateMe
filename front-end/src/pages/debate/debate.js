@@ -12,7 +12,7 @@ const Debate = () => {
     const fetchThreads = async () => {
         const res = await axios.get('http://localhost:4006/posts/all');
         setThreads(res.data);
-      }
+    }
 
     const renderedThreads = Object.values(Threads).map((t, index) => {
         return (
