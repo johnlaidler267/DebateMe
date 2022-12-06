@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { query } from 'express';
 import pg from 'pg';
+import { createTypePredicateNodeWithModifier } from 'typescript';
 
 // Get the Pool class from the pg module. 
 // The Pool class is used to create a pool of connections to the database.
@@ -29,9 +30,9 @@ export class ElectionDatabase {
     //if you change any values in a table, either name or type of the variable or just deleting or adding values
     //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
-      create table if not exists breakdowns (
-        candidateID varchar(30),
-        electionID varchar(30),
+      create type candidate as
+      (
+        id varchar(30),
         voteCount int,
         ages int[],
         numBlack int,
@@ -45,81 +46,68 @@ export class ElectionDatabase {
         numWomen int,
         numGenderOther int
       );
-        `;
+      create table if not exists electionBreakdowns (
+        electionID varchar(30),
+        candidates candidates[]
+    `;
     const res = await this.client.query(queryText);
   }
 
-  /* Updates the demographic breakdown for a given candidate */
-  async updateBreakdown(vote, candidateID, electionID, userID) {
-    //Get the demographic data of the user
+  /* Updates the breakdown for a given election */
+  async updateBreakdown(data) {
+    const { vote, electionID, userID } = data
 
-    //Update gender count
-    let numMen, numWomen, numGenderOther = getGenderCount(candidateID, electionID)
-    if (gender == "male") numMen++;
-    else if (gender == "female") numWomen++;
-    else numGenderOther++;
+    const breakdown = await self.db.getBreakdown(electionID)
+
+    const candidate0 = breakdown.candidates[0]
+    const candidate1 = breakdown.candidates[1]
+
+    if (vote === candidate0.id) {
+      candidate0 = updateCandidate(candidate0, userID)
+    }
+    else {
+      candidate1 = updateCandidate(candidate1, userID)
+    }
+
+    const query = `UPDATE electionBreakdowns SET candidates = ${[candidate0, candidate1]} WHERE electionID = $2`
+    const res = await this.client.query(query, [electionID]);
+    return res.rows;
+  }
+
+  /* Updates the breakdown for a given candidate */
+  async updateCandidate(candidate, userID) {
+    // get the users ID
+    const { gender, age, location, race } = await self.db.getUser(userID)
+
+    // Update gender count
+    if (gender == "male") candidate.numMen++;
+    else if (gender == "female") candidate.numWomen++;
+    else candidate.numGenderOther++;
 
     //Update total votes
-    let totalVotes = getVotes(candidateID) + 1
+    candidate.totalVotes++;
 
     //Update age array
-    let ages = getAges(candidateID)
-    ages.push(age)
+    candidate.ages.push(age);
 
     //Update location array
-    let locations = getLocations(candidateID)
-    locations.push(location)
+    candidate.locations.push(location);
 
     //Update race count
-    let numBlack, numHispanic, numAsian, numCaucasian, numRaceOther = getRaceCount(candidateID, electionID);
-    if (race == "black") numBlack++;
-    else if (race == "hispanic") numHispanic++;
-    else if (race == "asian") numAsian++;
-    else if (race == "caucasian") numCaucasian++;
-    else numRaceOther++;
+    if (race == "black") candidate.numBlack++;
+    else if (race == "hispanic") candidate.numHispanic++;
+    else if (race == "asian") candidate.numAsian++;
+    else if (race == "caucasian") candidate.numCaucasian++;
+    else candidate.numRaceOther++;
 
-    //Construct query
-    const queryText = `
-        insert into scores (candidateID, electionID, voteCount, ages, numBlack, numHispanic, numAsian, numCaucasian, numRaceOther locations, totalVotes, numMen, numWomen, numGenderOther)
-        values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `;
-
-    //Send to database
-    const res = await this.client.query(queryText, [candidateID, candidateName, voteCount, ages, race, locations, totalVotes, numMen, numWomen]);
-    return res.rows;
-  }
-
-  /* Gets the race breakdown for a given candidate */
-  async getRaceCount(candidateID, electionID) {
-    const queryText = `
-        select * from scores
-        where candidateID = $1
-        and
-        electionID = $2
-        `;
-    const res = await this.client.query(queryText, [candidateID, electionID]);
-    return res.rows;
-  }
-
-  /* Gets the age breakdown for a given candidate */
-  async getGenderCount(candidateID, electionID) {
-    const queryText = `
-        select * from scores
-        where candidateID = $1
-        and
-        electionID = $2
-        `;
-    const res = await this.client.query(queryText, [candidateID, electionID]);
-    return res.rows;
+    return candidate;
   }
 
   /* Gets the demographic breakdown for a given candidate */
-  async getBreakdown(candidateID, electionID) {
-    const queryText = `
-        select * from scores
-        where candidateID = $1
-        `;
-    const res = await this.client.query(queryText, [candidateID, electionID]);
+  async getBreakdown(electionID) {
+    const queryText = `SELECT * FROM electionBreakdowns WHERE electionID = '${electionID}'`
+    const res = await this.client.query(queryText, [electionID]);
     return res.rows;
   }
+
 }
