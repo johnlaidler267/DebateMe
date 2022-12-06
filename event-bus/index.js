@@ -2,50 +2,49 @@ import express from 'express';
 import logger from 'morgan';
 import axios from 'axios';
 
+let commentCreated = [] //stores ports that want commentCreated event 
+let moderated = [] //stores ports that want commentModerated event
+let commentVotes  = [] //stores ports that want commentVote events 
+let voteCreated = []  //stores ports 
+ 
+
 const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 
-app.post('/events', (req, res) => {
-  const event = req.body;
+app.post('/subscribe', (req, res) => {
+  const options = req.query;
+  let port = options.port
+  let eventArray = options.events
+  for(let i = 0; i < eventArray.length; i ++){
+    if(eventArray.includes("commentCreated")){
+      commentCreated.push(port);
+    }
+    if(eventArraay.includes("moderated")){
+      moderated.push(port);
+    }
+    if(eventArray.includes("commentVotes")){
+      commentVotes.push(port);
+    }
+    if(eventArray.includes("voteCreated")){
+      voteCreated.push(port)
+    }
+  }
+
+});
+
+app.post('/events', async (req, res) => {
+  const event = req.query;
   //make subscriptable here, need to check type of incoming event and send it only to services that care about that event. 
-
-  axios.post('http://localhost:4000/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4001/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4002/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4003/events', event).catch((err) => {
-    console.log(err.message);
-  });
-  
-  axios.post('http://localhost:4004/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4005/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4006/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4007/events', event).catch((err) => {
-    console.log(err.message);
-  });
-
-  axios.post('http://localhost:4008/events', event).catch((err) => {
-    console.log(err.message);
-  });
+  let eventType = event.type; //make sure type is the name of the array
+  if(eventType = commenntCreated){
+    for(let i = 0; i< commentCreated.length; i++){
+      await axios.post(`http://localhost:'${commentCreated[i]}'/events`, events).catch((err) => {
+        console.log(err.message)
+      });
+    }
+  }
 
   console.log(event.type);
   res.send();
