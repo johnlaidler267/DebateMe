@@ -12,6 +12,7 @@ interface Data {
     username: string,
     title: string,
     content: string,
+    date: Date
 }
 
 interface Post {
@@ -59,12 +60,14 @@ app.post('/posts/create', async (req: Request, res: Response) => {
 
     if (user) {
         const postId: string = uuidv4();
+        const date: Date = new Date();
         const data: Data = { 
             userId: userId,
             postId: postId,
             username: user.username,
             title: title,
             content: content,
+            date: new Date()
         };
         
         postDB.insertOne(data);

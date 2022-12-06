@@ -2,8 +2,7 @@ import "./debate.css"
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { Button, Card, Form, Container, Row, Col, Heading, Pagination, Badge } from 'react-bootstrap';
-import { ClockHistory } from "react-bootstrap-icons";
+import { Button, Card, Container, Row, Col, Pagination, Badge } from 'react-bootstrap';
 
 const Debate = () => {
     const [ Threads, setThreads ] = useState([]);
