@@ -24,7 +24,7 @@ app.post('/subscribe', (req, res) => {
     if(eventArray.includes("commentCreated")){
       commentCreated.push(port);
     }
-    if(eventArray.includes("moderated")){
+    if(eventArraay.includes("moderated")){
       moderated.push(port);
     }
     if(eventArray.includes("commentVoted")){

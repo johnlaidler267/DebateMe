@@ -2,7 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
-import { TrustDatabase } from './trust-db.js';
+import { BreakdownDatabase } from './breakdown-db.js';
 import { threadId } from 'worker_threads';
 
 const app = express();
@@ -25,17 +25,18 @@ class ElectionBreakdownServer {
   async initRoutes() {
     const self = this
 
-    this.app.post("/user/trust/update"), async (req, res) => {
-      const req = req.query;
-      const vote = await self.db.updateScore(req.userID, req.debates, req.comments, req.upvoteRatio, req.upvotes, req.dowbvotes, req.flags)
-      res.status(200).send(JSON.stringify(vote))
+    // Cast a new vote
+    this.app.post("/breakdown/update"), async (req, res) => {
+      const { vote, candidateID, electionID, userID } = req.query;
+      const Vote = await self.db.updateBreakdown(vote, candidateID, electionID, userID)
+      res.status(200).send(JSON.stringify(Vote))
       //send to event bus
     }
 
-    this.app.get("/user/trust/get", async (req, res) => {
-      const { userID } = req.query
-      const score = await self.db.getScore(userID)
-      res.status(200).send(JSON.stringify(score))
+    this.app.get("/breakdown/get", async (req, res) => {
+      const { electionID } = req.query
+      const breakdown = await self.db.getBreakdown(electionID)
+      res.status(200).send(JSON.stringify(breakdown))
       //send to event bus
     });
 
