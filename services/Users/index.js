@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/users/register', async (req, res) => {
-  const { username, name, password, email, age, race } = req.body;
+  const { username, name, password, email, age, race, gender, state } = req.body;
   if (username == undefined || name == undefined || password == undefined || email == undefined || age == undefined || race == undefined) {
     res.status(400).send("Request data is incomplete");
   }
@@ -43,6 +43,8 @@ app.post('/users/register', async (req, res) => {
     email: email,
     age: age,
     race: race,
+    gender: gender,
+    state: state,
     DirectMessages: []
   }
 
