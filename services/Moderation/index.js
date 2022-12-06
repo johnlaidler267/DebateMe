@@ -71,6 +71,10 @@ class ModerationServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
+    await axios.post("http://event-bus:4010/subscribe", {
+      port: 4005,
+      events: ["commentCreated", "postCreated", "postUpdated"]
+    });
     const port = process.env.PORT || 4005;
     this.app.listen(port, () => {
       console.log(`Comment server started on ${port}`);
