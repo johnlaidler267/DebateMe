@@ -46,6 +46,7 @@ app.post('/subscribe', (req, res) => {
       userDataRequest.push(port)
     }
   }
+  res.status(200).send("Subscribed to events")
 });
 
 app.post('/events', async (req, res) => {
