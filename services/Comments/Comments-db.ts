@@ -1,13 +1,17 @@
 import 'dotenv/config';
-import { query } from 'express';
-import pg from 'pg';
+import pg  from 'pg';
 
 // Get the Pool class from the pg module.
 const { Pool } = pg;
 
 export class CommentsDatabase {
-  constructor(dburl) {
+  dburl: string;
+  pool!: pg.Pool;
+  client!:pg.PoolClient
+
+  constructor(dburl:string) {
     this.dburl = dburl;
+
   }
 
   async connect() {
@@ -28,10 +32,10 @@ export class CommentsDatabase {
     //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
       create table if not exists comments (
-        userID varchar(30),
-        parentID varchar(30),
-        commentID varchar(30),
-        postID varchar(30),
+        userId varchar(30),
+        parentId varchar(30),
+        commentId varchar(30),
+        postId varchar(30),
         content varchar(130) 
       );
         `
@@ -44,38 +48,25 @@ export class CommentsDatabase {
     this.client.release();
     await this.pool.end();
   }
-  //left for future reference
-  async updatePassword(username, passwordN){
-    const queryText =
-    `UPDATE users SET password = '${passwordN}' WHERE username = '${username}' `;
-    const res = await this.client.query(queryText);
-    return res.rows;
-  }
-//left for future reference
-  async deleteUser(username){
-    const queryText =
-    `DROP TABLE users WHERE username = '${username}' `;
-    const res = await this.client.query(queryText);
-    return res.rows;
-  }
+
 
   // create comment
-  async createComment(userID, parentID, commentID, postID, content) {
+  async createComment(userId:string, parentId:string, commentId:string, postId:string, content:string) {
     //console.log(userID, parentID, commentID, postID, content)
-    const queryText = 'INSERT INTO comments (userID, parentID, commentID, postID, content) VALUES ($1, $2, $3, $4, $5)';
-    const res = await this.client.query(queryText, [userID, parentID, commentID, postID, content]);
+    const queryText:string = 'INSERT INTO comments (userId, parentId, commentId, postId, content) VALUES ($1, $2, $3, $4, $5)';
+    const res = await this.client.query(queryText, [userId, parentId, commentId, postId, content]);
     return res.rows;
   };
 
   // gets all comments on a given post
-  async getPostComments(postID) {
-    const queryText = `SELECT * FROM comments where postID = '${postID}'`
+  async getPostComments(postId:string) {
+    const queryText:string = `SELECT * FROM comments where postId = '${postId}'`
     const res = await this.client.query(queryText); 
     return res.rows
   }
   //get all comments for a given user
-  async getUserComments(userID) {
-    const queryText = `SELECT * FROM comments where userID = '${userID}'`
+  async getUserComments(userId:string) {
+    const queryText = `SELECT * FROM comments where userId = '${userId}'`
     const res = await this.client.query(queryText); 
     return res.rows
   }

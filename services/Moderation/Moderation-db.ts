@@ -5,7 +5,7 @@ import pg from 'pg';
 // Get the Pool class from the pg module.
 const { Pool } = pg;
 
-export class CommentsVoteDatabase {
+export class ModerationDatabase {
   constructor(dburl) {
     this.dburl = dburl;
   }
@@ -27,11 +27,11 @@ export class CommentsVoteDatabase {
     //if you change any values in a table, either name or type of the variable or just deleting or adding values
     //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
-      create table if not exists commentVotes (
-        commentID varchar(30),
-        upvotes text[],
-        downvotes text[] 
-      );
+      create table if not exists moderation (
+        userId varchar(30),
+        rejected text[],
+        accepted text[] 
+      );  
         `
     const res = await this.client.query(queryText);
   }
@@ -51,9 +51,9 @@ export class CommentsVoteDatabase {
 
 
   // create commentVote
-  async createCommentVote(commentID, upvotes, downvotes, ownerID) {
-    const queryText = 'INSERT INTO commentVotes ( commentID, upvotes, downvotes, ownerID) VALUES ($1, $2, $3, $4)';
-    const res = await this.client.query(queryText, [commentID, upvotes, downvotes, ownerID ]);
+  async createCommentVote(commentID, upvotes, downvotes) {
+    const queryText = 'INSERT INTO commentVotes ( commentID, upvotes, downvotes) VALUES ($1, $2, $3)';
+    const res = await this.client.query(queryText, [commentID, upvotes, downvotes]);
     return res.rows;
   };
 

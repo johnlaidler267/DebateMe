@@ -12,8 +12,25 @@ app.use(cors());
 
 class userHistory{
   userID
-  rejectedComments //array of strings
-  acceptedComments //array of strings
+  rejected //array of the content
+  accepted //array of the connet
+  postId
+}
+
+class Post {
+  userId // string,
+  postId // string,
+  title // string,
+  content // string,
+}
+
+class Comment{
+  userId
+  parentId
+  commentId
+  postId 
+  content
+  //parentType? Is this neccessary? 
 }
 class ModerationServer {
   constructor(dburl) {
@@ -23,40 +40,41 @@ class ModerationServer {
     this.app.use(express.json());
     this.app.use(cors())
   }
-  async scanComment(comment, id, postId){
-    let word_array = comment.split(" "); //makes an array of words to check in the comment
+  async scanComment(content, userId, postId){
+    rejected_words = ["hate", "crap", "noob", "insult"] //maybe phrases for added diffuculty? 
+    let word_array = content.split(" "); //makes an array of words to check in the comment
     let acceptable = "accepted"; 
     for(let i = 0; i< word_array.length; i++){
-        if(bad_words.includes(word_array[i].toLowerCase())){
+        if(rejected_words.includes(word_array[i].toLowerCase())){
             acceptable = 'rejected';
         }
     }
-    await axios.post('http://localhost:4005/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
-        type: 'CommentModerated',
+    await axios.post('http://event-bus:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
+        type: 'moderated',
         data: {
-          id: id,
-          content: comment,
-          postId: postId,
+          userId: userId,
+          content: content,
+          postId: postId,  //hmmmmmm
           status: acceptable         //values could either be "accepted" or "rejected"
         },
       });
-      //return something, or add to daatabase here? 
+      return 
   }
+  async updateDatabase(userId, )
   async initRoutes(){
     const self = this;
 
-
+    //do I need this? depends on trust distinction implemenation 
     app.get("/rejected/user", (req,res) => {
       //get UserID
       //retrieve there history
       //send rejectedComments, just number? or actual content? 
     });
-    app.post("/events", (req, res) => { //should I just name this moderate instead and have event bus send to that? 
-      if(req.body.type === "CommentCreated"){ //event bus calls this, am I only interested in CommentCreated event? Will everything that comes here be important? 
-        let data = req.body.data
-        scanComment(data.content, data.id, data.postId ) 
-        //add to database
-    }
+
+    app.post("/events", async (req, res) => { //should only recieve events I care about
+      let data = req.body.data
+      let status = await scanComment(data.content, data.userId, data.postId ) //how do I know types
+      await this.updateDatabase()
       console.log(req.body.type);
       res.send({});
     });
