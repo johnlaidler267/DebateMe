@@ -30,7 +30,7 @@ const Debate = () => {
 
     const postHandler = (postId) => {
         navigate(`/post/${postId}`);
-      }
+    }
 
     useEffect(() => {
         fetchThreads();

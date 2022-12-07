@@ -6,7 +6,6 @@ import { Button, Card, Form, Container, Row, Col, Heading, Pagination, Badge } f
 
 export default function Post() {
   const [ Thread, setThread ] = useState();
-  const [ CanRender, setCanRender ] = useState(false);
   const { postId } = useParams();
 
   const fetchThread = async () => {
@@ -14,7 +13,6 @@ export default function Post() {
     setThread(res.data);
   }
 
-  console.log(Thread);
   useEffect(() => {
     fetchThread();
   }, []);

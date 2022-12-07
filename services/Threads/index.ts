@@ -12,6 +12,7 @@ interface Data {
     username: string,
     title: string,
     content: string,
+    candidate: string[],
     date: Date
 }
 
@@ -51,8 +52,8 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/posts/create', async (req: Request, res: Response) => {
-    const { userId, title, content }: { userId: string, title: string, content: string }  = req.body;
-    if (userId == undefined || title == undefined || content == undefined) {
+    const { userId, title, content, candidate }: { userId: string, title: string, content: string, candidate: string[] }  = req.body;
+    if (userId == undefined || title == undefined || content == undefined || candidate == undefined) {
         res.status(400).send("Request data is incomplete");
     }
 
@@ -66,6 +67,7 @@ app.post('/posts/create', async (req: Request, res: Response) => {
             username: user.username,
             title: title,
             content: content,
+            candidate: candidate,
             date: new Date()
         };
         

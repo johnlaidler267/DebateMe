@@ -26,8 +26,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 app.post('/posts/create', async (req, res) => {
-    const { userId, title, content } = req.body;
-    if (userId == undefined || title == undefined || content == undefined) {
+    const { userId, title, content, candidate } = req.body;
+    if (userId == undefined || title == undefined || content == undefined || candidate == undefined) {
         res.status(400).send("Request data is incomplete");
     }
     const user = await userDB.findOne({ userId: userId });
@@ -39,6 +39,7 @@ app.post('/posts/create', async (req, res) => {
             username: user.username,
             title: title,
             content: content,
+            candidate: candidate,
             date: new Date()
         };
         postDB.insertOne(data);
