@@ -38,6 +38,10 @@
   overflow: hidden;
 }
 
+.form-error {
+  color: red;
+}
+
 .page-link {
   color: black !important;
 }
