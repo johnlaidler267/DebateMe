@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import { Container, Card } from "react-bootstrap";
 
 function Signup() {
-    const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "" };
+    const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
     const [formValues, setFormValues] = useState(initialValues);
     const [formErrors, setFormErrors] = useState({});
     const [isSubmit, setIsSubmit] = useState(false);
@@ -19,6 +19,7 @@ function Signup() {
       const handleSubmit = (e) => {
         e.preventDefault();
         setFormErrors(validate(formValues));
+        console.log(formValues)
         setIsSubmit(true);
       };
     
@@ -51,7 +52,7 @@ function Signup() {
         }
 
         if (!values.password) {
-          errors.password = "Password is required";
+          errors.password = "Password is required!";
         } else {
           regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
           if (!regex.test(values.password)) {
@@ -60,7 +61,7 @@ function Signup() {
         }
 
         if (!values.confirmPassword) {
-            errors.confirmPassword = "Password confirmation is required";
+            errors.confirmPassword = "Password confirmation is required!";
         } else {
             if (values.password !== values.confirmPassword) {
                 errors.confirmPassword = "The password confirmation does not match."
@@ -68,11 +69,31 @@ function Signup() {
         }
 
         if (!values.age) {
-            errors.age = "Your age is required";
+            errors.age = "Age is required!";
         } else {
             if (!(values.age > 0)) {
                 errors.age = "Your age must be equal or more than 1!";
             }
+        }
+
+        if (values.gender === "Choose...") {
+            errors.gender = "Gender is required!";
+        }
+
+        if (values.race === "Choose...") {
+            errors.race = "Race is required!";
+        }
+
+        if (values.country === "Choose...") {
+            errors.country = "Country is required!";
+        }
+
+        if (values.state === "Choose...") {
+            errors.state = "State/Province is required!";
+        }
+
+        if (values.city === "Choose...") {
+            errors.city = "City is required!";
         }
 
         return errors;
@@ -145,25 +166,29 @@ function Signup() {
                                     placeholder="What's your age?"
                                     value={formValues.age}
                                     onChange={handleChange}
-                                    required 
                                 />
                                 <p className="form-error">{formErrors.age}</p>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="gender">
                                 <Form.Label>Gender</Form.Label>
-                                <Form.Select defaultValue="Choose..." required>
+                                <Form.Select 
+                                    defaultValue="Choose..."
+                                    value={formValues.gender}
+                                    onChange={handleChange}
+                                >
                                     <option disabled>Choose...</option>
                                     <option>Man</option>
                                     <option>Woman</option>
                                     <option>Non-binary</option>
                                     <option>Prefer not to respond</option>
                                 </Form.Select>
+                                <p className="form-error">{formErrors.gender}</p>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="race">
                                 <Form.Label>Race</Form.Label>
-                                <Form.Select defaultValue="Choose..." required>
+                                <Form.Select defaultValue="Choose...">
                                     <option disabled>Choose...</option>
                                     <option>American Indian or Alaska Native</option>
                                     <option>Asian</option>
@@ -172,32 +197,36 @@ function Signup() {
                                     <option>White</option>
                                     <option>Native Hawaiian or Other Pacific Islander</option>
                                 </Form.Select>
+                                <p className="form-error">{formErrors.race}</p>
                             </Form.Group>
                         </Row>
 
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="country">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Select defaultValue="Choose..." required>
+                                <Form.Select defaultValue="Choose...">
                                     <option>Choose...</option>
                                     <option>...</option>
                                 </Form.Select>
+                                <p className="form-error">{formErrors.country}</p>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="state">
                                 <Form.Label>State</Form.Label>
-                                <Form.Select defaultValue="Choose..." required>
+                                <Form.Select defaultValue="Choose...">
                                     <option>Choose...</option>
                                     <option>...</option>
                                 </Form.Select>
+                                <p className="form-error">{formErrors.state}</p>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="city">
                                 <Form.Label>City</Form.Label>
-                                <Form.Select defaultValue="Choose..." required>
+                                <Form.Select defaultValue="Choose...">
                                     <option>Choose...</option>
                                     <option>...</option>
                                 </Form.Select>
+                                <p className="form-error">{formErrors.city}</p>
                             </Form.Group>
                         </Row>
 
