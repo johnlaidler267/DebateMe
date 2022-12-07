@@ -18,44 +18,80 @@ function Signup() {
                 <Card.Body>
                     <Form>
                         <Row className="mb-3">
-                            <Form.Group as={Col} controlId="formGridEmail">
-                                <Form.Label>Email</Form.Label>
-                                <Form.Control type="email" placeholder="Enter email" />
+                            <Form.Group as={Col} controlId="username">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control type="text" placeholder="Enter username" required />
                             </Form.Group>
 
-                            <Form.Group as={Col} controlId="formGridPassword">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="Password" />
+                            <Form.Group as={Col} controlId="email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control type="email" placeholder="Enter email" required />
                             </Form.Group>
                         </Row>
 
-                        <Form.Group className="mb-3" controlId="formGridAddress1">
-                            <Form.Label>Address</Form.Label>
-                            <Form.Control placeholder="1234 Main St" />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="formGridAddress2">
-                            <Form.Label>Address 2</Form.Label>
-                            <Form.Control placeholder="Apartment, studio, or floor" />
-                        </Form.Group>
-
                         <Row className="mb-3">
-                            <Form.Group as={Col} controlId="formGridCity">
-                                <Form.Label>City</Form.Label>
-                                <Form.Control />
+                            <Form.Group as={Col} controlId="password">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control type="password" placeholder="Password" required />
                             </Form.Group>
 
-                            <Form.Group as={Col} controlId="formGridState">
-                                <Form.Label>State</Form.Label>
-                                <Form.Select defaultValue="Choose...">
+                            <Form.Group as={Col} controlId="confirm">
+                                <Form.Label>Confirm password</Form.Label>
+                                <Form.Control type="password" placeholder="Retype password" required />
+                            </Form.Group>
+                        </Row>
+
+                        <Row className="mb-3">
+                            <Form.Group as={Col} controlId="age">
+                                <Form.Label>Age</Form.Label>
+                                <Form.Control type="number" min={1} max={120} placeholder="What's your age?" required />
+                            </Form.Group>
+
+                            <Form.Group as={Col} controlId="gender">
+                                <Form.Label>Gender</Form.Label>
+                                <Form.Select defaultValue="Choose..." required>
+                                    <option disabled>Choose...</option>
+                                    <option>Man</option>
+                                    <option>Woman</option>
+                                    <option>Others</option>
+                                    <option>Prefer not to respond</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group as={Col} controlId="race">
+                                <Form.Label>Race</Form.Label>
+                                <Form.Select defaultValue="Choose..." required>
+                                    <option disabled>Choose...</option>
+                                    <option>American Indian or Alaska Native</option>
+                                    <option>Asian</option>
+                                    <option>Black or African American</option>
+                                    <option>Hispanic or Latino</option>
+                                    <option>White</option>
+                                    <option>Native Hawaiian or Other Pacific Islander</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </Row>
+
+                        <Row className="mb-3">
+                            <Form.Group as={Col} controlId="country">
+                                <Form.Label>Country</Form.Label>
+                                <Form.Select defaultValue="Choose..." required>
                                     <option>Choose...</option>
                                     <option>...</option>
                                 </Form.Select>
                             </Form.Group>
 
-                            <Form.Group as={Col} controlId="formGridZip">
-                                <Form.Label>Zip</Form.Label>
-                                <Form.Control />
+                            <Form.Group as={Col} controlId="state">
+                                <Form.Label>State</Form.Label>
+                                <Form.Select defaultValue="Choose..." required>
+                                    <option>Choose...</option>
+                                    <option>...</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group as={Col} controlId="city">
+                                <Form.Label>City</Form.Label>
+                                <Form.Control required />
                             </Form.Group>
                         </Row>
 

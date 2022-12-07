@@ -28,8 +28,8 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/users/register', async (req, res) => {
-  const { username, name, password, email, age, race, gender, state } = req.body;
-  if (username == undefined || name == undefined || password == undefined || email == undefined || age == undefined || race == undefined) {
+  const { username, password, email, age, race, gender, state } = req.body;
+  if (username == undefined || password == undefined || email == undefined || age == undefined || race == undefined) {
     res.status(400).send("Request data is incomplete");
   }
   
@@ -38,7 +38,6 @@ app.post('/users/register', async (req, res) => {
   const data = {
     userId: userId,
     username: username,
-    name: name,
     password: password,
     email: email,
     age: age,
@@ -84,7 +83,7 @@ app.post('/users/login', async (req, res) => {
 });
 
 app.put('/users/update', async (req, res) => {
-  const { userId, username, name, password, email, age, race } = req.body;
+  const { userId, username, password, email, age, race } = req.body;
   if (username == undefined || name == undefined || password == undefined || email == undefined || age == undefined || race == undefined) {
     res.status(400).send("Request data is incomplete");
   }
@@ -95,7 +94,6 @@ app.put('/users/update', async (req, res) => {
   
   const data = { 
     username: username,
-    name: name,
     password: password,
     email: email,
     age: age,
