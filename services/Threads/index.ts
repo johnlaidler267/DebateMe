@@ -60,7 +60,6 @@ app.post('/posts/create', async (req: Request, res: Response) => {
 
     if (user) {
         const postId: string = uuidv4();
-        const date: Date = new Date();
         const data: Data = { 
             userId: userId,
             postId: postId,

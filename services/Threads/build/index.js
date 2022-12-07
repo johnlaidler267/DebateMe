@@ -39,6 +39,7 @@ app.post('/posts/create', async (req, res) => {
             username: user.username,
             title: title,
             content: content,
+            date: new Date()
         };
         postDB.insertOne(data);
         await axios.post('http://localhost:4010/events', {
