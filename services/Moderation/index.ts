@@ -2,7 +2,7 @@ import express, {Express, Request, Response} from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
-import { ModerationDatabase } from './Moderation-db.js'; 
+import { ModerationDatabase } from './Moderation-db'; 
 
 const app = express();
 
@@ -99,9 +99,9 @@ class ModerationServer {
     });
     const port = process.env.PORT || 4005;
     this.app.listen(port, () => {
-      console.log(`Comment server started on ${port}`);
+      console.log(`Moderation server started on ${port}`);
     });
   }
 }
-const server: ModerationServer = new ModerationServer(process.env.DATABASE_URL);
+const server: ModerationServer = new ModerationServer(process.env.DATABASE_URL!);
 server.start()

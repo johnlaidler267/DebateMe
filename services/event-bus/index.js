@@ -25,8 +25,7 @@ app.use(logger('dev'));
 app.use(express.json());
 
 app.post('/subscribe', (req, res) => {
-  const options = req.query;
-  console.log(options)
+  const options = req.body;
   let port = options.port
   let name = options.name
   let eventArray = options.events
@@ -64,6 +63,7 @@ app.post('/subscribe', (req, res) => {
       userDataRequestNames.push(name);
     }
   }
+  res.status(200).send("Subscribed successfully")
 });
 
 app.post('/events', async (req, res) => {
