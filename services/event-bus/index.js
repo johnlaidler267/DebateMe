@@ -2,14 +2,22 @@ import express from 'express';
 import logger from 'morgan';
 import axios from 'axios';
 
-let commentCreated = [] //stores ports that want commentCreated event 
-let moderated = [] //stores ports that want commentModerated event
-let commentVoted  = [] //stores ports that want commentVote events 
-let voteCreated = []  //stores ports 
-let postCreated = [] 
-let postUpdated = []
-let postDeleted = []
-let userDataRequest = []
+let commentCreatedPorts = [] //stores ports that want commentCreated event 
+let commentCreatedNames = []
+let moderatedPorts = [] //stores ports that want commentModerated event
+let moderatedNames = []
+let commentVotedPorts  = [] //stores ports that want commentVote events 
+let commentVotedNames  = []
+let voteCreatedPorts = [] 
+let voteCreatedNames = [] 
+let postCreatedPorts = [] 
+let postCreatedNames = [] 
+let postUpdatedPorts = []
+let postUpdatedNames = []
+let postDeletedPorts = []
+let postDeletedNames = []
+let userDataRequestPorts = []
+let userDataRequestNames = []
 
 const app = express();
 
@@ -18,32 +26,42 @@ app.use(express.json());
 
 app.post('/subscribe', (req, res) => {
   const options = req.query;
+  console.log(options)
   let port = options.port
+  let name = options.name
   let eventArray = options.events
   for(let i = 0; i < eventArray.length; i ++){
     if(eventArray.includes("commentCreated")){
-      commentCreated.push(port);
+      commentCreatedPorts.push(port);
+      commentCreatedNames.push(name);
     }
     if(eventArray.includes("moderated")){
-      moderated.push(port);
+      moderatedPorts.push(port);
+      moderatedNames.push(name);
     }
     if(eventArray.includes("commentVoted")){
-      commentVoted.push(port);
+      commentVotedPorts.push(port);
+      commentVotedNames.push(name)
     }
     if(eventArray.includes("voteCreated")){
-      voteCreated.push(port)
+      voteCreatedPorts.push(port)
+      voteCreatedNames.push(name)
     }
     if(eventArray.includes("postCreated")){
-      postCreated.push(port)
+      postCreatedPorts.push(port)
+      postCreatedNames.push(name)
     }
     if(eventArray.includes("postUpdated")){
-      postUpdated.push(port)
+      postUpdatedPorts.push(port)
+      postUpdatedNames.push(name)
     }
     if(eventArray.includes("postDeleted")){
-      postDeleted.push(port)
+      postDeletedPorts.push(port)
+      postDeletedNames.push(name)
     }
     if(eventArray.includes("userDataRequest")){
-      userDataRequest.push(port)
+      userDataRequestPorts.push(port);
+      userDataRequestNames.push(name);
     }
   }
 });
@@ -54,56 +72,56 @@ app.post('/events', async (req, res) => {
   let eventType = event.type; //make sure type is the name of the array
   if(eventType = "commentCreated"){
     for(let i = 0; i< commentCreated.length; i++){
-      await axios.post(`http://localhost:${commentCreated[i]}/events`, event).catch((err) => {
+      await axios.post(`http:/${commentCreatedNames}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "moderated"){
     for(let i = 0; i< moderated.length; i++){
-      await axios.post(`http://localhost:${moderated[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${moderatedNames[i]}:${moderatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
   }
  }
   else if (eventType = "commentVoted"){
     for(let i = 0; i< commentVoted.length; i++){
-      await axios.post(`http://localhost:${commentVoted[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${commentVotedNames[i]}:${commentVotedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "voteCreated"){
     for(let i = 0; i< voteCreated.length; i++){
-      await axios.post(`http://localhost:${voteCreated[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${voteCreatedNames[i]}:${voteCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "postCreated"){
     for(let i = 0; i< postCreated.length; i++){
-      await axios.post(`http://localhost:${postCreated[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${postCreatedNames[i]}:${postCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "postUpdated"){
     for(let i = 0; i< postUpdated.length; i++){
-      await axios.post(`http://localhost:${postUpdated[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${postUpdatedNames[i]}:${postUpdatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "postDeleted"){
     for(let i = 0; i< postDeleted.length; i++){
-      await axios.post(`http://localhost:${postDeleted[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${postDeletedNames[i]}:${postDeletedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
   else if (eventType = "userDataRequest"){
     for(let i = 0; i< userDataRequest.length; i++){
-      await axios.post(`http://localhost:${userDataRequest[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${userDataRequestNames[i]}:${userDataRequestPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }

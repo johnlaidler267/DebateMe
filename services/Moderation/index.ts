@@ -92,8 +92,9 @@ class ModerationServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    await axios.post("http://event-bus:4010/subscribe", {
+    await axios.post("http://localhost:4010/subscribe", {
       port: 4005,
+      name: "Moderation",
       events: ["commentCreated", "postCreated", "postUpdated"]
     });
     const port = process.env.PORT || 4005;
