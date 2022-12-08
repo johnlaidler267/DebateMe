@@ -1,3 +1,7 @@
+input[type="checkbox"]:checked {
+  color: #feda6a;
+}
+
 .custom-btn {
   background-image: linear-gradient(
     to right,
@@ -23,6 +27,21 @@
     #feda6a
   ) !important;
   color: #feda6a !important;
+}
+
+.link {
+  font-weight: bold;
+  color: rgb(184, 134, 11);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: rgb(224, 166, 19);
+  text-decoration: underline;
+}
+
+.link:focus, .link:active {
+  color: rgb(153, 110, 2);
 }
 
 .threads {

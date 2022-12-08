@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { Container, Card } from "react-bootstrap";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Signup() {
     const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
@@ -14,7 +15,6 @@ function Signup() {
     const [ Countries, setCountries ] = useState([]);
     const [ States, setStates ] = useState([]);
     const [ Cities, setCities ] = useState([]);
-
 
     const fetchCountries = async () => {
         const res = await axios.get("https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries%2Bstates%2Bcities.json").catch((err) => {
@@ -52,15 +52,15 @@ function Signup() {
         e.preventDefault();
         setFormErrors(validate(formValues));
         setIsSubmit(true);
-      };
-
-      useEffect(() => {
+    };
+    
+    useEffect(() => {
         fetchCountries();
-      }, []);
-
-      useEffect(() => {
+    }, []);
+    
+    useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit) {
-          console.log(formValues);
+            // await
         }
       }, [formErrors]);
 
@@ -139,10 +139,10 @@ function Signup() {
             width: '75%'
         }}>
             <br></br>
-            <Card className="mb-3">
+            <Card className="mb-3 ps-4 pe-4">
                 <br></br>
                 <Card.Title className="text-center">New Account</Card.Title>
-                <Card.Body>
+                <Card.Body className="p-4">
                     <Form onSubmit={handleSubmit}>
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="username">
@@ -221,7 +221,10 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="race">
                                 <Form.Label>Race</Form.Label>
-                                <Form.Select >
+                                <Form.Select
+                                    value={formValues.race}
+                                    onChange={handleChange}
+                                >
                                     <option disabled>Choose...</option>
                                     <option>American Indian or Alaska Native</option>
                                     <option>Asian</option>
@@ -237,8 +240,11 @@ function Signup() {
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="country">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Select onChange={handleCountry}>
-                                    <option>Choose...</option>
+                                <Form.Select 
+                                    value={formValues.country}
+                                    onChange={(e) => {handleChange(e); handleCountry(e)}}
+                                >
+                                    <option disabled>Choose...</option>
                                     {
                                         Countries.map((country) => { return (
                                             <option 
@@ -255,8 +261,11 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="state">
                                 <Form.Label>State/Province</Form.Label>
-                                <Form.Select onChange={handleState}>
-                                    <option>Choose...</option>
+                                <Form.Select 
+                                    value={formValues.state}
+                                    onChange={(e) => {handleChange(e); handleState(e)}}
+                                >
+                                    <option disabled>Choose...</option>
                                     {
                                         States.map((state) => { return (
                                             <option 
@@ -273,10 +282,15 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="city">
                                 <Form.Label>City</Form.Label>
-                                <Form.Select >
-                                    <option>Choose...</option>
+                                <Form.Select
+                                    value={formValues.city}
+                                    onChange={handleChange}
+                                >
+                                    <option disabled>Choose...</option>
                                     {
-                                        Cities.map((city) => { return (
+                                        Cities.map((city) => { if (!city.id) {
+                                            city.id = 1;
+                                        }  return (
                                             <option 
                                                 key={city.id}
                                                 value={city.id}
@@ -290,13 +304,13 @@ function Signup() {
                             </Form.Group>
                         </Row>
 
-                        <Form.Group className="mb-3" id="formGridCheckbox">
+                        <Form.Group className="mb-3 d-flex justify-content-center" id="formGridCheckbox">
                             <Form.Check type="checkbox" label="Check me out" />
                         </Form.Group>
-
-                        <Button variant="primary" type="submit">
+                        <Button className="custom-btn w-100 p-2" type="submit">
                             Submit
                         </Button>
+                        <div className="text-center p-3">Already a member? <Link className="link">Log In</Link></div>
                     </Form>
                 </Card.Body>
             </Card>
