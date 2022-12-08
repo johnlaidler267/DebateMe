@@ -81,7 +81,11 @@ function Signup() {
                 }, 2000);
             }, 1000);
         } catch (error) {
-            console.log(error);
+            setTimeout(function() {
+                setIsOpen(true);
+                setContent(<div className="text-danger">{error.response.data.error}</div>);
+                setLoading(false);
+            }, 1000);
         }
     }
 
