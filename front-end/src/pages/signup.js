@@ -4,27 +4,61 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { Container, Card } from "react-bootstrap";
+import axios from "axios";
 
 function Signup() {
     const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
-    const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState({});
-    const [isSubmit, setIsSubmit] = useState(false);
+    const [ formValues, setFormValues ] = useState(initialValues);
+    const [ formErrors, setFormErrors ] = useState({});
+    const [ isSubmit, setIsSubmit ] = useState(false);
+    const [ Countries, setCountries ] = useState([]);
+    const [ States, setStates ] = useState([]);
+    const [ Cities, setCities ] = useState([]);
 
-    const handleChange = (e) => {
+
+    const fetchCountries = async () => {
+        const res = await axios.get("https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries%2Bstates%2Bcities.json").catch((err) => {
+            console.log(err.message);
+        });
+        setCountries(res.data);
+    }
+
+      const handleChange = (e) => {
         const { id, value } = e.target;
         setFormValues({ ...formValues, [id]: value });
       };
     
+      const handleCountry = (e) => {
+        const countryId = e.target.value;
+        const country = Countries.find((country) => country.id.toString() === countryId);
+        let states = country.states;
+        if (states.length === 0) {
+            states.push({ id: 1, name: country.name, cities: [{ id: 1, name: country.name }] });
+        }
+        setStates(states);
+      }
+
+      const handleState = (e) => {
+        const stateId = e.target.value;
+        const state = States.find((state) => state.id.toString() === stateId);
+        let cities = state.cities;
+        if (cities.length === 0) {
+            cities.push({ name: state.name });
+        }
+        setCities(cities);
+      }
+
       const handleSubmit = (e) => {
         e.preventDefault();
         setFormErrors(validate(formValues));
-        console.log(formValues)
         setIsSubmit(true);
       };
-    
+
       useEffect(() => {
-        console.log(formErrors);
+        fetchCountries();
+      }, []);
+
+      useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit) {
           console.log(formValues);
         }
@@ -172,8 +206,7 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="gender">
                                 <Form.Label>Gender</Form.Label>
-                                <Form.Select 
-                                    defaultValue="Choose..."
+                                <Form.Select
                                     value={formValues.gender}
                                     onChange={handleChange}
                                 >
@@ -188,7 +221,7 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="race">
                                 <Form.Label>Race</Form.Label>
-                                <Form.Select defaultValue="Choose...">
+                                <Form.Select >
                                     <option disabled>Choose...</option>
                                     <option>American Indian or Alaska Native</option>
                                     <option>Asian</option>
@@ -204,27 +237,54 @@ function Signup() {
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="country">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Select defaultValue="Choose...">
+                                <Form.Select onChange={handleCountry}>
                                     <option>Choose...</option>
-                                    <option>...</option>
+                                    {
+                                        Countries.map((country) => { return (
+                                            <option 
+                                                key={country.id}
+                                                value={country.id}
+                                            >
+                                                {country.name}
+                                            </option>
+                                        )})
+                                    }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.country}</p>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="state">
-                                <Form.Label>State</Form.Label>
-                                <Form.Select defaultValue="Choose...">
+                                <Form.Label>State/Province</Form.Label>
+                                <Form.Select onChange={handleState}>
                                     <option>Choose...</option>
-                                    <option>...</option>
+                                    {
+                                        States.map((state) => { return (
+                                            <option 
+                                                key={state.id}
+                                                value={state.id}
+                                            >
+                                                {state.name}
+                                            </option>
+                                        )})
+                                    }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.state}</p>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="city">
                                 <Form.Label>City</Form.Label>
-                                <Form.Select defaultValue="Choose...">
+                                <Form.Select >
                                     <option>Choose...</option>
-                                    <option>...</option>
+                                    {
+                                        Cities.map((city) => { return (
+                                            <option 
+                                                key={city.id}
+                                                value={city.id}
+                                            >
+                                                {city.name}
+                                            </option>
+                                        )})
+                                    }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.city}</p>
                             </Form.Group>
