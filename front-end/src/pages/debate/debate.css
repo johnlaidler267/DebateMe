@@ -44,6 +44,26 @@ input[type="checkbox"]:checked {
   color: rgb(153, 110, 2);
 }
 
+.search-bar {
+  position: fixed;
+  top: -5px;
+  padding: 1rem 0.75rem;
+  border-bottom-right-radius: 0.5rem;
+  transition: transform 1.5s ease-in-out;
+  transition: background-color 0.75s ease-in-out;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 999;
+}
+
+.slide-up {
+  animation: SlideUp 0.5s linear forwards;
+}
+
+.slide-down {
+  animation: SlideDown 0.5s linear forwards;
+}
+
 .threads {
   display: grid;
   gap: 1.5rem;
@@ -70,4 +90,23 @@ input[type="checkbox"]:checked {
   --bs-pagination-hover-color: #feda6a !important;
   --bs-pagination-focus-color: #feda6a !important;
   --bs-pagination-active-bg: #feda6a !important;
+}
+
+
+@keyframes SlideUp {
+  0% {
+      transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-72px);
+  }
+}
+
+@keyframes SlideDown {
+  0% {
+    transform: translateY(-72px);
+  }
+  100% {
+      transform: translateY(0);
+  }
 }

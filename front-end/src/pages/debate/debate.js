@@ -1,5 +1,5 @@
 import "./debate.css"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { Button, Card, Container, Row, Col, Pagination, Badge } from 'react-bootstrap';
