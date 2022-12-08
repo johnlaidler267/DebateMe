@@ -23,19 +23,20 @@ class ElectionServer {
 
   // Initialize all routes (endpoints) for the server
   async initRoutes() {
-    const self = this
+    const self = this;
 
     /* Creates a new vote */
-    this.app.post("/vote/cast"), async (req, res) => {
-      const { vote, electionID, userID } = req.query;
-      const Vote = await self.db.createVote(vote, electionID, userID)
+    this.app.post("/vote/cast", async (req, res) => {
+      console.log("CASTING VOTE")
+      const { electionID, userID, vote } = req.query;
+      const Vote = await self.db.createVote(electionID, userID, vote)
       res.status(200).send(JSON.stringify(Vote))
-      //send to event bus
-    }
+    });
   }
 
   /* Initialize the database connection */
   async initDb() {
+    console.log("INITIALIZING DB")
     this.db = new ElectionDatabase(this.dburl);
     await this.db.connect();
   }
@@ -44,7 +45,9 @@ class ElectionServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    const port = process.env.PORT || 4004;
+    console.log("STARTING")
+
+    const port = process.env.PORT || 4009;
     this.app.listen(port, () => {
       console.log(`Election server started on ${port}`);
     });

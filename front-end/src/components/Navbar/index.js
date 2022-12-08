@@ -30,15 +30,14 @@ const Navbar = ({ userloggedIn }) => {
                     </NavLink>
                     <NavLink to="/messages" activeStyle>
                         Messages
+
                     </NavLink>
-<<<<<<< HEAD
-                    <NavLink to="/sign-up" activeStyle>
-                        Sign Up
+                    <NavLink to="/test-vote" activeStyle>
+                        Test - Vote
                     </NavLink>
-                    <NavLink to="/test" activeStyle>
-                        Test
+                    <NavLink to="/test-breakdown" activeStyle>
+                        Test - Breakdown
                     </NavLink>
-=======
                     {
                         !userloggedIn ? (
                             <NavLink to="/sign-up" activeStyle>
@@ -49,7 +48,6 @@ const Navbar = ({ userloggedIn }) => {
                                 Log Out
                             </NavLink>
                     }
->>>>>>> 756adfd6fd6e51517150bfaab4d2e35fb32305cc
                 </NavMenu>
             </Nav>
         </>
