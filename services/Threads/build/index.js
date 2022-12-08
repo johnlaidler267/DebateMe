@@ -10,7 +10,6 @@ const port = process.env.PORT || 4006;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let postDB = {};
 let userDB = {};
-let isUserLoggedIn = false;
 const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
@@ -148,10 +147,6 @@ app.delete('/posts/delete', async (req, res) => {
 app.post('/events', (req, res) => {
     const { type } = req.body;
     console.log(type);
-    if (type === "UserLoggedIn") {
-        isUserLoggedIn = true;
-        console.log("User is currently logged in");
-    }
     res.send({ type: type });
 });
 app.listen(port, () => {

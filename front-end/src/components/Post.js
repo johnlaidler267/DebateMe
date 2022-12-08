@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'
-import { Button, Card, Form, Container, Row, Col, Heading, Pagination, Badge } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
 
 export default function Post() {
   const [ Thread, setThread ] = useState();

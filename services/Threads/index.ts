@@ -33,8 +33,6 @@ const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let postDB: Posts = {};
 let userDB = {};
 
-let isUserLoggedIn = false;
-
 const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
@@ -195,10 +193,6 @@ app.delete('/posts/delete', async (req: Request, res: Response) => {
 app.post('/events', (req: Request, res: Response) => {
   const { type }: { type: string } = req.body;
   console.log(type);
-  if (type === "UserLoggedIn") {
-      isUserLoggedIn = true;
-      console.log("User is currently logged in");
-  }
   res.send({type: type});
 });
 
