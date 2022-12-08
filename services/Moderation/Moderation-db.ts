@@ -6,7 +6,10 @@ import pg from 'pg';
 const { Pool } = pg;
 
 export class ModerationDatabase {
-  constructor(dburl) {
+  dburl: string;
+  pool!: pg.Pool;
+  client!:pg.PoolClient
+  constructor(dburl: string) {
     this.dburl = dburl;
   }
 
@@ -41,8 +44,8 @@ export class ModerationDatabase {
     this.client.release();
     await this.pool.end();
   }
-  //left for future reference
-  async updateVote(commentID, upvotes, downvotes){
+  //left for future references
+  async updateVote(commentID:string, upvotes:string[], downvotes:string[]){
     const queryText =
     `UPDATE commentVotes SET upvotes = '{${upvotes}}', downvotes = '{${downvotes}}' WHERE commentID = '${commentID}' `;
     const res = await this.client.query(queryText);
@@ -51,14 +54,14 @@ export class ModerationDatabase {
 
 
   // create commentVote
-  async createCommentVote(commentID, upvotes, downvotes) {
+  async createCommentVote(commentID:string, upvotes:string[], downvotes:string[]) {
     const queryText = 'INSERT INTO commentVotes ( commentID, upvotes, downvotes) VALUES ($1, $2, $3)';
     const res = await this.client.query(queryText, [commentID, upvotes, downvotes]);
     return res.rows;
   };
 
   // gets all vote on a given comment
-  async getCommentVotes(commentID) {
+  async getCommentVotes(commentID:string) {
     const queryText = `SELECT * FROM commentVotes WHERE commentID = '${commentID}'`
     const res = await this.client.query(queryText); 
     return res.rows
