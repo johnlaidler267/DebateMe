@@ -51,14 +51,14 @@ class CommentServer{
 
     //get all comments for a given postID
     this.app.get("/comments/get" , async (req: Request, res: Response) => {
-      const postId = req.query.postId as string
+      const postId:string = req.query.postId as string
       const postComments = await self.db.getPostComments(postId)
       res.status(200).send(JSON.stringify(postComments))
     });
     
     //get all comments for a given user
     this.app.get("/comments/user", async (req: Request,res: Response) => {
-      const userId = req.query.userId as string
+      const userId:string = req.query.userId as string
       const userComments = await self.db.getUserComments(userId)
       res.status(200).send(JSON.stringify(userComments))
     });
