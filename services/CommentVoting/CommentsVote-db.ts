@@ -32,7 +32,7 @@ export class CommentsVoteDatabase {
       create table if not exists commentVotes (
         commentId varchar(30),
         upvotes text[],
-        downvotes text[] 
+        downvotes text[],
         ownerId varchar(30)
       );
         `
