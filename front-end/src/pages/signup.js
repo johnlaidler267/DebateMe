@@ -64,6 +64,8 @@ function Signup() {
     
     const handleRegister = async () => {
         try {
+            setLoading(true);
+
             const res = await axios.post('http://localhost:4008/users/register', {
                 ...formValues
             });
@@ -71,7 +73,6 @@ function Signup() {
             const token = { userId: res.data.userId, username: res.data.username };
             sessionStorage.setItem('token', JSON.stringify(token));
 
-            setLoading(true);
             setTimeout(function() {
                 setIsOpen(true);
                 setContent(<div className="text-success text-center">You have successfully registered!<br></br><CheckCircleIcon sx={{ fontSize: 150 }}/><br></br>Welcome, {formValues.username || ""}!</div>);
@@ -81,7 +82,11 @@ function Signup() {
                 }, 2000);
             }, 1000);
         } catch (error) {
-            console.log(error);
+            setTimeout(function() {
+                setIsOpen(true);
+                setContent(<div className="text-danger">{error.response.data.error}</div>);
+                setLoading(false);
+            }, 1000);
         }
     }
 
@@ -335,9 +340,6 @@ function Signup() {
                             </Form.Group>
                         </Row>
 
-                        <Form.Group className="mb-3 d-flex justify-content-center" id="formGridCheckbox">
-                            <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group>
                         <Button className="custom-btn w-100 p-2" type="submit">
                             {Loading ? <CircularProgress sx={{color: "black"}} size={30} /> : "Submit"}
                         </Button>

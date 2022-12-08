@@ -1,34 +1,41 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { CircularProgress } from '@mui/material';
 import { Button, Card, Form, Container } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthProvider";
 
 // Create  a form element that allows the user to create a new election
 // Create a button that allows the user to submit the election
 const CreateElection = () => {
     const [ Loading, setLoading ] = useState(false);
     const navigate = useNavigate();
+    const { Auth } = useContext(AuthContext);
 
     const onSubmit = async (event) => {
       event.preventDefault();
       setLoading(true);
       
       const { title, content, candidate1, candidate2 } = event.target;
-      const candidate = [candidate1, candidate2];
+      const candidate = [candidate1.value, candidate2.value];
 
-    //   await axios.post('http://localhost:4006/posts/create', {
-    //     title: title.value,
-    //     content: content.value,
-    //     candidate: candidate
-    //   })
-  
-        setTimeout(function() {
-            setLoading(true);
+      try {
+          const res = await axios.post('http://localhost:4006/posts/create', {
+            userId: Auth.userId,
+            username: Auth.username,
+            title: title.value,
+            content: content.value,
+            candidate: candidate
+          })
+
             setTimeout(function() {
-                // navigate(`/post/${postId}`);
+                setTimeout(function() {
+                    navigate(`/post/${res.data.postId || ""}`);
+                }, 2000);
             }, 1000);
-        }, 1000);
+      } catch (error) {
+            console.log(error);
+      }
     }
 
     return (

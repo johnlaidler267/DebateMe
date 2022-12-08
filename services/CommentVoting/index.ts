@@ -139,7 +139,7 @@ class CommentVoteServer{
 
 
 
-const server: CommentVoteServer = new CommentVoteServer(process.env.DATABASE_URL);
+const server: CommentVoteServer = new CommentVoteServer(process.env.DATABASE_URL!);
 server.start()
 
 

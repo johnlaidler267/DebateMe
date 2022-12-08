@@ -33,8 +33,6 @@ const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let postDB: Posts = {};
 let userDB = {};
 
-let isUserLoggedIn = false;
-
 const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
@@ -52,19 +50,15 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/posts/create', async (req: Request, res: Response) => {
-    const { userId, title, content, candidate }: { userId: string, title: string, content: string, candidate: string[] }  = req.body;
+    const { userId, username, title, content, candidate }: { userId: string, username: string, title: string, content: string, candidate: string[] }  = req.body;
     if (userId == undefined || title == undefined || content == undefined || candidate == undefined) {
-        res.status(400).send("Request data is incomplete");
-    }
-
-    const user = await userDB.findOne({ userId: userId });
-
-    if (user) {
+        res.status(400).send({ error: "Request data is incomplete" });
+    } else {
         const postId: string = uuidv4();
         const data: Data = { 
             userId: userId,
             postId: postId,
-            username: user.username,
+            username: username,
             title: title,
             content: content,
             candidate: candidate,
@@ -72,15 +66,13 @@ app.post('/posts/create', async (req: Request, res: Response) => {
         };
         
         postDB.insertOne(data);
-
+    
         await axios.post('http://localhost:4010/events', {
             type: 'PostCreated',
             data: data,
         }).catch((err) => console.log(err.message));
-
+    
         res.status(201).send(data);
-    } else {
-        res.status(404).send(`User ${userId} not found`);
     }
 
 });
@@ -96,7 +88,7 @@ app.get('/posts/get', async (req: Request, res: Response) => {
     const { postId } = req.query;
 
     if (postId == undefined || typeof postId !== "string") {
-        res.status(400).send("Request data is incomplete");
+        res.status(400).send({ error: "Request data is incomplete" });
     }
     
     const post: Post = await postDB.findOne({ postId: postId });
@@ -104,14 +96,14 @@ app.get('/posts/get', async (req: Request, res: Response) => {
     if (post) {
         res.status(200).send(post);
     } else {
-        res.status(404).send(`Post ${postId} not found`);
+        res.status(404).send({ error: "Post not found" });
     }
 });
 
 app.put('/posts/update', async (req: Request, res: Response) => {
     const { userId, postId, title, content } : { userId: string, postId: string, title: string, content: string } = req.body;
     if (userId == undefined || postId == undefined || title == undefined || content == undefined) {
-        res.status(400).send("Request data is incomplete");
+        res.status(400).send({ error: "Request data is incomplete" });
     }
 
     const user = await userDB.findOne({ userId: userId });
@@ -145,10 +137,10 @@ app.put('/posts/update', async (req: Request, res: Response) => {
                 res.status(401).send({ error: "Access is denied due to invalid credentials" });
             }
         } else {
-            res.status(404).send(`Post ${postId} not found`);
+            res.status(404).send({ error: "Post not found" });
         }
     } else {
-        res.status(404).send(`User ${userId} not found`);
+        res.status(404).send({ error: "User not found" });
     }
 });
 
@@ -191,20 +183,16 @@ app.delete('/posts/delete', async (req: Request, res: Response) => {
                 res.status(401).send({ error: "Access is denied due to invalid credentials" });
             }
         } else {
-            res.status(404).send(`Post ${postId} not found`);
+            res.status(404).send({ error: "Post not found" });
         }
     } else {
-        res.status(404).send(`User ${userId} not found`);
+        res.status(404).send({ error: "User not found" });
     }
 });
 
 app.post('/events', (req: Request, res: Response) => {
   const { type }: { type: string } = req.body;
   console.log(type);
-  if (type === "UserLoggedIn") {
-      isUserLoggedIn = true;
-      console.log("User is currently logged in");
-  }
   res.send({type: type});
 });
 

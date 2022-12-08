@@ -2,7 +2,7 @@ import express, {Express, Request, Response} from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
-import { ModerationDatabase } from './Moderation-db.js'; 
+import { ModerationDatabase } from './Moderation-db'; 
 
 const app = express();
 
@@ -92,15 +92,16 @@ class ModerationServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    await axios.post("http://event-bus:4010/subscribe", {
+    await axios.post("http://localhost:4010/subscribe", {
       port: 4005,
+      name: "Moderation",
       events: ["commentCreated", "postCreated", "postUpdated"]
     });
     const port = process.env.PORT || 4005;
     this.app.listen(port, () => {
-      console.log(`Comment server started on ${port}`);
+      console.log(`Moderation server started on ${port}`);
     });
   }
 }
-const server: ModerationServer = new ModerationServer(process.env.DATABASE_URL);
+const server: ModerationServer = new ModerationServer(process.env.DATABASE_URL!);
 server.start()
