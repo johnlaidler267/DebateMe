@@ -12,6 +12,7 @@ import Messages from "./pages/messages";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Post from "./components/Post";
+import Vote from "./pages/vote/vote";
 
 /*
   This is the main component of the app. It is the parent of all other components.
@@ -25,12 +26,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Debate />} />
         <Route path="/debate" element={<Debate />} />
-        <Route path='/post/:postId' element={<Post />} />
+        <Route path="/post/:postId" element={<Post />} />
         <Route path="/create-election" element={<CreateElection />} />
         <Route path="/vote-history" element={<VoteHistory />} />
         <Route path="/view-profile" element={<Profile />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/test" element={<Vote />} />
       </Routes>
     </Router>
   );
