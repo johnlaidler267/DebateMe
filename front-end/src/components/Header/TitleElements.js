@@ -13,6 +13,14 @@ export const HeaderText = styled.nav`
   padding: 0px 20px;
 `;
 
+export const User = styled.nav`
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+`
+
 //Add a span element to the header text
 export const span = styled.span`
   color: #feda6a;

@@ -12,6 +12,8 @@ interface Data {
     username: string,
     title: string,
     content: string,
+    candidate: string[],
+    date: Date
 }
 
 interface Post {
@@ -50,8 +52,8 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/posts/create', async (req: Request, res: Response) => {
-    const { userId, title, content }: { userId: string, title: string, content: string }  = req.body;
-    if (userId == undefined || title == undefined || content == undefined) {
+    const { userId, title, content, candidate }: { userId: string, title: string, content: string, candidate: string[] }  = req.body;
+    if (userId == undefined || title == undefined || content == undefined || candidate == undefined) {
         res.status(400).send("Request data is incomplete");
     }
 
@@ -65,6 +67,8 @@ app.post('/posts/create', async (req: Request, res: Response) => {
             username: user.username,
             title: title,
             content: content,
+            candidate: candidate,
+            date: new Date()
         };
         
         postDB.insertOne(data);
@@ -138,7 +142,7 @@ app.put('/posts/update', async (req: Request, res: Response) => {
         
                 res.status(201).send(data);
             } else {
-                res.status(401).send("Access is denied due to invalid credentials");
+                res.status(401).send({ error: "Access is denied due to invalid credentials" });
             }
         } else {
             res.status(404).send(`Post ${postId} not found`);
@@ -184,7 +188,7 @@ app.delete('/posts/delete', async (req: Request, res: Response) => {
 
                 res.status(201).send({ message });
             } else {
-                res.status(401).send("Access is denied due to invalid credentials");
+                res.status(401).send({ error: "Access is denied due to invalid credentials" });
             }
         } else {
             res.status(404).send(`Post ${postId} not found`);

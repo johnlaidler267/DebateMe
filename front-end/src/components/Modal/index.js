@@ -1,6 +1,15 @@
 import ReactDOM from 'react-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
-export default function Modal({ open, children, onClose }) {
+export default function Modal({ open, children, onClose, color }) {
+    const CloseStyle = {
+        position: "absolute",
+        top: 10,
+        right: 20,
+        color: "black",
+        cursor: "pointer"
+    }
+
     const ModalStyle = {
         position: 'fixed',
         top: '50%',
@@ -9,6 +18,8 @@ export default function Modal({ open, children, onClose }) {
         borderRadius: '1rem',
         backgroundColor: '#EBEBEB',
         padding: '50px',
+        fontSize: "25px",
+        fontWeight: "bold",
         zIndex: 1000,
     }
     
@@ -27,6 +38,7 @@ export default function Modal({ open, children, onClose }) {
         <>
             <div style={OverlayStyle} onClick={onClose}>
                 <div style={ModalStyle} onClick={e => e.stopPropagation()}>
+                    <div style={CloseStyle} onClick={onClose}><CloseIcon /></div>
                     {children}
                 </div>
             </div>
