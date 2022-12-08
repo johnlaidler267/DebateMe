@@ -39,19 +39,16 @@ class BreakdownServer {
       res.status(200).send(JSON.stringify(breakdown))
     });
 
-    // Get the user data
-    this.app.post("/getUserData", async (req, res) => {
-      const { gender, age, race } = req.body;
-      res.status(200).send(JSON.stringify(breakdown))
-    });
-
     // Respond to a voteCreated event from the event bus
-    this.app.post("/events", async (req, res) => {
+    this.app.get("/events", async (req, res) => {
       const vote = req.body.data
 
-      const userData = await axios.get("http://user-service:4001/getUserData", {
+      const { age, race, gender } = await axios.post("http://localhost:4010/events", {
         params: {
           userID: data.userID
+        },
+        body: {
+          type: "userDataRequest"
         }
       });
 
@@ -70,9 +67,10 @@ class BreakdownServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    // await axios.post("http://event-bus:4010/subscribe", {
-    //   port: 4002,
-    //   events: ["voteCreated"]
+    // await axios.post("http://localhost:4010/subscribe", {
+    //   port: 4005,
+    //   name: "VoteBreakdown",
+    //   events: []
     // });
     const port = process.env.PORT || 4002;
     this.app.listen(port, () => {
