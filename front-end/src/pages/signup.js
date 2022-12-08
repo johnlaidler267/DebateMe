@@ -7,6 +7,8 @@ import { Container, Card } from "react-bootstrap";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Modal from "../components/Modal";
 
 function Signup() {
     const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
@@ -17,6 +19,8 @@ function Signup() {
     const [ States, setStates ] = useState([]);
     const [ Cities, setCities ] = useState([]);
     const [ Loading, setLoading ] = useState(false);
+    const [ IsOpen, setIsOpen ] = useState(false);
+    const [ Content, setContent ] = useState("");
     const navigate = useNavigate();
 
 
@@ -27,47 +31,67 @@ function Signup() {
         setCountries(res.data);
     }
 
-      const handleChange = (e) => {
+    const handleChange = (e) => {
         const { id, value } = e.target;
         setFormValues({ ...formValues, [id]: value });
-      };
+    };
     
-      const handleCountry = (e) => {
-        const countryId = e.target.value;
-        const country = Countries.find((country) => country.id.toString() === countryId);
+    const handleCountry = (e) => {
+        const countryName = e.target.value;
+        const country = Countries.find((country) => country.name === countryName);
         let states = country.states;
         if (states.length === 0) {
             states.push({ id: 1, name: country.name, cities: [{ id: 1, name: country.name }] });
         }
         setStates(states);
-      }
+    }
 
-      const handleState = (e) => {
-        const stateId = e.target.value;
-        const state = States.find((state) => state.id.toString() === stateId);
+    const handleState = (e) => {
+        const stateName = e.target.value;
+        const state = States.find((state) => state.name === stateName);
         let cities = state.cities;
         if (cities.length === 0) {
             cities.push({ name: state.name });
         }
         setCities(cities);
-      }
+    }
 
-      const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setFormErrors(validate(formValues));
         setIsSubmit(true);
     };
     
+    const handleRegister = async () => {
+        try {
+            const res = await axios.post('http://localhost:4008/users/register', {
+                ...formValues
+            });
+
+            const token = { userId: res.data.userId, username: res.data.username };
+            sessionStorage.setItem('token', JSON.stringify(token));
+
+            setLoading(true);
+            setTimeout(function() {
+                setIsOpen(true);
+                setContent(<div className="text-success text-center">You have successfully registered!<br></br><CheckCircleIcon sx={{ fontSize: 150 }}/><br></br>Welcome, {formValues.username || ""}!</div>);
+                setTimeout(function() {
+                    navigate(`/`);
+                    window.location.reload();
+                }, 2000);
+            }, 1000);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         fetchCountries();
     }, []);
     
     useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit) {
-            setLoading(true);
-            setTimeout(function() {
-                navigate(`/`);
-            }, 1000);
+            handleRegister();
         }
       }, [formErrors]);
 
@@ -256,7 +280,7 @@ function Signup() {
                                         Countries.map((country) => { return (
                                             <option 
                                                 key={country.id}
-                                                value={country.id}
+                                                value={country.name}
                                             >
                                                 {country.name}
                                             </option>
@@ -274,10 +298,12 @@ function Signup() {
                                 >
                                     <option disabled>Choose...</option>
                                     {
-                                        States.map((state) => { return (
+                                        States.map((state) => { 
+                                            console.log(state);
+                                        return (
                                             <option 
                                                 key={state.id}
-                                                value={state.id}
+                                                value={state.name}
                                             >
                                                 {state.name}
                                             </option>
@@ -295,12 +321,10 @@ function Signup() {
                                 >
                                     <option disabled>Choose...</option>
                                     {
-                                        Cities.map((city) => { if (!city.id) {
-                                            city.id = 1;
-                                        }  return (
+                                        Cities.map((city) => { return (
                                             <option 
                                                 key={city.id}
-                                                value={city.id}
+                                                value={city.name}
                                             >
                                                 {city.name}
                                             </option>
@@ -318,6 +342,7 @@ function Signup() {
                             {Loading ? <CircularProgress sx={{color: "black"}} size={30} /> : "Submit"}
                         </Button>
                         <div className="text-center p-3">Already a member? <Link className="link" to="/login">Log In</Link></div>
+                        <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
                     </Form>
                 </Card.Body>
             </Card>

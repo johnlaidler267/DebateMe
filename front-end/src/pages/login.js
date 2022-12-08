@@ -48,6 +48,7 @@ function Login() {
             setTimeout(function() {
                 setIsOpen(true);
                 setContent(<div className="text-success text-center">You have successfully logged in!<br></br><CheckCircleIcon sx={{ fontSize: 150 }}/></div>);
+                setAuth(token);
                 setTimeout(function() {
                     navigate(`/`);
                     window.location.reload();
