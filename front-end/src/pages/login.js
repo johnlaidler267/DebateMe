@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -9,6 +9,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { AuthContext } from "../context/AuthProvider";
 
 function Login() {
     const initialValues = { username: "", password: "" };
@@ -18,6 +19,8 @@ function Login() {
     const [ Loading, setLoading ] = useState(false);
     const [ IsOpen, setIsOpen ] = useState(false);
     const [ Content, setContent ] = useState("");
+    const { setAuth }  = useContext(AuthContext);
+    const Remember = useRef();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -33,10 +36,14 @@ function Login() {
 
     const handleLogin = async () => {
         try {
-            await axios.post('http://localhost:4008/users/login', {
+            const res = await axios.post('http://localhost:4008/users/login', {
                 username: formValues.username,
                 password: formValues.password
             });
+            
+            const token = res.data.userId;
+            sessionStorage.setItem('token', JSON.stringify(token));
+            Remember.current.checked && localStorage.setItem('token', JSON.stringify(token));
 
             setTimeout(function() {
                 setIsOpen(true);
@@ -123,8 +130,12 @@ function Login() {
                             </Form.Group>
                         </Row>
 
-                        <Form.Group className="mb-3 d-flex justify-content-center" id="formGridCheckbox">
-                            <Form.Check type="checkbox" label="Remember Me" />
+                        <Form.Group className="mb-3 d-flex justify-content-center">
+                            <Form.Check
+                                ref={Remember}
+                                type="checkbox"
+                                label="Remember Me"
+                            />
                         </Form.Group>
                         <Button className="custom-btn w-100 p-2" type="submit">
                             {Loading ? <CircularProgress sx={{color: "black"}} size={30} /> : "Login"}
