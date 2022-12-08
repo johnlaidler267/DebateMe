@@ -4,58 +4,58 @@ services:
     build: front-end
     ports:
       - "3000:3000"
-  Comments:
-    build: Comments
+  comments:
+    build: services/comments
     ports:
       - "4001:4001"
     depends_on:
       - "eventbus"
   eventbus:
-    build: event-bus
-  CommentVoting:
-    build: CommentVoting
+    build: services/event-bus
+  commentvoting:
+    build: services/commentVoting
     ports:
       - "4002:4002"
     depends_on:
       - "eventbus"
-  Messages:
-    build: Messages
+  messages:
+    build: services/messages
     ports:
       - "4003:4003"
     depends_on:
       - "eventbus"
-  MockElection:
-    build: mock-election-jl
+  mockelection:
+    build: services/mockElection
     ports:
       - "4004:4004"
     depends_on:
       - "eventbus"
-  Moderation:
-    build: Moderation
+  moderation:
+    build: services/moderation
     ports:
       - "4005:4005"
     depends_on:
       - "eventbus"
-  Threads:
-    build: Threads
+  threads:
+    build: services/threads
     ports:
       - "4006:4006"
     depends_on:
     - "eventbus"        
-  trustDistinction:
-      build: trust-distinction-jl
+  trustdistinction:
+      build: services/trustDistinction
       ports:
         - "4007:4007"
       depends_on:
         - "eventbus"
-  Users:
-      build: Users
+  users:
+      build: services/users
       ports:
         - "4008:4008"
       depends_on:
         - "eventbus"
-  voteBreakdown:
-      build: vote-breakdown-jl
+  votebreakdown:
+      build: services/voteBreakdown
       ports:
         - "4009:4009"
       depends_on:
