@@ -30,9 +30,18 @@ const Navbar = ({ userloggedIn }) => {
                     </NavLink>
                     <NavLink to="/messages" activeStyle>
                         Messages
+
                     </NavLink>
+<<<<<<< HEAD
+                    <NavLink to="/test-vote" activeStyle>
+                        Test - Vote
+                    </NavLink>
+                    <NavLink to="/test-breakdown" activeStyle>
+                        Test - Breakdown
+=======
                     <NavLink to="/test" activeStyle>
                         Test
+>>>>>>> c1985ca695652d84af79db02e3f3e57e23070de6
                     </NavLink>
                     {
                         !userloggedIn ? (

@@ -19,7 +19,7 @@ function VoteButton(ref) {
 
     return (
         <>
-            <Button ref={ref} variant="primary" style={{ margin: "10px" }} onClick={handleShow(ref)}>
+            <Button variant="primary" style={{ margin: "10px" }} onClick={handleShow}>
                 Vote
             </Button>
 
@@ -29,10 +29,10 @@ function VoteButton(ref) {
                 </Modal.Header>
                 <Modal.Body>Thanks for participating in this election. To view the results and breakdown, click below.</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleClose} className="gray-btn">
                         Return to Discussion
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="primary" onClick={handleClose} className="yellow-btn">
                         View Results 📊
                     </Button>
                 </Modal.Footer>

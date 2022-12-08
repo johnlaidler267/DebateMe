@@ -11,7 +11,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 
-class ElectionBreakdownServer {
+class BreakdownServer {
 
   constructor(dburl) {
     this.dburl = dburl;
@@ -32,17 +32,34 @@ class ElectionBreakdownServer {
       res.status(200).send(JSON.stringify(breakdown))
     });
 
+    // Get the breakdown for a given election
+    this.app.get("/test/add/breakdown", async (req, res) => {
+      const { electionID } = req.body.data
+      const breakdown = await self.db.updateBreakdown(electionID)
+      res.status(200).send(JSON.stringify(breakdown))
+    });
+
     // Respond to a voteCreated event from the event bus
-    this.app.post("/events", async (req, res) => {
-      const data = req.body.data
-      const update = await self.db.updateBreakdown(data)
+    this.app.get("/events", async (req, res) => {
+      const vote = req.body.data
+
+      const { age, race, gender } = await axios.post("http://localhost:4010/events", {
+        params: {
+          userID: data.userID
+        },
+        body: {
+          type: "userDataRequest"
+        }
+      });
+
+      const update = await self.db.updateBreakdown(vote, userData)
       res.status(200).send(JSON.stringify(update))
     });
   }
 
   /* Initialize the database connection */
   async initDb() {
-    this.db = new ElectionDatabase(this.dburl);
+    this.db = new BreakdownDatabase(this.dburl);
     await this.db.connect();
   }
 
@@ -50,7 +67,12 @@ class ElectionBreakdownServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    const port = process.env.PORT || 4001;
+    // await axios.post("http://localhost:4010/subscribe", {
+    //   port: 4005,
+    //   name: "VoteBreakdown",
+    //   events: []
+    // });
+    const port = process.env.PORT || 4002;
     this.app.listen(port, () => {
       console.log(`Polling server started on ${port}`);
     });
@@ -58,5 +80,5 @@ class ElectionBreakdownServer {
 }
 
 // Start the server
-const server = new ElectionBreakdownServer(process.env.DATABASE_URL);
+const server = new BreakdownServer(process.env.DATABASE_URL);
 server.start()

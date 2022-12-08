@@ -85,6 +85,10 @@ class TrustDistinctionServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
+    await axios.post("http://event-bus:4010/subscribe", {
+      port: 4001,
+      events: ["commentCreated", "commentVoted", "voteCreated", "postCreated", "postUpdated"]
+    });
     const port = process.env.PORT || 4001;
     this.app.listen(port, () => {
       console.log(`Polling server started on ${port}`);

@@ -20,16 +20,16 @@ const Vote = () => {
                             <Row>
                                 <Col>
                                     <Card>
-                                        <h2 className="text-center" style={{ margin: "10px" }}>Candidate 1</h2>
+                                        <h2 className="text-center" style={{ margin: "10px" }} >Candidate 1</h2>
                                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                        <VoteButton ref={c1}></VoteButton>
+                                        <Button className="tomato-btn">Vote</Button>
                                     </Card>
                                 </Col>
                                 <Col>
                                     <Card>
                                         <h2 className="text-center" style={{ margin: "10px" }}>Candidate 2</h2>
                                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                        <VoteButton ref={c2}></VoteButton>
+                                        <Button className="orange-btn" >Vote</Button>
                                     </Card>
                                 </Col>
                             </Row>
