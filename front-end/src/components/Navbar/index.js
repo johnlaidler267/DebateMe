@@ -1,8 +1,17 @@
-import React from "react";
+import { useRef } from "react";
 import { Nav, NavLink, NavMenu }
     from "./NavbarElements";
 
 const Navbar = ({ userloggedIn }) => {
+    const logoutRef = useRef();
+
+    const HandleLogout = () => {
+        userloggedIn = false;
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+    }
+
     return (
         <>
             <Nav>
@@ -22,9 +31,16 @@ const Navbar = ({ userloggedIn }) => {
                     <NavLink to="/messages" activeStyle>
                         Messages
                     </NavLink>
-                    <NavLink to="/sign-up" activeStyle>
-                        Sign Up
-                    </NavLink>
+                    {
+                        !userloggedIn ? (
+                            <NavLink to="/sign-up" activeStyle>
+                                Sign Up
+                            </NavLink>
+                        ) :
+                            <NavLink to="/" onClick={HandleLogout} ref={logoutRef} activeStyle>
+                                Log Out
+                            </NavLink>
+                    }
                 </NavMenu>
             </Nav>
         </>

@@ -28,28 +28,31 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/users/register', async (req, res) => {
-  const { username, password, email, age, race, gender, state } = req.body;
-  if (username == undefined || password == undefined || email == undefined || age == undefined || race == undefined) {
+  const { username, password, email, age, gender, country, state, city } = req.body;
+  if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   }
   
   const user = await userDB.findOne({ username: username });
-  const userId = uuidv4();
-  const data = {
-    userId: userId,
-    username: username,
-    password: password,
-    email: email,
-    age: age,
-    race: race,
-    gender: gender,
-    state: state,
-    DirectMessages: []
-  }
 
   if (user) {
     res.status(409).send({ error: "User already exists" });
   } else {
+    const userId = uuidv4();
+    const data = {
+      userId: userId,
+      username: username,
+      password: password,
+      email: email,
+      age: age,
+      gender: gender,
+      race: race,
+      country: country,
+      state: state,
+      city: city,
+      DirectMessages: []
+    };
+    
     userDB.insertOne(data);
     res.status(201).send(data);
   }
@@ -83,8 +86,9 @@ app.post('/users/login', async (req, res) => {
 });
 
 app.put('/users/update', async (req, res) => {
-  const { userId, username, password, email, age, race } = req.body;
-  if (username == undefined|| password == undefined || email == undefined || age == undefined || race == undefined) {
+  const { userId, username, password, email, age, gender, country, state, city } = req.body;
+  if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
+
     res.status(400).send({ error: "Request data is incomplete" });
   }
   
@@ -92,12 +96,17 @@ app.put('/users/update', async (req, res) => {
 
   const NewUser = await userDB.findOne({ username: username });
   
-  const data = { 
+  const data = {
+    userId: userId,
     username: username,
     password: password,
     email: email,
     age: age,
-    race: race
+    gender: gender,
+    race: race,
+    country: country,
+    state: state,
+    city: city,
   };
 
   if (CurrentUser) {
@@ -124,8 +133,6 @@ app.put('/users/update', async (req, res) => {
       res.status(404).send({ error: "User not found" });
   };
 });
-
-
 
 app.post('/events', (req, res) => {
   const { type } = req.body;

@@ -44,6 +44,10 @@ input[type="checkbox"]:checked {
   color: rgb(153, 110, 2);
 }
 
+.logo {
+  margin-left: 250px;
+}
+
 .search-bar {
   position: fixed;
   top: -5px;

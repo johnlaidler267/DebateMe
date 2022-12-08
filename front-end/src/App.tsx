@@ -13,6 +13,7 @@ import "./App.css";
 import Post from "./components/Post";
 import Login from "./pages/login";
 import { AuthContext } from "./context/AuthProvider";
+import { PrivateRoute } from "./context/PrivateRoute";
 
 /*
   This is the main component of the app. It is the parent of all other components.
@@ -36,16 +37,16 @@ function App() {
   return (
     <AuthContext.Provider value={{ Auth, setAuth }}>
         <Router>
-          <Header />
+          { !Auth ? <Header userloggedIn={false} /> : <Header userloggedIn={true} /> }
           { !Auth ? <Navbar userloggedIn={false} /> : <Navbar userloggedIn={true} /> }
           <Routes>
             <Route path="/" element={<Debate />} />
             <Route path="/debate" element={<Debate />} />
             <Route path='/post/:postId' element={<Post />} />
-            <Route path="/create-election" element={<CreateElection />} />
-            <Route path="/vote-history" element={<VoteHistory />} />
+            <Route path="/create-election" element={<PrivateRoute><CreateElection /></PrivateRoute>} />
+            <Route path="/vote-history" element={<PrivateRoute><VoteHistory /></PrivateRoute>} />
             <Route path="/view-profile" element={<Profile />} />
-            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages" element={<PrivateRoute><Messages /></PrivateRoute>} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
           </Routes>

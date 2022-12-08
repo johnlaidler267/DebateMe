@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, Form } from 'react-bootstrap';
-import { HeaderText, Header, TM } from "./TitleElements";
+import { HeaderText, Header, TM, User } from "./TitleElements";
+import { AuthContext } from '../../context/AuthProvider';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // make a title for top of the web page
-const Title = () => {
+const Title = ({ userloggedIn }) => {
     const [ scrollUp, setScrollUp ] = useState(null);
     const searchRef = useRef();
+    const { Auth } = useContext(AuthContext);
 
     useEffect(() => {
         const threshold = 20;
@@ -78,9 +81,10 @@ const Title = () => {
             </div>
             <Header>
                 <HeaderText>
-                    <div className='d-flex justify-content-center' style={{ width: "140%" }}>
+                    <div className={ userloggedIn ? 'd-flex justify-content-center logo' : 'd-flex justify-content-center' } style={{ width: "140%" }}>
                         DebateMe<TM>TM</TM>🗳️
                     </div>
+                    { userloggedIn && <User><AccountCircleIcon sx={{ fontSize: 40 }}/>{Auth.username}</User> }
                 </HeaderText>
             </Header >
         </>

@@ -41,7 +41,7 @@ function Login() {
                 password: formValues.password
             });
             
-            const token = res.data.userId;
+            const token = { userId: res.data.userId, username: res.data.username };
             sessionStorage.setItem('token', JSON.stringify(token));
             Remember.current.checked && localStorage.setItem('token', JSON.stringify(token));
 
@@ -50,6 +50,7 @@ function Login() {
                 setContent(<div className="text-success text-center">You have successfully logged in!<br></br><CheckCircleIcon sx={{ fontSize: 150 }}/></div>);
                 setTimeout(function() {
                     navigate(`/`);
+                    window.location.reload();
                 }, 2000);
             }, 1000);
         } catch (error) {
