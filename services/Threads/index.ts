@@ -142,7 +142,7 @@ app.put('/posts/update', async (req: Request, res: Response) => {
         
                 res.status(201).send(data);
             } else {
-                res.status(401).send("Access is denied due to invalid credentials");
+                res.status(401).send({ error: "Access is denied due to invalid credentials" });
             }
         } else {
             res.status(404).send(`Post ${postId} not found`);
@@ -188,7 +188,7 @@ app.delete('/posts/delete', async (req: Request, res: Response) => {
 
                 res.status(201).send({ message });
             } else {
-                res.status(401).send("Access is denied due to invalid credentials");
+                res.status(401).send({ error: "Access is denied due to invalid credentials" });
             }
         } else {
             res.status(404).send(`Post ${postId} not found`);

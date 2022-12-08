@@ -12,6 +12,7 @@ import Messages from "./pages/messages";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Post from "./components/Post";
+import Login from "./pages/login";
 
 /*
   This is the main component of the app. It is the parent of all other components.
@@ -31,6 +32,7 @@ function App() {
         <Route path="/view-profile" element={<Profile />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

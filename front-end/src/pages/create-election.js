@@ -38,7 +38,7 @@ const CreateElection = () => {
                 width: '75%',
             }}>
                 <br></br>
-                <Card className="mb-3">
+                <Card className="mb-3 ps-4 pe-4">
                     <br></br>
                     <Card.Title className="text-center">New Election</Card.Title>
                     <Card.Body>

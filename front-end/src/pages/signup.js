@@ -5,7 +5,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { Container, Card } from "react-bootstrap";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 function Signup() {
     const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
@@ -15,6 +16,9 @@ function Signup() {
     const [ Countries, setCountries ] = useState([]);
     const [ States, setStates ] = useState([]);
     const [ Cities, setCities ] = useState([]);
+    const [ Loading, setLoading ] = useState(false);
+    const navigate = useNavigate();
+
 
     const fetchCountries = async () => {
         const res = await axios.get("https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries%2Bstates%2Bcities.json").catch((err) => {
@@ -60,7 +64,10 @@ function Signup() {
     
     useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit) {
-            // await
+            setLoading(true);
+            setTimeout(function() {
+                navigate(`/`);
+            }, 1000);
         }
       }, [formErrors]);
 
@@ -308,9 +315,9 @@ function Signup() {
                             <Form.Check type="checkbox" label="Check me out" />
                         </Form.Group>
                         <Button className="custom-btn w-100 p-2" type="submit">
-                            Submit
+                            {Loading ? <CircularProgress sx={{color: "black"}} size={30} /> : "Submit"}
                         </Button>
-                        <div className="text-center p-3">Already a member? <Link className="link">Log In</Link></div>
+                        <div className="text-center p-3">Already a member? <Link className="link" to="/login">Log In</Link></div>
                     </Form>
                 </Card.Body>
             </Card>
