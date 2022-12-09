@@ -3,7 +3,6 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { BreakdownDatabase } from './breakdown-db.js';
-import { threadId } from 'worker_threads';
 
 const app = express();
 
@@ -32,22 +31,38 @@ class BreakdownServer {
       res.status(200).send(JSON.stringify(breakdown))
     });
 
-    // Get the breakdown for a given election
+    // Get the breakdown for a given election - FOR TESTING PURPOSES
     this.app.get("/test/add/breakdown", async (req, res) => {
       const { electionID } = req.body.data
       const breakdown = await self.db.updateBreakdown(electionID)
       res.status(200).send(JSON.stringify(breakdown))
     });
 
-    // Respond to a voteCreated event from the event bus
+    // Respond to a voteCreated or postCreated event from the event bus
     this.app.get("/events", async (req, res) => {
-      const { userId } = req.body;
+      // req = the incoming request from the event bus
+      const { type, data } = req.body;
 
-     const response = await axios.post("http://localhost:4010/events", {
-        type: "userDataRequest",
-        userId: userId
-      });
+      if (type === "voteCreated") {
 
+        // Get the users demographics by sending a request to the user service through the event bus
+        const response = await axios.post("http://localhost:4010/events", {
+          type: "userDataRequest",
+          userId: data.userId
+        });
+        const { race, gender, age } = response.data;
+
+        const breakdown = await self.db.updateBreakdown(data.electionId, data.vote, race, age, gender);
+        res.status(200).send(JSON.stringify(breakdown));
+      }
+      else { // type === "postCreated"
+        const electionID = data.postId;
+        const cand0 = data.candidate[0];
+        const cand1 = data.candidate[1];
+
+        const breakdown = await self.db.createBreakdown(electionID, cand0, cand1)
+        res.status(200).send(JSON.stringify(breakdown))
+      }
       console.log(response.data)
       res.send(response.data);
     });
@@ -66,7 +81,7 @@ class BreakdownServer {
     // await axios.post("http://localhost:4010/subscribe", {
     //   port: 4005,
     //   name: "VoteBreakdown",
-    //   events: []
+    //   events: ["postCreated", "voteCreated"]
     // });
     const port = process.env.PORT || 4002;
     this.app.listen(port, () => {

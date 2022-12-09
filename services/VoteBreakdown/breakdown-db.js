@@ -54,31 +54,24 @@ export class BreakdownDatabase {
   }
 
   /* Updates the breakdown for a given election */
-  async updateBreakdown(data) {
-    const { electionID, userID, vote } = data
-
+  async updateBreakdown(electionID, vote, race, age, gender) {
     const breakdown = await self.db.getBreakdown(electionID)
-
-    if (breakdown == null)
-      breakdown = { electionID, candidates: newCandidates() }
 
     const candidate0 = breakdown.candidates[0]
     const candidate1 = breakdown.candidates[1]
 
     if (vote === candidate0.id)
-      candidate0 = updateCandidate(candidate0, userID)
+      candidate0 = updateCandidate(candidate0, race, age, gender)
     else
-      candidate1 = updateCandidate(candidate1, userID)
+      candidate1 = updateCandidate(candidate1, race, age, gender)
 
-    const query = `UPDATE electionBreakdowns SET candidates = ${ARRAY([candidate0, candidate1])}::candidates[] WHERE electionID = $2`
+    const query = `UPDATE electionBreakdowns SET candidates = ${ARRAY([candidate0, candidate1])}::candidates[] WHERE electionID = $1`
     const res = await this.client.query(query, [electionID]);
     return res.rows;
   }
 
   /* Updates the breakdown for a given candidate */
-  async updateCandidate(candidate, userID) {
-    // get the users ID (FIGURE THIS OUT)
-    const { gender, age, race } = await self.getUserData(userID)
+  async updateCandidate(candidate, race, age, gender) {
 
     // Update gender count
     if (gender == "male") candidate.numMen++;
@@ -103,18 +96,18 @@ export class BreakdownDatabase {
     return candidate;
   }
 
-  /* Gets the demographic breakdown for a given candidate */
-  async getBreakdown(electionID) {
-    const queryText = `SELECT * FROM electionBreakdowns WHERE electionID = '${electionID}'`
+  /* Genderates a new blank breakdown whenever a post (election) is created */
+  async createBreakdown(electionID, cand0, cand1) {
+    candidates = await self.db.newCandidates(cand0, cand1)
+    const queryText = `INSERT INTO electionBreakdowns (electionID, candidates) VALUES ($1, ${candidates})`
     const res = await this.client.query(queryText, [electionID]);
-    return res.rows;
   }
 
-  async newCandidates(electionID) {
-    id0, id1 = await self.db.getCandidates(electionID)
+  /* Returns new blank candidates w/ supplied candidate names */
+  async newCandidates(cand0, cand1) {
     return [
       {
-        id: id0,
+        id: cand0,
         voteCount: 0,
         under25: 0,
         to65: 0,
@@ -130,7 +123,7 @@ export class BreakdownDatabase {
         numGenderOther: 0
       },
       {
-        id: id1,
+        id: cand1,
         voteCount: 0,
         under25: 0,
         to65: 0,
@@ -146,6 +139,14 @@ export class BreakdownDatabase {
         numGenderOther: 0
       }
     ]
+  }
+
+
+  /* Gets the demographic breakdown for a given candidate */
+  async getBreakdown(electionID) {
+    const queryText = `SELECT * FROM electionBreakdowns WHERE electionID = '$1'`
+    const res = await this.client.query(queryText, [electionID]);
+    return res.rows;
   }
 }
 
