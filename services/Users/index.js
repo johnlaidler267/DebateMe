@@ -161,7 +161,11 @@ app.post('/events', async (req, res) => {
   const { type } = req.body;
   if (type === "userDataRequest") {
     const { userId } = req.query;
-    const User = await userDB.findOne({ userId: userId });
+    const User = await userDB.findOne({ userId: userId }) || {};
+    User.age = 2;
+    User.gender = "M";
+    User.race = "black";
+    console.log(User);
     res.send({ age: User.age, gender: User.gender, race: User.race });
   }
 });

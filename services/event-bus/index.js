@@ -71,65 +71,67 @@ app.post('/events', async (req, res) => {
   const event = req.body;
   //make subscriptable here, need to check type of incoming event and send it only to services that care about that event. 
   let eventType = event.type; //make sure type is the name of the 
-  if(eventType = "commentCreated"){
+  if(eventType === "commentCreated"){
     for(let i = 0; i< commentCreatedPorts.length; i++){
       await axios.post(`http:/${commentCreatedNames}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
-  else if (eventType = "moderated"){
+  else if (eventType === "moderated"){
     for(let i = 0; i< moderatedPorts.length; i++){
       await axios.post(`http://${moderatedNames[i]}:${moderatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
   }
  }
-  else if (eventType = "commentVoted"){
+  else if (eventType === "commentVoted"){
     for(let i = 0; i< commentVotedPorts.length; i++){
       await axios.post(`http://${commentVotedNames[i]}:${commentVotedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
-  else if (eventType = "voteCreated"){
+  else if (eventType === "voteCreated"){
     for(let i = 0; i< voteCreatedPorts.length; i++){
       await axios.post(`http://${voteCreatedNames[i]}:${voteCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
-  else if (eventType = "postCreated"){
+  else if (eventType === "postCreated"){
     for(let i = 0; i< postCreatedPorts.length; i++){
       await axios.post(`http://${postCreatedNames[i]}:${postCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
-  else if (eventType = "postUpdated"){
+  else if (eventType === "postUpdated"){
     for(let i = 0; i< postUpdatedPorts.length; i++){
       await axios.post(`http://${postUpdatedNames[i]}:${postUpdatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
-  else if (eventType = "postDeleted"){
+  else if (eventType === "postDeleted"){
     for(let i = 0; i< postDeletedPorts.length; i++){
       await axios.post(`http://${postDeletedNames[i]}:${postDeletedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
   }
-  else if (eventType = "userDataRequest"){
+  else if (eventType === "userDataRequest"){
     for(let i = 0; i< userDataRequestPorts.length; i++){
-      await axios.post(`http://${userDataRequestNames[i]}:${userDataRequestPorts[i]}/events`, event).catch((err) => {
+      const response = await axios.post(`http://localhost:${userDataRequestPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
+      
+      console.log(response.data);
+      res.send(response.data);
     }
   }
 
   console.log(event.type);
-  res.send();
 });
 
 app.listen(4010, () => {
