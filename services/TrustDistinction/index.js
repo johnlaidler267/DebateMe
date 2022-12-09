@@ -32,7 +32,6 @@ class TrustDistinctionServer {
       const reliabilityScore = await self.db.getReliability(userID)
       const score = calculateScore(engagementScore, reliabilityScore)
       res.status(200).send(JSON.stringify(score))
-      //send to event bus
     });
 
     /* Respond to events from the event bus */
