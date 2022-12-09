@@ -14,10 +14,11 @@
     border: none !important;
     font-weight: 500 !important;
   }
-  label {
+  
+  .label {
     color: White;
   }
-  input {
+  .input {
     height: 100px;
     width: 300px;
     margin: 10px
