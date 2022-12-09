@@ -25,8 +25,8 @@ await connectDB();
 
 await axios.post("http://localhost:4010/subscribe", {
   port: port,
-  name: "User",
-  events: ["userDataRequest"]
+  name: "users",
+  events: []
 });
 
 app.use(logger('dev'));
@@ -162,11 +162,7 @@ app.post('/events', async (req, res) => {
   if (type === "userDataRequest") {
     const { userId } = req.query;
     const User = await userDB.findOne({ userId: userId }) || {};
-    User.age = 2;
-    User.gender = "M";
-    User.race = "black";
-    console.log(User);
-    res.send({ age: User.age, gender: User.gender, race: User.race });
+    res.send(User);
   }
 });
 
