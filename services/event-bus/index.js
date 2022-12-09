@@ -79,7 +79,7 @@ app.post('/events', async (req, res) => {
         console.log(err.message)
       });
     }
-    res.send()
+    res.send(event);
   }
   else if (eventType === "moderated"){
     for(let i = 0; i< moderatedPorts.length; i++){
@@ -87,7 +87,7 @@ app.post('/events', async (req, res) => {
         console.log(err.message)
       });
     }
-    res.send()
+    res.send(event);
  }
   else if (eventType === "commentVoted"){
     for(let i = 0; i< commentVotedPorts.length; i++){
@@ -95,7 +95,7 @@ app.post('/events', async (req, res) => {
         console.log(err.message)
       });
     }
-    res.send()
+    res.send(event);
   }
   else if (eventType === "voteCreated"){
     for(let i = 0; i< voteCreatedPorts.length; i++){
@@ -103,15 +103,19 @@ app.post('/events', async (req, res) => {
         console.log(err.message)
       });
     }
-    res.send()
+    res.send(event);
   }
   else if (eventType === "postCreated"){
+    console.log(postCreatedPorts);
     for(let i = 0; i< postCreatedPorts.length; i++){
-      await axios.post(`http://${postCreatedNames[i]}:${postCreatedPorts[i]}/events`, event).catch((err) => {
+      await axios.post(`http://localhost:${postCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
+      // await axios.post(`http://${postCreatedNames[i]}:${postCreatedPorts[i]}/events`, event).catch((err) => {
+      //   console.log(err.message)
+      // });
     }
-    res.send()
+    res.send(event);
   }
   else if (eventType === "postUpdated"){
     for(let i = 0; i< postUpdatedPorts.length; i++){
@@ -119,7 +123,7 @@ app.post('/events', async (req, res) => {
         console.log(err.message)
       });
     }
-    res.send()
+    res.send(event);
   }
   else if (eventType === "postDeleted"){
     for(let i = 0; i< postDeletedPorts.length; i++){
@@ -127,16 +131,15 @@ app.post('/events', async (req, res) => {
         console.log(err.message)
       });
     }
-    res.send()
+    res.send(event);
   }
   else if (eventType === "userDataRequest"){
-    // for(let i = 0; i < userDataRequestPorts.length; i++){
+      console.log(event);
       const response = await axios.post(`http://localhost:4008/events`, event).catch((err) => {
         console.log(err.message)
       });
       console.log(response.data);
       res.send(response.data);
-    // }
   }
 
   console.log(event.type);

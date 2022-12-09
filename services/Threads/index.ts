@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, response, Response } from 'express';
 import logger from 'morgan';
 import { MongoClient } from 'mongodb';
 import {v4 as uuidv4} from 'uuid';
@@ -31,12 +31,10 @@ const app: Express = express();
 const port = process.env.PORT || 4006;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let postDB: Posts = {};
-let userDB = {};
 
 const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
-        userDB = client.db("Users").collection('users');
         postDB = client.db("Posts").collection('posts');
     } catch (err) {
         console.log(err);
@@ -72,7 +70,7 @@ app.post('/posts/create', async (req: Request, res: Response) => {
         };
     
         await axios.post('http://localhost:4010/events', {
-            type: 'PostCreated',
+            type: 'postCreated',
             data: data,
         }).catch((err) => console.log(err.message));
     
@@ -108,63 +106,72 @@ app.get('/posts/get', async (req: Request, res: Response) => {
 
 app.put('/posts/update', async (req: Request, res: Response) => {
     const { userId, postId, title, content, candidate } : { userId: string, postId: string, title: string, content: string, candidate: string[] } = req.body;
+    console.log(userId, postId, title, content, candidate)
     if (userId == undefined || postId == undefined || title == undefined || content == undefined || candidate == undefined) {
-        res.status(400).send({ error: "Request data is incomplete" }); 
+        res.status(400).send({ error: "Request data is incomplete" });
+    } else {
+        const response = await axios.post('http://localhost:4010/events', {
+            port: port,
+            name: 'thread',
+            type: 'userDataRequest',
+            userId: userId,
+        }).catch((err) => console.log(err.message)); 
+
+        const user = await response.data;
+
+        if (user) {
+            const post: Post = await postDB.findOne({ postId: postId });
+
+            if (post) {
+                if (post.userId === user.userId) {
+                    const data: Data = { 
+                        userId: userId,
+                        postId: postId,
+                        username: user.username,
+                        title: title,
+                        content: content,
+                    };
+                    
+                    postDB.updateOne(
+                        { postId: postId },
+                        { $set: {...data} },
+                        { upsert: true }
+                    );
+                    
+                    await axios.post('http://localhost:4010/events', {
+                        type: 'postUpdated',
+                        data: data,
+                    }).catch((err) => console.log(err.message));
+            
+                    res.status(201).send(data);
+                } else {
+                    res.status(401).send({ error: "Access is denied due to invalid credentials" });
+                }
+            } else {
+                res.status(404).send({ error: "Post not found" });
+            }
+        } else {
+            res.status(404).send({ error: "User not found" });
+        }
+    }
+});
+
+app.delete('/posts/delete', async (req: Request, res: Response) => {
+    const { userId, postId } : { userId: string, postId: string } = req.body;
+    console.log(req);
+    console.log(req.body);
+    if (userId == undefined || postId == undefined) {
+        res.status(400).send({ error: "Request data is incomplete" });
     }
 
     const response = await axios.post('http://localhost:4010/events', {
         port: port,
         name: 'thread',
         type: 'userDataRequest',
-        userId: { userId },
-    }).catch((err) => console.log(err.message));
+        userId: userId,
+    }).catch((err) => console.log(err.message)); 
 
-    const user = response; 
-    console.log(response.data); 
-
-    if (user) {
-        const post: Post = await postDB.findOne({ postId: postId });
-
-        if (post) {
-            if (post.userId === user.userId) {
-                const data: Data = { 
-                    userId: userId,
-                    postId: postId,
-                    username: user.username,
-                    title: title,
-                    content: content,
-                };
-                
-                postDB.updateOne(
-                    { postId: postId },
-                    { $set: {...data} },
-                    { upsert: true }
-                  );
-                
-                await axios.post('http://localhost:4010/events', {
-                    type: 'PostUpdated',
-                    data: data,
-                }).catch((err) => console.log(err.message));
-        
-                res.status(201).send(data);
-            } else {
-                res.status(401).send({ error: "Access is denied due to invalid credentials" });
-            }
-        } else {
-            res.status(404).send({ error: "Post not found" });
-        }
-    } else {
-        res.status(404).send({ error: "User not found" });
-    }
-});
-
-app.delete('/posts/delete', async (req: Request, res: Response) => {
-    const { userId, postId } : { userId: string, postId: string } = req.body;
-    if (userId == undefined || postId == undefined) {
-        res.status(400).send("Request data is incomplete");
-    }
-
-    const user = await userDB.findOne({ userId: userId });
+    const user = await response.data;
 
     if (user) {
         const post: Post = await postDB.findOne({ postId: postId });
@@ -182,7 +189,7 @@ app.delete('/posts/delete', async (req: Request, res: Response) => {
                 postDB.deleteOne({ postId: postId });
         
                 await axios.post('http://localhost:4010/events', {
-                    type: 'PostDeleted',
+                    type: 'postDeleted',
                     data: data,
                 }).catch((err) => console.log(err.message));
         

@@ -81,10 +81,6 @@ app.post('/users/login', async (req, res) => {
           if (user.hasOwnProperty('_id')) {
             delete user._id;
           }
-          await axios.post('http://localhost:4010/events', {
-            type: 'UserLoggedIn',
-            data: user
-          }).catch((err) => console.log(err.message));
 
           res.status(200).send(user);
       }
@@ -160,8 +156,9 @@ app.put('/users/update', async (req, res) => {
 app.post('/events', async (req, res) => {
   const { type } = req.body;
   if (type === "userDataRequest") {
-    const { userId } = req.query;
+    const { userId } = req.body;
     const User = await userDB.findOne({ userId: userId }) || {};
+    console.log(User);
     res.send(User);
   }
 });
