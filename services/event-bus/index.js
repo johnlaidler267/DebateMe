@@ -27,8 +27,8 @@ app.use(express.json());
 
 app.post('/subscribe', (req, res) => {
   const options = req.body;
-  // let port = options.port
-  // let name = options.name
+  let port = options.port
+  let name = options.name
   let eventArray = options.events
   for(let i = 0; i < eventArray.length; i ++){
     if(eventArray.includes("commentCreated")){
@@ -69,10 +69,7 @@ app.post('/subscribe', (req, res) => {
 
 app.post('/events', async (req, res) => {
   const event = req.body;
-  let port = event.port
-  let name = event.name
-  //make subscriptable here, need to check type of incoming event and send it only to services that care about that event. 
-  let eventType = event.type; //make sure type is the name of the 
+  let eventType = event.type; 
   if(eventType === "commentCreated"){
     for(let i = 0; i< commentCreatedPorts.length; i++){
       await axios.post(`http:/${commentCreatedNames}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
