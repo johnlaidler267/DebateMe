@@ -4,11 +4,14 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom'
 import { Card, Container } from 'react-bootstrap';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CommentCreate from './CommentCreate'
+import CommentList from './CommentList'
 
 export default function Post() {
   const [ Thread, setThread ] = useState();
   const { postId } = useParams();
   const [ Toggle, setIsToggle ] = useState(false);
+  const [comments, setComments] = useState({})
 
   const fetchThread = async () => {
     const res = await axios.get(`http://localhost:4006/posts/get?postId=${postId}`);
@@ -80,6 +83,11 @@ export default function Post() {
             </Card>
         </Container>
       )}
+    <div className = "container">
+    <CommentCreate postId={postId} comments = {comments} setComments = {setComments} />
+    <CommentList postId={postId} comments = {comments} setComments = {setComments} />
+    </div>
     </>
+
   )
 }

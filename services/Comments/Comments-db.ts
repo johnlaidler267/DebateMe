@@ -32,10 +32,11 @@ export class CommentsDatabase {
     //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
       create table if not exists comments (
-        userId varchar(30),
-        parentId varchar(30),
-        commentId varchar(30),
-        postId varchar(30),
+        username varchar(50),
+        userId varchar(50),
+        parentId varchar(50),
+        commentId varchar(50),
+        postId varchar(50),
         content varchar(130) 
       );
         `
@@ -51,10 +52,10 @@ export class CommentsDatabase {
 
 
   // create comment
-  async createComment(userId:string, parentId:string, commentId:string, postId:string, content:string) {
+  async createComment(username:string ,userId:string, parentId:string, commentId:string, postId:string, content:string) {
     //console.log(userID, parentID, commentID, postID, content)
-    const queryText:string = 'INSERT INTO comments (userId, parentId, commentId, postId, content) VALUES ($1, $2, $3, $4, $5)';
-    const res = await this.client.query(queryText, [userId, parentId, commentId, postId, content]);
+    const queryText:string = 'INSERT INTO comments (username, userId, parentId, commentId, postId, content ) VALUES ($1, $2, $3, $4, $5, $6)';
+    const res = await this.client.query(queryText, [username, userId, parentId, commentId, postId, content ]);
     return res.rows;
   };
 
