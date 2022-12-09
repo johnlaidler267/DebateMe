@@ -41,19 +41,15 @@ class BreakdownServer {
 
     // Respond to a voteCreated event from the event bus
     this.app.get("/events", async (req, res) => {
-      const vote = req.body.data
+      const { userId } = req.body;
 
-      const { age, race, gender } = await axios.post("http://localhost:4010/events", {
-        params: {
-          userID: data.userID
-        },
-        body: {
-          type: "userDataRequest"
-        }
+     const response = await axios.post("http://localhost:4010/events", {
+        type: "userDataRequest",
+        userId: userId
       });
 
-      const update = await self.db.updateBreakdown(vote, userData)
-      res.status(200).send(JSON.stringify(update))
+      console.log(response.data)
+      res.send(response.data);
     });
   }
 
