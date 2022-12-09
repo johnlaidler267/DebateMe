@@ -27,7 +27,6 @@ class ElectionServer {
 
     /* Creates a new vote */
     this.app.post("/vote/cast", async (req, res) => {
-      console.log("CASTING VOTE")
       const { electionID, userID, vote } = req.query;
       const Vote = await self.db.createVote(electionID, userID, vote)
       res.status(200).send(JSON.stringify(Vote))
