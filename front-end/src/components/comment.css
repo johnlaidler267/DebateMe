@@ -1,0 +1,24 @@
+.custom-btn {
+    background-image: linear-gradient(
+      to right,
+      #393f4d,
+      #feda6a,
+      #393f4d
+    ) !important;
+    border: none;
+    color: black !important;
+    padding: 15px 32px;
+    text-align: center;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none !important;
+    font-weight: 500 !important;
+  }
+  label {
+    color: White;
+  }
+  input {
+    height: 100px;
+    width: 300px;
+    margin: 10px
+  }

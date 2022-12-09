@@ -8,6 +8,8 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import ClearIcon from '@mui/icons-material/Clear';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Modal from "./Modal";
+import CommentCreate from './CommentCreate'
+import CommentList from './CommentList'
 
 export default function Post() {
   const [ Thread, setThread ] = useState();
@@ -18,6 +20,7 @@ export default function Post() {
   const [ Content, setContent ] = useState("");
   const listRef = useRef();
   const navigate = useNavigate();
+  const [comments, setComments] = useState({})
 
   const fetchThread = async () => {
     const res = await axios.get(`http://localhost:4006/posts/get?postId=${postId}`);
@@ -128,6 +131,11 @@ export default function Post() {
             <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
         </Container>
       )}
+    <div className = "container">
+    <CommentCreate postId={postId} comments = {comments} setComments = {setComments} />
+    <CommentList postId={postId} comments = {comments} setComments = {setComments} />
+    </div>
     </>
+
   )
 }

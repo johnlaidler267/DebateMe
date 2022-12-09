@@ -31,15 +31,17 @@ class CommentServer{
 
     this.app.post('/addComment', async (req: Request,res: Response) => {
       const userId: string = req.query.userId as string
+      const username: string = req.query.username as string
       const parentId: string = req.query.parentId as string
       const postId: string = req.query.postId as string
       const content: string = req.query.content as string
       const commentId: string = randomBytes(4).toString("hex");
-      const comment = await self.db.createComment(userId, parentId, commentId, postId, content)
+      const comment = await self.db.createComment(username, userId, parentId, commentId, postId, content)
       res.status(200).send(JSON.stringify(comment))
-      await axios.post('http://event-bus:4010/events', { 
+      await axios.post('http://localhost:4010/events', { 
       type: 'commentCreated',
       data: {
+        username: username,
         userId: userId,
         commentId: commentId,
         postId: postId,
