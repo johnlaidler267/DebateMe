@@ -3,6 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { CommentsVoteDatabase } from './CommentsVote-db'; 
+import { exit } from 'process';
 
 
 interface CommentSingleVote{
@@ -63,14 +64,13 @@ class CommentVoteServer{
         let newDownvotes:string[] = votesStored.downvotes;
         if (votesStored.upvotes.includes(userId)){
           if (vote.toLowerCase() === "down"){
-            
               const index = votesStored.upvotes.indexOf(userId);
               newUpvotes.splice(index,1)
               newDownvotes.push(userId)
           }
           else{
             res.status(200).send("No Changes");
-            return
+            return; 
           }
         }
         else if (votesStored.downvotes.includes(userId)){
@@ -98,7 +98,7 @@ class CommentVoteServer{
         console.log(voteObj)
         res.status(200).send(JSON.stringify(voteObj)) //voteObj not sending right object? need to debug
       }
-      await axios.post('http://event-bus:4010/events', { 
+      await axios.post('http://localhost:4010/events', { 
       type: 'commentVoted',
       data: {
         userId: userId,

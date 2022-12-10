@@ -9,28 +9,27 @@ const app = express();
 const port = process.env.PORT || 4006;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let postDB = {};
-let userDB = {};
 const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
-        userDB = client.db("Users").collection("users");
-        postDB = client.db("Posts").collection("posts");
+        postDB = client.db("Posts").collection('posts');
     }
     catch (err) {
         console.log(err);
     }
 };
 await connectDB();
-app.use(logger("dev"));
+await axios.post("http://localhost:4010/subscribe", {
+    port: port,
+    name: "threads",
+    events: []
+});
+app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
-app.post("/posts/create", async (req, res) => {
-    const { userId, username, title, content, candidate, } = req.body;
-    console.log(userId, title, content, candidate);
-    if (userId == undefined ||
-        title == undefined ||
-        content == undefined ||
-        candidate == undefined) {
+app.post('/posts/create', async (req, res) => {
+    const { userId, username, title, content, candidate } = req.body;
+    if (userId == undefined || title == undefined || content == undefined || candidate == undefined) {
         res.status(400).send({ error: "Request data is incomplete" });
     }
     else {
@@ -42,17 +41,23 @@ app.post("/posts/create", async (req, res) => {
             title: title,
             content: content,
             candidate: candidate,
-            date: new Date(),
+            date: new Date()
         };
-        postDB.insertOne(data);
-        await axios
-            .post("http://localhost:4010/events", {
-            type: "PostCreated",
+        await axios.post('http://localhost:4010/events', {
+            type: 'postCreated',
             data: data,
-        })
-            .catch((err) => console.log(err.message));
+        }).catch((err) => console.log(err.message));
+        postDB.insertOne(data);
         res.status(201).send(data);
     }
+    postDB.insertOne(data);
+    await axios
+        .post("http://localhost:4010/events", {
+        type: "PostCreated",
+        data: data,
+    })
+        .catch((err) => console.log(err.message));
+    res.status(201).send(data);
 });
 app.get("/posts/all", async (req, res) => {
     const posts = await postDB

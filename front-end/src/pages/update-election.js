@@ -1,18 +1,19 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CircularProgress } from '@mui/material';
 import { Button, Card, Form, Container } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthProvider";
+import { useLocation, useNavigate } from "react-router-dom";
+import Modal from "../components/Modal";
 
 // Create  a form element that allows the user to create a new election
 // Create a button that allows the user to submit the election
-const CreateElection = () => {
+const UpdateElection = () => {
     const [ Loading, setLoading ] = useState(false);
     const navigate = useNavigate();
-    const { Auth } = useContext(AuthContext);
     const [ IsOpen, setIsOpen ] = useState(false);
     const [ Content, setContent ] = useState("");
+    const { state } = useLocation();
+    const formRef = useRef();
 
     const onSubmit = async (event) => {
       event.preventDefault();
@@ -22,17 +23,17 @@ const CreateElection = () => {
       const candidate = [candidate1.value, candidate2.value];
 
       try {
-          const res = await axios.post('http://localhost:4006/posts/create', {
-            userId: Auth.userId,
-            username: Auth.username,
+          const res = await axios.put('http://localhost:4006/posts/update', {
+            userId: state.userId,
+            postId: state.postId,
             title: title.value,
             content: content.value,
             candidate: candidate
           })
 
-            setTimeout(function() {
-                navigate(`/post/${res.data.postId || ""}`);
-            }, 1000);
+          setTimeout(function() {
+            navigate(`/post/${res.data.postId || ""}`);
+        }, 1000);
       } catch (error) {
             setTimeout(function() {
                 setIsOpen(true);
@@ -41,6 +42,17 @@ const CreateElection = () => {
             }, 1500);
       }
     }
+
+    useEffect(() => {
+        if (formRef) {
+            const form = formRef.current || {};
+            form.title.value = state.title;
+            form.content.value = state.content;
+            form.candidate1.value = state.candidate[0];
+            form.candidate2.value = state.candidate[1];
+        }
+    }, [state])
+    
 
     return (
         <div className="App">
@@ -54,7 +66,7 @@ const CreateElection = () => {
                     <Card.Title className="text-center">New Election</Card.Title>
                     <Card.Body>
                         <Container>
-                            <Form onSubmit={(e) => onSubmit(e)}>
+                            <Form onSubmit={(e) => onSubmit(e)} ref={formRef}>
                                 <Form.Group controlId="title">
                                     <Form.Label>Election Name</Form.Label>
                                     <Form.Control type="text" placeholder="Enter election name" required />
@@ -75,17 +87,18 @@ const CreateElection = () => {
                                     <Form.Control type="text" placeholder="Enter candidate 2" required />
                                 </Form.Group>
                                 <Button className="mt-4" variant="secondary" type="submit">
-                                    {Loading ? <CircularProgress sx={{color: "yellow"}} size={40}/> : "Create"}
+                                    {Loading ? <CircularProgress sx={{color: "yellow"}} size={40}/> : "Update"}
                                 </Button>
                             </Form>
                             <br></br>
                         </Container>
                     </Card.Body>
                 </Card>
+                <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
                 <br></br>
             </Container>
         </div >
     );
 };
 
-export default CreateElection;
+export default UpdateElection;

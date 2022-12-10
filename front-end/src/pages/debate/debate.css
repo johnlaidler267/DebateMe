@@ -125,10 +125,33 @@ input[type="checkbox"]:checked {
 .toggle {
   position: absolute;
   right: 40px;
-  background: grey;
+  background: #feda6a;
+  text-align: right;
+  border: 2px solid black;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.toggle-button:hover {
+  color: rgb(155, 145, 145);
+}
+
+.toggle-button:focus, .toggle-button:active {
+  color: rgb(21, 21, 21);
+}
+
+.toggle ul {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
   list-style: none;
-  text-align: center;
+  font-size: larger;
   padding: 0;
+}
+
+.toggle ul li:hover {
+  opacity: 0.6;
+  text-decoration: underline;
 }
 
 .form-error {

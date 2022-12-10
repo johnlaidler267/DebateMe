@@ -6,6 +6,7 @@ import Debate from "./pages/debate/debate";
 import SignUp from "./pages/signup";
 import Profile from "./pages/profile";
 import CreateElection from "./pages/create-election";
+import UpdateElection from "./pages/update-election";
 import VoteHistory from "./pages/vote-history";
 import Messages from "./pages/messages";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -62,6 +63,14 @@ function App() {
             }
           />
           <Route
+            path="/post/:postId/update"
+            element={
+              <PrivateRoute>
+                <UpdateElection />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/vote-history"
             element={
               <PrivateRoute>
@@ -69,7 +78,13 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/view-profile" element={<Profile />} />
+          <Route 
+            path="/view-profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            } />
           <Route
             path="/messages"
             element={
