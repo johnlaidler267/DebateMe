@@ -11,8 +11,11 @@ const Upvote= ({ commentId, ownerId}) => {
             alert("Must be logged in to vote ");
         }
         else{
-            await axios.post(`http://localhost:4002/comments/vote?userId=${token.userid}&commentId=${commentId}&vote=up&ownerId=${ownerId}`)
-            setVotes(Votes + 1 ) //is this neccessary?
+            let response = await axios.post(`http://localhost:4002/comments/vote?userId=${token.userId}&commentId=${commentId}&vote=up&ownerId=${ownerId}`)
+            if(response.data !== 'No Changes'){
+                window.location.reload(false);
+            }
+            
         }
     }
     const retrieveVotes= async () => {

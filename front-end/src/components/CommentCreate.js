@@ -26,8 +26,8 @@ const CommentCreate = ({ postId, comments, setComments }) => {
       <center>
       <form onSubmit={newComment}>
         
-          <label>Create New Comment
-          <input type="text" value = {Value} onChange={(e) => setValue(e.target.value)} ></input>
+          <label id ="create">Enter your comment here: 
+          <input id = "commentBox" type="text" value = {Value} onChange={(e) => setValue(e.target.value)} ></input>
           </label>
         <button className="custom-btn">Submit Comment</button>
       </form>

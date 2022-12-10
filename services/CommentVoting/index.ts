@@ -3,6 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { CommentsVoteDatabase } from './CommentsVote-db'; 
+import { exit } from 'process';
 
 
 interface CommentSingleVote{
@@ -63,14 +64,13 @@ class CommentVoteServer{
         let newDownvotes:string[] = votesStored.downvotes;
         if (votesStored.upvotes.includes(userId)){
           if (vote.toLowerCase() === "down"){
-            
               const index = votesStored.upvotes.indexOf(userId);
               newUpvotes.splice(index,1)
               newDownvotes.push(userId)
           }
           else{
             res.status(200).send("No Changes");
-            return
+            return; 
           }
         }
         else if (votesStored.downvotes.includes(userId)){

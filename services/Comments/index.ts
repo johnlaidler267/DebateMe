@@ -55,7 +55,8 @@ class CommentServer{
     this.app.get("/comments/get" , async (req: Request, res: Response) => {
       const postId:string = req.query.postId as string
       const postComments = await self.db.getPostComments(postId)
-      res.status(200).send(JSON.stringify(postComments))
+      const sortedComments = await this.sortByVotes(postComments) // sorts coments by number of votes
+      res.status(200).send(JSON.stringify(sortedComments))
     });
     
     //get all comments for a given user
@@ -71,6 +72,42 @@ class CommentServer{
       res.send({});
     });
   }
+
+  async sortByVotes(commentList: any[]){
+    let orderedArray = [];
+    let numVotes = [];
+    for( let i = 0; i< commentList.length; i++){
+      let voteObj = await axios.get(`http://localhost:4002/comments/getVotes?commentId=${commentList[i].commentid}`)
+      if (voteObj.data.length === 0){
+        orderedArray.push(commentList[i]);
+        numVotes.push(0);
+      }
+      else{
+        console.log(commentList[i].commentid)
+        let pushed = false
+        let votes = voteObj.data[0].upvotes.length + voteObj.data[0].downvotes.length
+        if(numVotes.length === 0){
+          orderedArray.push(commentList[i]);
+          numVotes.push(votes);
+          continue;
+        }
+        for(let j = 0; j < numVotes.length; j++){
+          if(votes >= numVotes[j]){
+            orderedArray.splice(j, 0, commentList[i] )
+            numVotes.splice(j, 0, votes);
+            pushed = true
+            break;
+          }
+        }
+        if(!pushed){
+          orderedArray.push(commentList[i]);
+          numVotes.push(votes);
+        }
+      }
+    }
+    return orderedArray
+  }
+
   async initDb() {
     this.db = new CommentsDatabase(this.dburl);
     await this.db.connect();

@@ -15,10 +15,11 @@
     font-weight: 500 !important;
   }
   
-  .label {
+  #create {
     color: White;
+    margin: 10px;
   }
-  .input {
+  #commentBox {
     height: 100px;
     width: 300px;
     margin: 10px
