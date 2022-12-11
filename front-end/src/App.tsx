@@ -6,7 +6,7 @@ import Debate from "./pages/debate/debate";
 import SignUp from "./pages/signup";
 import Profile from "./pages/profile";
 import CreateElection from "./pages/create-election";
-import UpdateElection from "./pages/update-election";
+import UpdateElection from "./components/PostUpdate";
 import VoteHistory from "./pages/vote-history";
 import Messages from "./pages/messages";
 import "bootstrap/dist/css/bootstrap.min.css";
