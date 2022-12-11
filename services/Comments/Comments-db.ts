@@ -72,4 +72,10 @@ export class CommentsDatabase {
     return res.rows
   }
 
+  async deleteComment(commentId: string){
+    const queryText = `DELETE FROM comments WHERE commentId = '${commentId}'`;
+    const res = await this.client.query(queryText)
+    return res.rows
+  }
+
 }

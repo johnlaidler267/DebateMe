@@ -45,26 +45,26 @@ export class ModerationDatabase {
     await this.pool.end();
   }
   //left for future references
-  async updateVote(commentID:string, upvotes:string[], downvotes:string[]){
+  async updateUser(userId:string, rejected:string[], accepted:string[]){
     const queryText =
-    `UPDATE commentVotes SET upvotes = '{${upvotes}}', downvotes = '{${downvotes}}' WHERE commentID = '${commentID}' `;
+    `UPDATE moderation SET rejected = '{${rejected}}', accepted = '{${accepted}}' WHERE userId = '${userId}' `;
     const res = await this.client.query(queryText);
     return res.rows;
   }
 
 
   // create commentVote
-  async createCommentVote(commentID:string, upvotes:string[], downvotes:string[]) {
-    const queryText = 'INSERT INTO commentVotes ( commentID, upvotes, downvotes) VALUES ($1, $2, $3)';
-    const res = await this.client.query(queryText, [commentID, upvotes, downvotes]);
+  async createUser(userId:string, rejected:string[], accepted:string[]) {
+    const queryText = 'INSERT INTO moderation ( userId, rejected, accepted) VALUES ($1, $2, $3)';
+    const res = await this.client.query(queryText, [userId, rejected, accepted]);
     return res.rows;
   };
 
-  // gets all vote on a given comment
-  async getCommentVotes(commentID:string) {
-    const queryText = `SELECT * FROM commentVotes WHERE commentID = '${commentID}'`
-    const res = await this.client.query(queryText); 
-    return res.rows
-  }
-
+  async retrieveUser(userId:string){
+    const queryText = `SELECT * FROM moderation WHERE userId = '${userId}'`;
+    const res = await this.client.query(queryText);
+    return res.rows;
+  }  
 }
+
+ 
