@@ -34,7 +34,7 @@ export class TrustDatabase {
         engagement integer,
         reliability integer
       );
-        `;
+    `;
     const res = await this.client.query(queryText);
   }
 

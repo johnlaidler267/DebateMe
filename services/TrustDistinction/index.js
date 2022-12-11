@@ -11,7 +11,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 
-class TrustDistinctionServer {
+class TrustServer {
 
   constructor(dburl) {
     this.dburl = dburl;
@@ -25,31 +25,32 @@ class TrustDistinctionServer {
   async initRoutes() {
     const self = this
 
+    /* Update score when an event is recieved from the event bus */
+    this.app.post("/events", (req, res) => {
+      const type = req.body.type
+      const userID = req.body.data.userID
+
+      if (type === "commentCreated" || type === "voteCreated" || type === "postCreated")
+        updateEngagment(type, userID)
+      else if (type === "commentVoted" || type === "commentModerated")
+        updateReliability(type, userID)
+
+      res.send({});
+    });
+
     /* Get the trust score for a user */
     this.app.get("/user/trust/get", async (req, res) => {
       const { userID } = req.query
       const engagementScore = await self.db.getEngagement(userID)
       const reliabilityScore = await self.db.getReliability(userID)
       const score = calculateScore(engagementScore, reliabilityScore)
-      res.status(200).send(JSON.stringify(score))
-    });
-
-    /* Respond to events from the event bus */
-    this.app.post("/events", (req, res) => {
-      const type = req.body.type
-      const data = req.body.data
-      if (type === "commentCreated" || type === "voteCreated" || type === "postCreated")
-        updateEngagment(type, data)
-      else if (type === "commentVoted" || type === "commentModerated")
-        updateReliability(type, data)
-      res.send({});
+      res.status(200).send(score)
     });
   }
 
   /* Update the engagement score for a user */
-  async updateEngagement(type) {
-    const score = await self.db.getEngagement(userID)
-    const userID = data.userID
+  async updateEngagement(type, userID) {
+    const score = await self.db.getEngagement(userID) || 0
 
     if (type === "postCreated") score += 1
     else if (type === "commentCreated") score += 0.5
@@ -60,23 +61,19 @@ class TrustDistinctionServer {
 
   /* Update the reliability score for a user */
   async updateReliability(type, data) {
-    const score = await self.db.getReliability(userID)
-    const userID = data.userID
-
+    const score = await self.db.getReliability(userID) || 0;
     score += (type === "commentVoted") ? 1 : -1
-
     await self.db.updateReliability(userID, score)
   }
 
   /* Calculate the trust score for a user */
   calculateScore(engagementScore, reliabilityScore) {
-    const score = engagementScore + (reliabilityScore * 0.7)
-    return score
+    return engagementScore + (reliabilityScore * 0.7)
   }
 
   /* Initialize the database connection */
   async initDb() {
-    this.db = new ElectionDatabase(this.dburl);
+    this.db = new TrustDatabase(this.dburl);
     await this.db.connect();
   }
 
@@ -84,17 +81,17 @@ class TrustDistinctionServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    await axios.post("http://event-bus:4010/subscribe", {
-      port: 4001,
-      events: ["commentCreated", "commentVoted", "voteCreated", "postCreated", "postUpdated"]
-    });
+    // await axios.post("http://event-bus:4010/subscribe", {
+    //   port: 4001,
+    //   events: ["commentCreated", "commentVoted", "voteCreated", "postCreated", "postUpdated"]
+    // });
     const port = process.env.PORT || 4001;
     this.app.listen(port, () => {
-      console.log(`Polling server started on ${port}`);
+      console.log(`Trust server started on ${port}`);
     });
   }
 }
 
 // Start the server
-const server = new ElectionBreakdownServer(process.env.DATABASE_URL);
+const server = new TrustServer(process.env.DATABASE_URL);
 server.start()

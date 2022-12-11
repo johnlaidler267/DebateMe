@@ -29,7 +29,7 @@ export class BreakdownDatabase {
     // //if you change any values in a table, either name or type of the variable or just deleting or adding values
     // //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     // const queryText = `
-    //   create type candidate as
+    //   create type if not exists candidate as
     //   (
     //     id varchar(30),
     //     voteCount int,
@@ -140,7 +140,6 @@ export class BreakdownDatabase {
       }
     ]
   }
-
 
   /* Gets the demographic breakdown for a given candidate */
   async getBreakdown(electionID) {

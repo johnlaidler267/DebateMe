@@ -30,12 +30,22 @@ class ElectionServer {
       const { electionID, userID, vote } = req.query;
       const Vote = await self.db.createVote(electionID, userID, vote)
       res.status(200).send(JSON.stringify(Vote))
+
+      // Send event to event bus
+      await axios.post("http://localhost:4010/events", {
+        type: "voteCreated",
+        data: {
+          electionID: electionID,
+          userId: userID,
+          vote: vote,
+        },
+      });
     });
+
   }
 
   /* Initialize the database connection */
   async initDb() {
-    console.log("INITIALIZING DB")
     this.db = new ElectionDatabase(this.dburl);
     await this.db.connect();
   }
@@ -44,7 +54,11 @@ class ElectionServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    console.log("STARTING")
+
+    // await axios.post("http://event-bus:4010/subscribe", {
+    //   port: 4001,
+    //   events: ["voteCreated"]
+    // });
 
     const port = process.env.PORT || 4009;
     this.app.listen(port, () => {
