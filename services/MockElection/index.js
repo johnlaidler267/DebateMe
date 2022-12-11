@@ -25,11 +25,13 @@ class ElectionServer {
   async initRoutes() {
     const self = this;
 
-    /* Creates a new vote */
-    this.app.post("/vote/cast", async (req, res) => {
+    /* Casts vote to database, emits voteCreated event */
+    this.app.post("/vote", async (req, res) => {
       const { electionID, userID, vote } = req.query;
       const Vote = await self.db.createVote(electionID, userID, vote)
       res.status(200).send(JSON.stringify(Vote))
+
+      console.log("Election Server Vote::", electionID, userID, vote);
 
       // Send event to event bus
       await axios.post("http://localhost:4010/events", {
@@ -54,11 +56,6 @@ class ElectionServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-
-    // await axios.post("http://event-bus:4010/subscribe", {
-    //   port: 4001,
-    //   events: ["voteCreated"]
-    // });
 
     const port = process.env.PORT || 4009;
     this.app.listen(port, () => {

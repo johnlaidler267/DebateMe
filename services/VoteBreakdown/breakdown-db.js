@@ -26,47 +26,51 @@ export class BreakdownDatabase {
   }
 
   async init() {
-    // //if you change any values in a table, either name or type of the variable or just deleting or adding values
-    // //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
-    // const queryText = `
-    //   create type if not exists candidate as
-    //   (
-    //     id varchar(30),
-    //     voteCount int,
-    //     under25 int,
-    //     to65 int,
-    //     over65 int,
-    //     numBlack int,
-    //     numHispanic int,
-    //     numAsian int,
-    //     numCaucasian int,
-    //     numRaceOther int,
-    //     totalVotes int,
-    //     numMen int,
-    //     numWomen int,
-    //     numGenderOther int
-    //   );
-    //   create table if not exists electionBreakdowns (
-    //     electionID varchar(30),
-    //     candidates candidates[]
-    // `;
-    // const res = await this.client.query(queryText);
+    const queryText = `
+    DO $$ BEGIN
+      CREATE TYPE candidate AS
+      (
+        id varchar(30),
+        voteCount int,
+        under25 int,
+        to65 int,
+        over65 int,
+        numBlack int,
+        numHispanic int,
+        numAsian int,
+        numCaucasian int,
+        numRaceOther int,
+        totalVotes int,
+        numMen int,
+        numWomen int,
+        numGenderOther int
+      );
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
+      CREATE TABLE IF NOT EXISTS electionBreakdowns (
+        electionID varchar(30),
+        candidate0 candidate,
+        candidate1 candidate
+      );
+    `;
+    const res = await this.client.query(queryText);
   }
 
   /* Updates the breakdown for a given election */
   async updateBreakdown(electionID, vote, race, age, gender) {
     const breakdown = await self.db.getBreakdown(electionID)
 
-    const candidate0 = breakdown.candidates[0]
-    const candidate1 = breakdown.candidates[1]
+    const candidate0 = breakdown.candidate0
+    const candidate1 = breakdown.candidate1
 
     if (vote === candidate0.id)
       candidate0 = updateCandidate(candidate0, race, age, gender)
     else
       candidate1 = updateCandidate(candidate1, race, age, gender)
 
-    const query = `UPDATE electionBreakdowns SET candidates = ${ARRAY([candidate0, candidate1])}::candidates[] WHERE electionID = $1`
-    const res = await this.client.query(query, [electionID]);
+    const query = `UPDATE electionBreakdowns SET candidate0 = $1, candidate1 = $2 WHERE electionID = $3`;
+    const res = await this.client.query(query, [electionID, candidate0, candidate1]);
     return res.rows;
   }
 
@@ -98,47 +102,9 @@ export class BreakdownDatabase {
 
   /* Genderates a new blank breakdown whenever a post (election) is created */
   async createBreakdown(electionID, cand0, cand1) {
-    candidates = await self.db.newCandidates(cand0, cand1)
-    const queryText = `INSERT INTO electionBreakdowns (electionID, candidates) VALUES ($1, ${candidates})`
-    const res = await this.client.query(queryText, [electionID]);
-  }
-
-  /* Returns new blank candidates w/ supplied candidate names */
-  async newCandidates(cand0, cand1) {
-    return [
-      {
-        id: cand0,
-        voteCount: 0,
-        under25: 0,
-        to65: 0,
-        over65: 0,
-        numBlack: 0,
-        numHispanic: 0,
-        numAsian: 0,
-        numCaucasian: 0,
-        numRaceOther: 0,
-        totalVotes: 0,
-        numMen: 0,
-        numWomen: 0,
-        numGenderOther: 0
-      },
-      {
-        id: cand1,
-        voteCount: 0,
-        under25: 0,
-        to65: 0,
-        over65: 0,
-        numBlack: 0,
-        numHispanic: 0,
-        numAsian: 0,
-        numCaucasian: 0,
-        numRaceOther: 0,
-        totalVotes: 0,
-        numMen: 0,
-        numWomen: 0,
-        numGenderOther: 0
-      }
-    ]
+    console.log(electionID, cand0, cand1)
+    const queryText = `INSERT INTO electionBreakdowns (electionID, candidate0, candidate1) VALUES ($1, row($2,0,0,0,0,0,0,0,0,0,0,0,0,0), row($3,0,0,0,0,0,0,0,0,0,0,0,0,0))`;
+    const res = await this.client.query(queryText, [electionID, cand0, cand1]);
   }
 
   /* Gets the demographic breakdown for a given candidate */

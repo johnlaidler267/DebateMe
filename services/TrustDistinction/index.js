@@ -21,54 +21,61 @@ class TrustServer {
     this.app.use(cors());
   }
 
-  /* Initialize all routes (endpoints) for the server */
+  /* Initialize all routes (endpoints) for the server - i.e. things other services can connect to */
   async initRoutes() {
-    const self = this
-
     /* Update score when an event is recieved from the event bus */
-    this.app.post("/events", (req, res) => {
+    this.app.post("/events", async (req, res) => {
+      console.log(req.body)
       const type = req.body.type
       const userID = req.body.data.userID
 
+      console.log("TrustServer Event Recieved From EventBus::", type, userID)
+
       if (type === "commentCreated" || type === "voteCreated" || type === "postCreated")
-        updateEngagment(type, userID)
+        await this.updateEngagement(type, userID)
       else if (type === "commentVoted" || type === "commentModerated")
-        updateReliability(type, userID)
+        await this.updateReliability(type, userID)
+      else if (type === "userCreated") {
+        console.log("initializing user")
+        await this.db.initializeUser(userID)
+      }
+      else
+        console.log("Invalid event type recieved")
 
       res.send({});
     });
 
     /* Get the trust score for a user */
-    this.app.get("/user/trust/get", async (req, res) => {
+    this.app.get("/getTrust", async (req, res) => {
       const { userID } = req.query
-      const engagementScore = await self.db.getEngagement(userID)
-      const reliabilityScore = await self.db.getReliability(userID)
-      const score = calculateScore(engagementScore, reliabilityScore)
-      res.status(200).send(score)
+      const engagementScore = await this.db.getEngagement(userID)
+      const reliabilityScore = await this.db.getReliability(userID)
+      const score = this.calculateScore(engagementScore, reliabilityScore)
+      res.status(200).send(JSON.stringify(score))
     });
   }
 
   /* Update the engagement score for a user */
   async updateEngagement(type, userID) {
-    const score = await self.db.getEngagement(userID) || 0
+    let score = await this.db.getEngagement(userID)
 
     if (type === "postCreated") score += 1
     else if (type === "commentCreated") score += 0.5
     else score += 0.25
 
-    await self.db.updateEngagement(userID, score)
+    await this.db.updateEngagement(userID, score)
   }
 
   /* Update the reliability score for a user */
-  async updateReliability(type, data) {
-    const score = await self.db.getReliability(userID) || 0;
+  async updateReliability(type, userID) {
+    let score = await this.db.getReliability(userID);
     score += (type === "commentVoted") ? 1 : -1
-    await self.db.updateReliability(userID, score)
+    await this.db.updateReliability(userID, score)
   }
 
   /* Calculate the trust score for a user */
   calculateScore(engagementScore, reliabilityScore) {
-    return engagementScore + (reliabilityScore * 0.7)
+    return (engagementScore + (reliabilityScore * 0.7)) * 1000
   }
 
   /* Initialize the database connection */
@@ -81,11 +88,12 @@ class TrustServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    // await axios.post("http://event-bus:4010/subscribe", {
-    //   port: 4001,
-    //   events: ["commentCreated", "commentVoted", "voteCreated", "postCreated", "postUpdated"]
-    // });
-    const port = process.env.PORT || 4001;
+    await axios.post("http://localhost:4010/subscribe", {
+      port: 4008,
+      name: "trust",
+      events: ["userCreated", "voteCreated"]
+    });
+    const port = process.env.PORT || 4008;
     this.app.listen(port, () => {
       console.log(`Trust server started on ${port}`);
     });

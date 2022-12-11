@@ -22,55 +22,45 @@ class BreakdownServer {
 
   /* Initialize all routes (endpoints) for the server */
   async initRoutes() {
-    const self = this
 
     // Get the breakdown for a given election
-    this.app.get("/breakdown/get", async (req, res) => {
+    this.app.get("/getBreakdown", async (req, res) => {
       const { electionID } = req.query
-      const breakdown = await self.db.getBreakdown(electionID)
-      res.status(200).send(JSON.stringify(breakdown))
-    });
-
-    // Get the breakdown for a given election - FOR TESTING PURPOSES
-    this.app.get("/test/add/breakdown", async (req, res) => {
-      const { electionID } = req.body.data
-      const breakdown = await self.db.updateBreakdown(electionID)
+      const breakdown = await this.db.getBreakdown(electionID)
       res.status(200).send(JSON.stringify(breakdown))
     });
 
     // Respond to a voteCreated or postCreated event from the event bus
-    this.app.get("/events", async (req, res) => {
+    this.app.post("/events", async (req, res) => {
       // req = the incoming request from the event bus
       const { type, data } = req.body;
 
-      if (type === "voteCreated") {
-
-        // Get the users demographics by sending a request to the user service through the event bus
-        const response = await axios.post("http://localhost:4010/events", {
+      if (type === "voteCreated") { // update the existing election breakdown w/ the new vote
+        const { electionID, userId, vote } = data;
+        const response = await axios.post("http://localhost:4010/events", { // Get the user demographics (send request to User service via event-bus)
           type: "userDataRequest",
-          userId: data.userId
+          userId: userId
         });
         const { race, gender, age } = response.data;
-
-        const breakdown = await self.db.updateBreakdown(data.electionId, data.vote, race, age, gender);
+        const breakdown = await this.db.updateBreakdown(electionID, vote, race, age, gender);
         res.status(200).send(JSON.stringify(breakdown));
       }
-      else { // type === "postCreated"
-        const electionID = data.postId;
-        const cand0 = data.candidate[0];
-        const cand1 = data.candidate[1];
-
-        const breakdown = await self.db.createBreakdown(electionID, cand0, cand1)
+      else if (type === "postCreated") {// create/push a blank election breakdown
+        const { postId, candidate } = data;
+        const electionID = postId;
+        const breakdown = await this.db.createBreakdown(electionID, candidate[0], candidate[1])
         res.status(200).send(JSON.stringify(breakdown))
       }
-      console.log(response.data)
-      res.send(response.data);
+      else
+        res.status(400).send("Invalid event type");
+
+      res.send(res.data);
     });
   }
 
   /* Initialize the database connection */
   async initDb() {
-    this.db = new BreakdownDatabase(this.dburl);
+    this.db = new BreakdownDatabase(this.dburl)
     await this.db.connect();
   }
 
@@ -78,14 +68,14 @@ class BreakdownServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    // await axios.post("http://localhost:4010/subscribe", {
-    //   port: 4005,
-    //   name: "VoteBreakdown",
-    //   events: ["postCreated", "voteCreated"]
-    // });
     const port = process.env.PORT || 4002;
+    await axios.post("http://localhost:4010/subscribe", {
+      port: 4002,
+      name: "VoteBreakdown",
+      events: ["postCreated", "voteCreated"]
+    });
     this.app.listen(port, () => {
-      console.log(`Polling server started on ${port}`);
+      console.log(`Breakdown server started on ${port}`);
     });
   }
 }

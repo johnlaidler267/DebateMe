@@ -14,7 +14,6 @@ export class ElectionDatabase {
 
   /* Connects to the database server */
   async connect() {
-    console.log("CONNECTING")
     this.pool = new Pool({
       connectionString: this.dburl
     });
@@ -43,6 +42,6 @@ export class ElectionDatabase {
   async createVote(electionID, userID, vote) {
     const queryText = `INSERT INTO elections (electionID, userID, vote) VALUES ($1, $2, $3)`;
     const res = await this.client.query(queryText, [electionID, userID, vote]);
-    return res.rows;
+    return res.rows[0];
   }
 }
