@@ -5,12 +5,10 @@ import { MongoClient } from 'mongodb';
 import {v4 as uuidv4} from 'uuid';
 import cors from 'cors';
 import axios from 'axios';
-
 const app = express();
 const port = process.env.PORT || 4008;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
 let userDB = [];
-
 const connectDB = async () => {
   try {
       const client = await MongoClient.connect(DATABASE_URL);
@@ -20,19 +18,15 @@ const connectDB = async () => {
       console.log(err);
   }
 }
-
 await connectDB();
-
-await axios.post("http://localhost:4010/subscribe", {
-  port: port,
-  name: "users",
-  events: []
-});
-
+// await axios.post("http://localhost:4010/subscribe", {
+//   port: port,
+//   name: "users",
+//   events: []
+// });
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
-
 app.post('/users/register', async (req, res) => {
   const { username, password, email, age, gender, race, country, state, city } = req.body;
   if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
@@ -40,7 +34,6 @@ app.post('/users/register', async (req, res) => {
   }
   
   const user = await userDB.findOne({ username: username });
-
   if (user) {
     res.status(409).send({ error: "User already exists" });
   } else {
@@ -71,7 +64,6 @@ app.post('/users/login', async (req, res) => {
   };
   
   const user = await userDB.findOne({ username: username });
-
   if (!user) {
     res.status(404).send({ error: "User not found" });
   } else {
@@ -81,7 +73,6 @@ app.post('/users/login', async (req, res) => {
           if (user.hasOwnProperty('_id')) {
             delete user._id;
           }
-
           res.status(200).send(user);
       }
   }
@@ -92,8 +83,23 @@ app.post('/users/login', async (req, res) => {
     if (userId == undefined) {
       res.status(400).send({ error: "Request data is incomplete" });
     }
-
     const user = await userDB.findOne({ userId: userId }).catch((err) => {
+      console.log(err.message);
+    });
+    if (user) {
+      res.status(200).send(user);
+    } else {
+      res.status(404).send({ error: "User not found" });
+    }
+  });
+
+  app.get('/users/username/get', async (req, res) => {
+    const { username } = req.query;
+    if (username == undefined) {
+      res.status(400).send({ error: "Request data is incomplete" });
+    }
+
+    const user = await userDB.findOne({ username: username }).catch((err) => {
       console.log(err.message);
     });
 
@@ -107,12 +113,10 @@ app.post('/users/login', async (req, res) => {
 app.put('/users/update', async (req, res) => {
   const { userId, username, password, email, age, gender, race, country, state, city } = req.body;
   if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
-
     res.status(400).send({ error: "Request data is incomplete" });
   }
   
   const CurrentUser = await userDB.findOne({ userId: userId });
-
   const NewUser = await userDB.findOne({ username: username });
   
   const data = {
@@ -127,7 +131,6 @@ app.put('/users/update', async (req, res) => {
     state: state,
     city: city,
   };
-
   if (CurrentUser) {
     if (NewUser) {
       if (CurrentUser.userId === NewUser.userId) {
