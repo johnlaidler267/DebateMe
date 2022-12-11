@@ -37,7 +37,6 @@ class CommentServer{
       const content: string = req.query.content as string
       const commentId: string = randomBytes(4).toString("hex");
       const comment = await self.db.createComment(username, userId, parentId, commentId, postId, content)
-      res.status(200).send(JSON.stringify(comment))
       await axios.post('http://localhost:4010/events', { 
       type: 'commentCreated',
       data: {
@@ -49,6 +48,7 @@ class CommentServer{
         content: content
      },
     });
+    res.status(200).send(JSON.stringify(comment))
     });
 
     //get all comments for a given postID
@@ -67,8 +67,12 @@ class CommentServer{
     });
 
     this.app.post("/events", (req, res) => {
-      //what do I respond to in here? will getting user comments? Threading maybe and coloring? 
-      console.log(req.body.type);
+      //for recieving moderation event
+      let data =req.body.data
+      if(data.status === "rejected"){
+        this.db.deleteComment(data.commentId)
+      }
+    
       res.send({});
     });
   }
@@ -115,6 +119,11 @@ class CommentServer{
   async start() {
     await this.initRoutes();
     await this.initDb();
+    await axios.post("http://localhost:4010/subscribe", {
+      port: 4001,
+      name: "Comments",
+      events: ["commentModerated"]
+    });
     const port = process.env.PORT || 4001;
     this.app.listen(port, () => {
       console.log(`Comment server started on ${port}`);

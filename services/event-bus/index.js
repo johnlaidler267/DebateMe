@@ -1,9 +1,11 @@
 import express from 'express';
 import logger from 'morgan';
 import axios from 'axios';
+import cors from 'cors';
 
 let commentCreatedPorts = [] //stores ports that want commentCreated event 
 let commentCreatedNames = []
+<<<<<<< HEAD
 let moderatedPorts = [] //stores ports that want commentModerated event
 let moderatedNames = []
 let commentVotedPorts = [] //stores ports that want commentVote events 
@@ -12,6 +14,18 @@ let voteCreatedPorts = []
 let voteCreatedNames = []
 let postCreatedPorts = []
 let postCreatedNames = []
+=======
+let commentModeratedPorts = [] //stores ports that want commentModerated event
+let commentModeratedNames = []
+let postModeratedPorts = []
+let postModeratedNames =[]
+let commentVotedPorts  = [] //stores ports that want commentVote events
+let commentVotedNames  = []
+let voteCreatedPorts = []
+let voteCreatedNames = []
+let postCreatedPorts = []
+let postCreatedNames = []
+>>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
 let postUpdatedPorts = []
 let postUpdatedNames = []
 let postDeletedPorts = []
@@ -24,6 +38,7 @@ const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(cors());
 
 app.post('/subscribe', (req, res) => {
   const options = req.body;
@@ -37,10 +52,20 @@ app.post('/subscribe', (req, res) => {
       commentCreatedPorts.push(port);
       commentCreatedNames.push(name);
     }
+<<<<<<< HEAD
     if (eventArray.includes("moderated")) {
       if (moderatedPorts.includes(port)) continue;
       moderatedPorts.push(port);
       moderatedNames.push(name);
+=======
+    if(eventArray.includes("commentModerated")){
+      commentModeratedPorts.push(port);
+      commentModeratedNames.push(name);
+    }
+    if(eventArray.includes("postModerated")){
+      postModeratedPorts.push(port);
+      postModeratedNames.push(name);
+>>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
     }
     if (eventArray.includes("commentVoted")) {
       if (commentVotedPorts.includes(port)) continue;
@@ -79,22 +104,45 @@ app.post('/subscribe', (req, res) => {
 
 app.post('/events', async (req, res) => {
   const event = req.body;
+<<<<<<< HEAD
   let eventType = event.type;
   if (eventType === "commentCreated") {
     for (let i = 0; i < commentCreatedPorts.length; i++) {
       await axios.post(`http:/${commentCreatedNames}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
+=======
+  let eventType = event.type;
+  if(eventType === "commentCreated"){
+    for(let i = 0; i < commentCreatedPorts.length; i++){
+      console.log('creation ');
+
+     // console.log(`http://${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`)
+      //await axios.post(`http:/${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
+     //   console.log(err.message)
+    //  });
+     await axios.post(`http://localhost:${commentCreatedPorts[i]}/events`, event)
+>>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
     }
-    res.send(event);
+    //res.send(event);
   }
-  else if (eventType === "moderated") {
-    for (let i = 0; i < moderatedPorts.length; i++) {
-      await axios.post(`http://${moderatedNames[i]}:${moderatedPorts[i]}/events`, event).catch((err) => {
+  else if (eventType === "commentModerated") {
+    for (let i = 0; i < commentModeratedPorts.length; i++) {
+      console.log('moderation')
+      //await axios.post(`http://${commentModeratedNames[i]}:${commentModeratedPorts[i]}/events`, event).catch((err) => {
+      // console.log(err.message)
+      //});
+      await axios.post(`http://localhost:${commentModeratedPorts[i]}/events`, event)
+    }
+    //res.send(event);
+  }
+  else if (eventType === "postModerated") {
+    for (let i = 0; i < postModeratedPorts.length; i++) {
+      await axios.post(`http://${postModeratedNames[i]}:${postModeratedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
-    res.send(event);
+    //res.send(event);
   }
   else if (eventType === "commentVoted") {
     for (let i = 0; i < commentVotedPorts.length; i++) {
@@ -150,7 +198,11 @@ app.post('/events', async (req, res) => {
     res.send(response.data);
   }
 
+<<<<<<< HEAD
   console.log("EVENT TYPE RECIEVED: ", event.type);
+=======
+  //console.log(event.type);
+>>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
 });
 
 app.listen(4010, () => {
