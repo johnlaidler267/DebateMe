@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { CircularProgress } from '@mui/material';
 import { Button, Card, Form, Container } from 'react-bootstrap';
 import { useLocation, useNavigate } from "react-router-dom";
-import Modal from "./Modal";
+import Modal from "../components/Modal";
 
 // Create  a form element that allows the user to create a new election
 // Create a button that allows the user to submit the election

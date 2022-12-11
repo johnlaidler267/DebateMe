@@ -6,7 +6,7 @@ import Debate from "./pages/debate/debate";
 import SignUp from "./pages/signup";
 import Profile from "./pages/profile";
 import CreateElection from "./pages/create-election";
-import UpdateElection from "./components/PostUpdate";
+import UpdateElection from "./pages/update-election";
 import VoteHistory from "./pages/vote-history";
 import Messages from "./pages/messages";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -17,7 +17,6 @@ import { AuthContext } from "./context/AuthProvider";
 import { PrivateRoute } from "./context/PrivateRoute";
 import Vote from "./pages/vote/vote";
 import Breakdown from "./pages/breakdown/breakdown.js";
-import Inbox from "./components/Message";
 
 /*
   This is the main component of the app. It is the parent of all other components.
@@ -91,14 +90,6 @@ function App() {
             element={
               <PrivateRoute>
                 <Messages />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/messages/inbox"
-            element={
-              <PrivateRoute>
-                <Inbox />
               </PrivateRoute>
             }
           />
