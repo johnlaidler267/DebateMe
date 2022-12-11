@@ -3,13 +3,20 @@ import logger from 'morgan';
 import axios from 'axios';
 import cors from 'cors';
 
-let commentCreatedPorts = [] //stores ports that want commentCreated event 
+const app = express();
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(cors());
+
+/* Initialize arrays to store ports that want to receive events */
+let commentCreatedPorts = []
 let commentCreatedNames = []
-let commentModeratedPorts = [] //stores ports that want commentModerated event
+let commentModeratedPorts = []
 let commentModeratedNames = []
 let postModeratedPorts = []
 let postModeratedNames = []
-let commentVotedPorts = [] //stores ports that want commentVote events
+let commentVotedPorts = []
 let commentVotedNames = []
 let voteCreatedPorts = []
 let voteCreatedNames = []
@@ -22,19 +29,12 @@ let postDeletedNames = []
 let userDataRequestPorts = []
 let userDataRequestNames = []
 
-
-const app = express();
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(cors());
-
+/* Add routes to the array of ports that want to receive events */
 app.post('/subscribe', (req, res) => {
-  const options = req.body;
-  let port = options.port
-  let name = options.name
-  let eventArray = options.events
+  const { port, name, eventArray } = req.body;
+
   console.log("SUBSCRIBING PORT ", port, " TO EVENTS ", eventArray)
+
   for (let i = 0; i < eventArray.length; i++) {
     if (eventArray.includes("commentCreated")) {
       if (commentCreatedPorts.includes(port)) continue;
@@ -60,7 +60,6 @@ app.post('/subscribe', (req, res) => {
       if (voteCreatedPorts.includes(port)) continue;
       voteCreatedPorts.push(port)
       voteCreatedNames.push(name)
-      console.log("VOTE CREATED PORTS: ", voteCreatedPorts)
     }
     if (eventArray.includes("postCreated")) {
       if (postCreatedPorts.includes(port)) continue;
@@ -83,12 +82,14 @@ app.post('/subscribe', (req, res) => {
       userDataRequestNames.push(name);
     }
   }
-  res.status(200).send("Subscribed successfully")
+  res.status(200).send("Subscribed successfully!")
 });
 
+/* Send events to all ports that want to receive them */
 app.post('/events', async (req, res) => {
   const event = req.body;
-  let eventType = event.type;
+  const eventType = event.type;
+
   if (eventType === "commentCreated") {
     for (let i = 0; i < commentCreatedPorts.length; i++) {
       console.log('creation ');
