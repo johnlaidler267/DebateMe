@@ -31,31 +31,38 @@ export class TrustDatabase {
     const queryText = `
       create table if not exists scores (
         userID varchar(30),
-        engagement integer,
-        reliability integer
+        engagement float,
+        reliability float
       );
-        `;
+    `;
     const res = await this.client.query(queryText);
+  }
+
+  /* Creates a new user */
+  async initializeUser(userID) {
+    const queryText = `INSERT INTO scores (userID, engagement, reliability) VALUES ($1, $2, $3)`;
+    const res = await this.client.query(queryText, [userID, 0, 0]);
+    return res.rows[0];
   }
 
   /* Get the engagement score for a user */
   async getEngagement(userID) {
     const queryText = `SELECT engagement FROM scores WHERE userID = $1;`;
     const res = await this.client.query(queryText, [userID]);
-    return res.rows[0];
+    return res.rows[0].engagement;
   }
 
   /* Get the reliability score for a user */
   async getReliability(userID) {
     const queryText = `SELECT reliability FROM scores WHERE userID = $1;`;
     const res = await this.client.query(queryText, [userID]);
-    return res.rows[0];
+    return res.rows[0].reliability;
   }
 
   /* Update the engagement score for a user */
-  async updateEngagement(userID, engagement) {
+  async updateEngagement(userID, score) {
     const queryText = `UPDATE scores SET engagement = $2 WHERE userID = $1;`;
-    const res = await this.client.query(queryText, [userID, engagement]);
+    const res = await this.client.query(queryText, [userID, score]);
     return res.rows[0];
   }
 
