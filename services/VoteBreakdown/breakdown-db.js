@@ -109,7 +109,7 @@ export class BreakdownDatabase {
 
   /* Gets the demographic breakdown for a given candidate */
   async getBreakdown(electionID) {
-    const queryText = `SELECT * FROM electionBreakdowns WHERE electionID = '$1'`
+    const queryText = `SELECT * FROM electionBreakdowns WHERE electionID = $1`;
     const res = await this.client.query(queryText, [electionID]);
     return res.rows;
   }

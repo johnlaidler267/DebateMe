@@ -5,27 +5,16 @@ import cors from 'cors';
 
 let commentCreatedPorts = [] //stores ports that want commentCreated event 
 let commentCreatedNames = []
-<<<<<<< HEAD
-let moderatedPorts = [] //stores ports that want commentModerated event
-let moderatedNames = []
-let commentVotedPorts = [] //stores ports that want commentVote events 
+let commentModeratedPorts = [] //stores ports that want commentModerated event
+let commentModeratedNames = []
+let postModeratedPorts = []
+let postModeratedNames = []
+let commentVotedPorts = [] //stores ports that want commentVote events
 let commentVotedNames = []
 let voteCreatedPorts = []
 let voteCreatedNames = []
 let postCreatedPorts = []
 let postCreatedNames = []
-=======
-let commentModeratedPorts = [] //stores ports that want commentModerated event
-let commentModeratedNames = []
-let postModeratedPorts = []
-let postModeratedNames =[]
-let commentVotedPorts  = [] //stores ports that want commentVote events
-let commentVotedNames  = []
-let voteCreatedPorts = []
-let voteCreatedNames = []
-let postCreatedPorts = []
-let postCreatedNames = []
->>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
 let postUpdatedPorts = []
 let postUpdatedNames = []
 let postDeletedPorts = []
@@ -52,20 +41,15 @@ app.post('/subscribe', (req, res) => {
       commentCreatedPorts.push(port);
       commentCreatedNames.push(name);
     }
-<<<<<<< HEAD
-    if (eventArray.includes("moderated")) {
-      if (moderatedPorts.includes(port)) continue;
-      moderatedPorts.push(port);
-      moderatedNames.push(name);
-=======
-    if(eventArray.includes("commentModerated")){
+    if (eventArray.includes("commentModerated")) {
+      if (commentModeratedPorts.includes(port)) continue;
       commentModeratedPorts.push(port);
       commentModeratedNames.push(name);
     }
-    if(eventArray.includes("postModerated")){
+    if (eventArray.includes("postModerated")) {
+      if (postModeratedPorts.includes(port)) continue;
       postModeratedPorts.push(port);
       postModeratedNames.push(name);
->>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
     }
     if (eventArray.includes("commentVoted")) {
       if (commentVotedPorts.includes(port)) continue;
@@ -104,25 +88,16 @@ app.post('/subscribe', (req, res) => {
 
 app.post('/events', async (req, res) => {
   const event = req.body;
-<<<<<<< HEAD
   let eventType = event.type;
   if (eventType === "commentCreated") {
     for (let i = 0; i < commentCreatedPorts.length; i++) {
-      await axios.post(`http:/${commentCreatedNames}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
-        console.log(err.message)
-      });
-=======
-  let eventType = event.type;
-  if(eventType === "commentCreated"){
-    for(let i = 0; i < commentCreatedPorts.length; i++){
       console.log('creation ');
 
-     // console.log(`http://${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`)
+      // console.log(`http://${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`)
       //await axios.post(`http:/${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
-     //   console.log(err.message)
-    //  });
-     await axios.post(`http://localhost:${commentCreatedPorts[i]}/events`, event)
->>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
+      //   console.log(err.message)
+      //  });
+      await axios.post(`http://localhost:${commentCreatedPorts[i]}/events`, event)
     }
     //res.send(event);
   }
@@ -198,11 +173,7 @@ app.post('/events', async (req, res) => {
     res.send(response.data);
   }
 
-<<<<<<< HEAD
-  console.log("EVENT TYPE RECIEVED: ", event.type);
-=======
   //console.log(event.type);
->>>>>>> 36603bbfd3a79113a794769f0653c20eb3dc4f21
 });
 
 app.listen(4010, () => {
