@@ -104,6 +104,23 @@ app.post('/users/login', async (req, res) => {
     }
   });
 
+  app.get('/users/username/get', async (req, res) => {
+    const { username } = req.query;
+    if (username == undefined) {
+      res.status(400).send({ error: "Request data is incomplete" });
+    }
+
+    const user = await userDB.findOne({ username: username }).catch((err) => {
+      console.log(err.message);
+    });
+
+    if (user) {
+      res.status(200).send(user);
+    } else {
+      res.status(404).send({ error: "User not found" });
+    }
+  });
+
 app.put('/users/update', async (req, res) => {
   const { userId, username, password, email, age, gender, race, country, state, city } = req.body;
   if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
