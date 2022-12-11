@@ -1,20 +1,28 @@
-import { useState, useEffect } from "react";
-import { Button, Card, Container, Row, Col, Pagination, Badge } from 'react-bootstrap';
-import { FaCentercode } from "react-icons/fa";
+import { useState} from "react";
 import axios from 'axios';
 import "./comment.css"
-const CommentCreate = ({ postId, comments, setComments }) => {
+
+type Props = {
+  postId:string
+}
+type Token = {
+  username:string
+  userId:string
+}
+
+const CommentCreate = ({ postId }: Props)  => {
   const [Value, setValue] = useState("");
 
   const newComment = async () =>{
-    const token = JSON.parse(sessionStorage.getItem('token'));
+    let jsonToken: string|null = sessionStorage.getItem('token')
     let username = ""
     let userId = ""
-    if(token === null){
+    if(jsonToken === null){
       username= "Guest"
       userId = "Guest"
     }
     else{
+      const token: Token= JSON.parse(jsonToken);
       username = token.username
       userId = token.userId
     }
@@ -22,16 +30,14 @@ const CommentCreate = ({ postId, comments, setComments }) => {
   }
 
   return (
-    <div>
-      <center>
-      <form onSubmit={newComment}>
+    <div id = "commentCreate">
+      <form onSubmit={newComment} >
         
           <label id ="create">Enter your comment here: 
           <input id = "commentBox" type="text" value = {Value} onChange={(e) => setValue(e.target.value)} ></input>
           </label>
         <button className="custom-btn">Submit Comment</button>
       </form>
-      </center>
     </div>
     
   )

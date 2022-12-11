@@ -91,7 +91,6 @@ app.post('/events', async (req, res) => {
   let eventType = event.type;
   if (eventType === "commentCreated") {
     for (let i = 0; i < commentCreatedPorts.length; i++) {
-      console.log('creation ');
 
       // console.log(`http://${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`)
       //await axios.post(`http:/${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
@@ -103,7 +102,6 @@ app.post('/events', async (req, res) => {
   }
   else if (eventType === "commentModerated") {
     for (let i = 0; i < commentModeratedPorts.length; i++) {
-      console.log('moderation')
       //await axios.post(`http://${commentModeratedNames[i]}:${commentModeratedPorts[i]}/events`, event).catch((err) => {
       // console.log(err.message)
       //});

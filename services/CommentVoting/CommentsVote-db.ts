@@ -30,10 +30,10 @@ export class CommentsVoteDatabase {
     //you will need add DROP TABLE nameOfTable; to the top of the query text and run npm start once. Remove the statement after to avoid table being deleted every time
     const queryText = `
       create table if not exists commentVotes (
-        commentId varchar(30),
+        commentId varchar(50),
         upvotes text[],
         downvotes text[],
-        ownerId varchar(30)
+        ownerId varchar(50)
       );
         `
     const res = await this.client.query(queryText);
