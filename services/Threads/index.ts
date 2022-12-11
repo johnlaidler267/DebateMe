@@ -34,18 +34,18 @@ const connectDB = async () => {
     try {
         const client = await MongoClient.connect(DATABASE_URL);
         postDB = client.db("Posts").collection('posts');
-    } catch (err) {
+    } catch (err) { 
         console.log(err);
     }
 }
 
 await connectDB();
 
-await axios.post("http://localhost:4010/subscribe", {
-  port: port,
-  name: "threads",
-  events: []
-});
+// await axios.post("http://localhost:4010/subscribe", {
+//   port: port,
+//   name: "threads",
+//   events: ["userDataRequest"]
+// });
 
 app.use(logger('dev'));
 app.use(express.json());

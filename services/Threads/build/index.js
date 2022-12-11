@@ -19,11 +19,11 @@ const connectDB = async () => {
     }
 };
 await connectDB();
-await axios.post("http://localhost:4010/subscribe", {
-    port: port,
-    name: "threads",
-    events: []
-});
+// await axios.post("http://localhost:4010/subscribe", {
+//   port: port,
+//   name: "threads",
+//   events: ["userDataRequest"]
+// });
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());

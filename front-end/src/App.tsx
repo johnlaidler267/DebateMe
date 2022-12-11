@@ -17,6 +17,7 @@ import { AuthContext } from "./context/AuthProvider";
 import { PrivateRoute } from "./context/PrivateRoute";
 import Vote from "./pages/vote/vote";
 import Breakdown from "./pages/breakdown/breakdown.js";
+import Inbox from "./components/Message";
 
 /*
   This is the main component of the app. It is the parent of all other components.
@@ -90,6 +91,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Messages />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messages/inbox"
+            element={
+              <PrivateRoute>
+                <Inbox />
               </PrivateRoute>
             }
           />

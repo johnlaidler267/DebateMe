@@ -1,116 +1,51 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react'
-import { Button, Card, Container, Form } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
+import { useState } from "react";
+import axios from "axios";
+import { Button, Card, Container, Form } from "react-bootstrap";
+import Modal from "../components/Modal";
 import CircularProgress from "@mui/material/CircularProgress";
-import Modal from './Modal';
+import { useNavigate } from "react-router-dom";
 
-export default function Inbox() {
-  const [ messages, setMessages ] = useState([]);
-  const [ IsOpen, setIsOpen ] = useState(false);
-  const [ Content, setContent ] = useState("");
-  const [ isFetched, setIsFetched ] = useState(false);
-  const { state } = useLocation();
+const Messages = () => {
+    const [ IsOpen, setIsOpen ] = useState(false);
+    const [ Content, setContent ] = useState("");
+    const navigate = useNavigate();
 
-  const fetchMessages = async () => {
-    try {
-        const json = sessionStorage.getItem('token') || "";
-        const token = JSON.parse(json);
-        const res = await axios.get(`http://localhost:4003/messages/all?userId=${token.userId}&friendId=${state.userId}`);
-        setMessages(res.data);
-    } catch (error) {
-        setTimeout(function() {
-            setIsOpen(true);
-            setContent(<div className="text-danger">{error.response.data.error}</div>);
-        }, 1500);
-      }
-    setIsFetched(true);
-  }
+    const messageHandler = async (e) => {
+        e.preventDefault();
+        setIsOpen(true);
+        setContent(<CircularProgress sx={{color: "yellow"}} size={60}/>);
+        const { username } = e.target;
+        try {
+            const res = await axios.get(`http://localhost:4008/users/username/get?username=${username.value}`);
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    setIsOpen(true);
-    setContent(<CircularProgress sx={{color: "yellow"}} size={60}/>);
-    const { message } = e.target;
-    try {
-        const json = sessionStorage.getItem('token') || "";
-        const token = JSON.parse(json);
-        await axios.post(`http://localhost:4003/messages/create`, {
-            senderId: token.userId,
-            receiverId: state.userId,
-            content: message.value
-        });
-        setIsOpen(false);
-    } catch (error) {
-        setTimeout(function() {
-            setIsOpen(true);
-            setContent(<div className="text-danger">{error.response.data.error}</div>);
-        }, 1500);
-      }
-    setIsFetched(false);
-  }
+            navigate('inbox', { state: { userId: res.data.userId }});
+        } catch (error) {
+            setTimeout(function() {
+                setIsOpen(true);
+                setContent(<div className="text-danger">{error.response.data.error}</div>);
+            }, 1500);
+          }
+    };
 
-  function timeSince(date) {
-    var seconds = Math.floor((new Date() - date) / 1000);
-  
-    var interval = seconds / 31536000;
-  
-    if (interval > 1) {
-      return Math.floor(interval) + " years";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " months";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " days";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " hours";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minutes";
-    }
-    return Math.floor(seconds) + " seconds";
-  }
-
-  const renderedMessages = Object.values(messages).map((m, index) => {
-        return (
-            <Card className="mb-3" key={index}>
-                <br></br>
-                <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">{m.senderIdUsername}<span className='position-absolute right-0 ms-5 ps-5 fw-light'>{timeSince(Date.now())} ago</span></Card.Title>
-                <Card.Body>
-                    <Container>
-                        <p>{m.content}</p>
-                    </Container>
-                </Card.Body>
+    return (
+        <Form onSubmit={(e) => messageHandler(e)}>
+            <Card className="m-5 text-center">
+            <br></br>
+            <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">Enter the user who you want to chat with</Card.Title>
+            <Card.Body>
+                <Container>
+                    <Form.Group controlId="username">
+                        <Form.Control type="text" placeholder="Enter the username" required />
+                    </Form.Group>
+                </Container>
+            </Card.Body>
+            <Button className="custom-btn" type="submit">Next</Button>
+            <div className='top-50 start-50 position-absolute'>
+                <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
+            </div> 
             </Card>
-        );
-    });
-
-  useEffect(() => {
-    if (!isFetched) {
-        fetchMessages();
-    }
-  }, [sendMessage]);
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
-  return (
-    <>
-        <Form onSubmit={sendMessage}>
-            <Form.Group controlId="message" className='d-flex justify-content-center w-50 p-3'>
-                <Form.Control type="text" placeholder="I like your post! Can we chat more?" required />
-                <Button className="custom-btn" type="submit">Send</Button>
-            </Form.Group>
         </Form>
-        {renderedMessages}
-        <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
-    </>
-  )
-}
+    );
+};
+
+export default Messages;
