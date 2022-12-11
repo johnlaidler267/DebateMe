@@ -177,6 +177,7 @@ app.post('/events', async (req, res) => {
   //console.log(event.type);
 });
 
+/* Start the server */
 app.listen(4010, () => {
   console.log('Listening on 4010');
 });
