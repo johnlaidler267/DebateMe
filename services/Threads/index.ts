@@ -5,6 +5,7 @@ import { MongoClient } from "mongodb";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import axios from "axios";
+import { type } from "os";
 
 interface Data {
   userId: string;
@@ -24,6 +25,7 @@ interface Post {
 }
 
 interface Posts {
+  insertOne(data: Data): unknown;
   find(): unknown;
   findOne(arg0: {
     postId:
@@ -91,6 +93,7 @@ app.post("/posts/create", async (req: Request, res: Response) => {
     content: string;
     candidate: string[];
   } = req.body;
+
   if (
     userId == undefined ||
     title == undefined ||
@@ -100,6 +103,7 @@ app.post("/posts/create", async (req: Request, res: Response) => {
     res.status(400).send({ error: "Request data is incomplete" });
   } else {
     const postId: string = uuidv4();
+
     const data: Data = {
       userId: userId,
       postId: postId,
@@ -121,17 +125,6 @@ app.post("/posts/create", async (req: Request, res: Response) => {
 
     res.status(201).send(data);
   }
-
-  postDB.insertOne(data);
-
-  await axios
-    .post("http://localhost:4010/events", {
-      type: "PostCreated",
-      data: data,
-    })
-    .catch((err) => console.log(err.message));
-
-  res.status(201).send(data);
 });
 
 app.get("/posts/all", async (req: Request, res: Response) => {
@@ -193,7 +186,7 @@ app.put("/posts/update", async (req: Request, res: Response) => {
       })
       .catch((err) => console.log(err.message));
 
-    const user = await response.data;
+    const user = response.data;
 
     if (user) {
       const post: Post = await postDB.findOne({ postId: postId });
