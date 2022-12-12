@@ -34,13 +34,22 @@ const CommentCreate = ({ postId }: Props) => {
     <div id="commentCreate">
       <form onSubmit={newComment}>
         <label id="create">
-          Enter your comment here:
           <input
+            placeholder="Enter your comment here"
             id="commentBox"
             type="text"
             value={Value}
             onChange={(e) => setValue(e.target.value)}
-            style={{ width: "100%", height: "100%", padding: "12px 20px" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              padding: "12px 20px",
+              backgroundColor: "#f8f8f8",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              boxSizing: "border-box",
+              resize: "none",
+            }}
           ></input>
         </label>
         <button className="btn btn-primary" style={{ margin: "3px" }}>

@@ -8,41 +8,42 @@ import Modal from "./Modal";
 // Create  a form element that allows the user to create a new election
 // Create a button that allows the user to submit the election
 const UpdateElection = () => {
-    const [ Loading, setLoading ] = useState(false);
+    const [Loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const [ IsOpen, setIsOpen ] = useState(false);
-    const [ Content, setContent ] = useState("");
+    const [IsOpen, setIsOpen] = useState(false);
+    const [Content, setContent] = useState("");
     const { state } = useLocation();
     const formRef = useRef();
 
+    /* Handles the submission of the form */
     const onSubmit = async (event) => {
-      event.preventDefault();
-      setLoading(true);
-      
-      const { title, content, candidate1, candidate2 } = event.target;
-      const candidate = [candidate1.value, candidate2.value];
+        event.preventDefault();
+        setLoading(true);
 
-      try {
-          const res = await axios.put('http://localhost:4006/posts/update', {
-            userId: state.userId,
-            postId: state.postId,
-            title: title.value,
-            content: content.value,
-            candidate: candidate
-          })
+        const { title, content, candidate1, candidate2 } = event.target;
+        const candidate = [candidate1.value, candidate2.value];
 
-          setTimeout(function() {
-            navigate(`/post/${res.data.postId || ""}`);
-        }, 1000);
-      } catch (error) {
-            setTimeout(function() {
+        try {
+            const res = await axios.put('http://localhost:4006/posts/update', {
+                userId: state.userId,
+                postId: state.postId,
+                title: title.value,
+                content: content.value,
+                candidate: candidate
+            })
+            setTimeout(function () {
+                navigate(`/post/${res.data.postId || ""}`);
+            }, 1000);
+        } catch (error) {
+            setTimeout(function () {
                 setIsOpen(true);
                 setContent(<div className="text-danger">{error.response.data.error}</div>);
                 setLoading(false);
             }, 1500);
-      }
+        }
     }
 
+    /* Hook that runs when the component is mounted, and is used to set the form values */
     useEffect(() => {
         if (formRef) {
             const form = formRef.current || {};
@@ -52,7 +53,7 @@ const UpdateElection = () => {
             form.candidate2.value = state.candidate[1];
         }
     }, [state])
-    
+
 
     return (
         <div className="App">
@@ -87,7 +88,7 @@ const UpdateElection = () => {
                                     <Form.Control type="text" placeholder="Enter candidate 2" required />
                                 </Form.Group>
                                 <Button className="mt-4" variant="secondary" type="submit">
-                                    {Loading ? <CircularProgress sx={{color: "yellow"}} size={40}/> : "Update"}
+                                    {Loading ? <CircularProgress sx={{ color: "yellow" }} size={40} /> : "Update"}
                                 </Button>
                             </Form>
                             <br></br>

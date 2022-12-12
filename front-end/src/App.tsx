@@ -79,13 +79,14 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route 
+          <Route
             path="/view-profile"
             element={
               <PrivateRoute>
                 <Profile />
               </PrivateRoute>
-            } />
+            }
+          />
           <Route
             path="/messages"
             element={
@@ -102,10 +103,24 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/post/:postId/vote"
+            element={
+              <PrivateRoute>
+                <Vote />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/post/:postId/vote/breakdown"
+            element={
+              <PrivateRoute>
+                <Breakdown />
+              </PrivateRoute>
+            }
+          />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/test-vote" element={<Vote />} />
-          <Route path="/test-breakdown" element={<Breakdown />} />
         </Routes>
       </Router>
     </AuthContext.Provider>
