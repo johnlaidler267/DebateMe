@@ -1,21 +1,27 @@
-import {ArrowUp} from 'react-bootstrap-icons';
+import {ArrowDown} from 'react-bootstrap-icons';
 import {Button} from 'react-bootstrap';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 
-const Upvote= ({ commentId, ownerId}) => {
+type Props = {
+    commentId: string
+    ownerId: string
+}
+
+const Downvote= ({ commentId, ownerId}: Props) => {
     const [Votes, setVotes] = useState(0)
     const registerVote = async () =>{
-        const token = JSON.parse(sessionStorage.getItem('token'));
-        if(token === null){
+        
+        let jsonToken:string|null = sessionStorage.getItem('token')
+        if(jsonToken === null){
             alert("Must be logged in to vote ");
         }
         else{
-            let response = await axios.post(`http://localhost:4002/comments/vote?userId=${token.userId}&commentId=${commentId}&vote=up&ownerId=${ownerId}`)
+            const token = JSON.parse(jsonToken);
+            let response = await axios.post(`http://localhost:4002/comments/vote?userId=${token.userId}&commentId=${commentId}&vote=down&ownerId=${ownerId}`)
             if(response.data !== 'No Changes'){
-                window.location.reload(false);
+                window.location.reload();
             }
-            
         }
     }
     const retrieveVotes= async () => {
@@ -25,7 +31,7 @@ const Upvote= ({ commentId, ownerId}) => {
         }
         else{
             
-            setVotes(result.data[0].upvotes.length)
+            setVotes(result.data[0].downvotes.length)
         }
    
     }
@@ -35,9 +41,9 @@ const Upvote= ({ commentId, ownerId}) => {
 
     return (
         <div>
-          <Button onClick={registerVote}> <ArrowUp> </ArrowUp> {Votes}</Button>
+          <Button onClick={registerVote}> <ArrowDown> </ArrowDown> {Votes}</Button>
         </div>
       )
 }
 
-export default Upvote
+export default Downvote
