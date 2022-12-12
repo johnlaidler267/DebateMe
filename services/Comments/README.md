@@ -1,14 +1,17 @@
 TEMP: REMEMBER COMMAND docker system prune -a
 Ethan Stafford - estaff2
 
-This is the comment service. It is resposible for storing all information about comments that are made on debate posts. This is a major part of the user experience as it is where many different users can communicate with each other.  
-
+Description: 
+This is the comment service. It is resposible for storing all information about comments that are made on debate posts. This is a major part of the user experience as it is where many different users can communicate with each other. 
+ 
+Communication: 
 The service communicates with the front end service. Anytime a post is clicked on, a request is sent to retrieve all the comments associated with that postId. Before being sent, this service sends a request to the commentVoting service. It retrieves the total number of votes for each of the comments on that post and orders them from highest to lowest. This effectivley orders comments by level of engagement. 
 
 Additionally, every post has an area where users can enter a comment. Whenever someone hits the submit button, this service recieves a request to create that comment. 
 
 This services also communicates with 2 services via the event bus. Everytime a comment is created, that event is sent to the event bus. The trustDistiniction service recieves this and records it because it is a good measure of activity by that user. The moderation event also recieves this event in order to see if it's acceptable. This service subscribes to the commentModerated event, so after the comment has been moderated this service will recieve it, and if the comment was rejected it will be deleted from the database. 
 
+Run Instructions: To run this service from scratch you will need to run npm install, have the port 4001 available, have the event bus started, and then run npm start. 
 
 Endpoints: 
 
