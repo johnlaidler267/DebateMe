@@ -112,7 +112,7 @@ app.post('/events', async (req, res) => {
   }
   else if (eventType === "postModerated") {
     for (let i = 0; i < postModeratedPorts.length; i++) {
-      await axios.post(`http://${postModeratedNames[i]}:${postModeratedPorts[i]}/events`, event).catch((err) => {
+      await axios.post(`http://localhost:${postModeratedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }
