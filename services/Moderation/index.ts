@@ -142,7 +142,7 @@ class ModerationServer {
     await axios.post("http://localhost:4010/subscribe", {
       port: 4005,
       name: "Moderation",
-      events: ["commentCreated", "postCreated"]
+      eventArray: ["commentCreated", "postCreated"]
     });
     const port = process.env.PORT || 4005;
     this.app.listen(port, () => {
