@@ -89,11 +89,11 @@ class TrustServer {
     await this.initRoutes();
     await this.initDb();
     await axios.post("http://localhost:4010/subscribe", {
-      port: 4008,
+      port: 4007,
       name: "trust",
-      events: ["userCreated", "voteCreated"]
+      eventArray: ["userCreated", "voteCreated"]
     });
-    const port = process.env.PORT || 4008;
+    const port = process.env.PORT || 4007;
     this.app.listen(port, () => {
       console.log(`Trust server started on ${port}`);
     });
