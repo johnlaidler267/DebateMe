@@ -40,9 +40,12 @@ const CommentCreate = ({ postId }: Props) => {
             type="text"
             value={Value}
             onChange={(e) => setValue(e.target.value)}
+            style={{ width: "100%", height: "100%", padding: "12px 20px" }}
           ></input>
         </label>
-        <button className="custom-btn">Submit Comment</button>
+        <button className="btn btn-primary" style={{ margin: "3px" }}>
+          Submit
+        </button>
       </form>
     </div>
   );
