@@ -4,14 +4,12 @@ import {
     VictoryBar, VictoryChart, VictoryAxis,
     VictoryTheme, VictoryPie, VictoryLabel, VictoryStack
 } from 'victory';
-import MapChart from "./MapChart";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from 'react';
 
 /* Render the breakdown page */
 const Breakdown = () => {
-    const { postId } = useParams();
     const navigate = useNavigate();
     const { state } = useLocation();
 
@@ -25,76 +23,76 @@ const Breakdown = () => {
         const fetchData = async () => {
             const res = await axios.get('http://localhost:4009/getBreakdown/', { params: { electionId: state.postId } });
             const { electionId, candidate0, candidate1 } = res.data;
-            console.log(res)
-            setElectionId(electionId);
-            setCandidate0(candidate0);
-            setCandidate1(candidate1);
+            console.log("response", res)
+            // setElectionId(electionId);
+            // setCandidate0(candidate0);
+            // setCandidate1(candidate1);
         }
         fetchData();
     }, []);
 
-    /* Returns the data for the race comparison chart */
-    const raceData = (cand0, cand1) => {
-        const { numBlack0, numAsian0, numCaucasian0, numHispanic0, numOther0, totalVotes0 } = cand0;
-        const { numBlack1, numAsian1, numCaucasian1, numHispanic1, numOther1, totalVotes1 } = cand1;
+    // /* Returns the data for the race comparison chart */
+    // const raceData = (cand0, cand1) => {
+    //     const { numBlack0, numAsian0, numCaucasian0, numHispanic0, numOther0, totalVotes0 } = cand0;
+    //     const { numBlack1, numAsian1, numCaucasian1, numHispanic1, numOther1, totalVotes1 } = cand1;
 
-        let dataRaceA = [
-            { x: "Black", y: numBlack0 / (numBlack0 + numBlack1) },
-            { x: "Asian", y: numAsian0 / (numAsian0 + numAsian1) },
-            { x: "Caucasian", y: numCaucasian0 / (numCaucasian0 + numCaucasian1) },
-            { x: "Hispanic", y: numHispanic0 / (numHispanic0 + numHispanic1) },
-            { x: "Other", y: numOther0 / (numOther0 + numOther1) },
-        ];
+    //     let dataRaceA = [
+    //         { x: "Black", y: numBlack0 / (numBlack0 + numBlack1) },
+    //         { x: "Asian", y: numAsian0 / (numAsian0 + numAsian1) },
+    //         { x: "Caucasian", y: numCaucasian0 / (numCaucasian0 + numCaucasian1) },
+    //         { x: "Hispanic", y: numHispanic0 / (numHispanic0 + numHispanic1) },
+    //         { x: "Other", y: numOther0 / (numOther0 + numOther1) },
+    //     ];
 
-        let dataRaceB = dataRaceA.map((point) => {
-            const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-            return { ...point, y };
-        });
+    //     let dataRaceB = dataRaceA.map((point) => {
+    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
+    //         return { ...point, y };
+    //     });
 
-        return dataRaceA, dataRaceB;
-    }
+    //     return dataRaceA, dataRaceB;
+    // }
 
-    /* Returns the data for the gender comparison chart */
-    const genderData = (cand0, cand1) => {
-        const { numMen0, numWomen0, numOther0, totalVotes0 } = cand0;
-        const { numMen1, numWomen1, numOther1, totalVotes1 } = cand1;
+    // /* Returns the data for the gender comparison chart */
+    // const genderData = (cand0, cand1) => {
+    //     const { numMen0, numWomen0, numOther0, totalVotes0 } = cand0;
+    //     const { numMen1, numWomen1, numOther1, totalVotes1 } = cand1;
 
-        let dataGenderA = [
-            { x: "Men", y: numMen0 / (numMen0 + numMen1) },
-            { x: "Women", y: numWomen0 / (numWomen0 + numWomen1) },
-            { x: "Other", y: numOther0 / (numOther0 + numOther1) },
-        ];
+    //     let dataGenderA = [
+    //         { x: "Men", y: numMen0 / (numMen0 + numMen1) },
+    //         { x: "Women", y: numWomen0 / (numWomen0 + numWomen1) },
+    //         { x: "Other", y: numOther0 / (numOther0 + numOther1) },
+    //     ];
 
-        let dataGenderB = dataGenderA.map((point) => {
-            const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-            return { ...point, y };
-        });
-        return dataGenderA, dataGenderB;
-    }
+    //     let dataGenderB = dataGenderA.map((point) => {
+    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
+    //         return { ...point, y };
+    //     });
+    //     return dataGenderA, dataGenderB;
+    // }
 
-    /* Returns the data for the age comparison chart */
-    const ageData = (cand0, cand1) => {
-        const { numUnder25_0, num25_65_0, numOver65_0, totalVotes0 } = cand0;
-        const { numUnder25_1, num25_65_1, numOver65_1, totalVotes1 } = cand1;
-        let dataAgeA = [
-            { x: "<25", y: numUnder25_0 / (numUnder25_0 + numUnder25_1) },
-            { x: "25-65", y: num25_65_0 / (num25_65_0 + num25_65_1) },
-            { x: "65+", y: numOver65_0 / (numOver65_0 + numOver65_1) },
-        ];
+    // /* Returns the data for the age comparison chart */
+    // const ageData = (cand0, cand1) => {
+    //     const { numUnder25_0, num25_65_0, numOver65_0, totalVotes0 } = cand0;
+    //     const { numUnder25_1, num25_65_1, numOver65_1, totalVotes1 } = cand1;
+    //     let dataAgeA = [
+    //         { x: "<25", y: numUnder25_0 / (numUnder25_0 + numUnder25_1) },
+    //         { x: "25-65", y: num25_65_0 / (num25_65_0 + num25_65_1) },
+    //         { x: "65+", y: numOver65_0 / (numOver65_0 + numOver65_1) },
+    //     ];
 
-        let dataAgeB = dataAgeA.map((point) => {
-            const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-            return { ...point, y };
-        });
-        return dataAgeA, dataAgeB;
-    }
+    //     let dataAgeB = dataAgeA.map((point) => {
+    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
+    //         return { ...point, y };
+    //     });
+    //     return dataAgeA, dataAgeB;
+    // }
 
-    /* Gather the data for the charts */
-    const width = 300;
-    const height = 150;
-    let dataAgeA, dataAgeB = ageData(candidate0, candidate1);
-    let dataGenderA, dataGenderB = genderData(candidate0, candidate1);
-    let dataRaceA, dataRaceB = raceData(candidate0, candidate1);
+    // /* Gather the data for the charts */
+    // const width = 300;
+    // const height = 150;
+    // let dataAgeA, dataAgeB = ageData(candidate0, candidate1);
+    // let dataGenderA, dataGenderB = genderData(candidate0, candidate1);
+    // let dataRaceA, dataRaceB = raceData(candidate0, candidate1);
 
     return (
         <div className="App">
@@ -130,7 +128,7 @@ const Breakdown = () => {
                             <Card id="race" style={{ height: "75%", width: "85%", margin: "auto" }}>
                                 <br></br>
                                 <h4 className="text-center">Racial Breakdown</h4>
-                                <VictoryChart horizontal
+                                {/* <VictoryChart horizontal
                                     height={170}
                                     width={width}
                                     padding={30}
@@ -157,12 +155,6 @@ const Breakdown = () => {
                                             ticks: { stroke: "transparent" },
                                             tickLabels: { fontSize: 5, fill: "black" }
                                         }}
-                                        /*
-                                          Use a custom tickLabelComponent with
-                                          an absolutely positioned x value to position
-                                          your tick labels in the center of the chart. The correct
-                                          y values are still provided by VictoryAxis for each tick
-                                        */
                                         tickLabelComponent={
                                             <VictoryLabel
                                                 x={width / 2}
@@ -171,7 +163,7 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataRaceA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart>
+                                </VictoryChart> */}
                             </Card>
                         </Row>
                         <br></br>
@@ -179,7 +171,8 @@ const Breakdown = () => {
                             <Card id="gender" style={{ height: "75%", width: "85%", margin: "auto" }}>
                                 <br></br>
                                 <h4 className="text-center">Gender Breakdown</h4>
-                                <VictoryChart horizontal
+
+                                {/* <VictoryChart horizontal
                                     height={100}
                                     width={width}
                                     padding={20}
@@ -206,12 +199,6 @@ const Breakdown = () => {
                                             ticks: { stroke: "transparent" },
                                             tickLabels: { fontSize: 5, fill: "black" }
                                         }}
-                                        /*
-                                          Use a custom tickLabelComponent with
-                                          an absolutely positioned x value to position
-                                          your tick labels in the center of the chart. The correct
-                                          y values are still provided by VictoryAxis for each tick
-                                        */
                                         tickLabelComponent={
                                             <VictoryLabel
                                                 x={width / 2}
@@ -220,7 +207,8 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataGenderA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart>
+                                </VictoryChart> */}
+
                             </Card>
                         </Row>
                         <br></br>
@@ -228,7 +216,8 @@ const Breakdown = () => {
                             <Card id="age" style={{ height: "75%", width: "85%", margin: "auto" }} >
                                 <br></br>
                                 <h4 className="text-center">Age Breakdown</h4>
-                                <VictoryChart horizontal
+
+                                {/* <VictoryChart horizontal
                                     height={100}
                                     width={width}
                                     padding={20}
@@ -255,12 +244,6 @@ const Breakdown = () => {
                                             ticks: { stroke: "transparent" },
                                             tickLabels: { fontSize: 5, fill: "black" }
                                         }}
-                                        /*
-                                          Use a custom tickLabelComponent with
-                                          an absolutely positioned x value to position
-                                          your tick labels in the center of the chart. The correct
-                                          y values are still provided by VictoryAxis for each tick
-                                        */
                                         tickLabelComponent={
                                             <VictoryLabel
                                                 x={width / 2}
@@ -269,7 +252,8 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataAgeA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart>
+                                </VictoryChart> */}
+
                             </Card>
                         </Row>
                     </Card.Body>

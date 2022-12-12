@@ -16,7 +16,7 @@ import Login from "./pages/login";
 import { AuthContext } from "./context/AuthProvider";
 import { PrivateRoute } from "./context/PrivateRoute";
 import Vote from "./pages/vote/vote";
-import Breakdown from "./pages/breakdown/breakdown.js";
+import Breakdown from "./pages/breakdown.js";
 import Inbox from "./components/Message";
 
 /*
