@@ -122,7 +122,7 @@ class CommentServer{
     await axios.post("http://localhost:4010/subscribe", {
       port: 4001,
       name: "Comments",
-      events: ["commentModerated"]
+      eventArray: ["commentModerated"]
     });
     const port = process.env.PORT || 4001;
     this.app.listen(port, () => {
