@@ -11,11 +11,11 @@ app.use(express.json());
 app.use(cors());
 
 class BreakdownServer {
-  app: Express;
-  dburl: string;
-  db: any;
+  app//: Express;
+  dburl//: string;
+  db//: any;
 
-  constructor(dburl: string) {
+  constructor(dburl) {
     this.dburl = dburl;
     this.app = express();
     this.app.use(logger("dev"));
@@ -80,11 +80,11 @@ class BreakdownServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    const port = process.env.PORT || 4002;
+    const port = process.env.PORT || 4009;
     await axios.post("http://localhost:4010/subscribe", {
-      port: 4002,
+      port: 4009,
       name: "VoteBreakdown",
-      events: ["postCreated", "voteCreated"],
+      eventArray: ["postCreated", "voteCreated"],
     });
     this.app.listen(port, () => {
       console.log(`Breakdown server started on ${port}`);
