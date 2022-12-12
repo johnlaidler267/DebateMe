@@ -15,16 +15,16 @@ const Title = ({ userloggedIn }) => {
     //     const threshold = 20;
     //     let lastScrollY = window.pageYOffset;
     //     let ticking = false;
-      
+
     //     const updateScrollDir = () => {
     //       const scrollY = window.pageYOffset;
-    
+
     //       if (scrollY === 0) {
     //         searchRef.current.style.backgroundColor = 'transparent';
     //       } else {
     //         searchRef.current.style.backgroundColor = 'rgba(57, 63, 77, 0.8)';
     //       }
-    
+
     //       if (Math.abs(scrollY - lastScrollY) < threshold) {
     //         ticking = false;
     //         return;
@@ -35,20 +35,20 @@ const Title = ({ userloggedIn }) => {
     //       } else {
     //         searchRef.current.className = 'search-bar slide-up'
     //       }
-                     
+
     //       lastScrollY = scrollY > 0 ? scrollY : 0;
     //       ticking = false;
     //     };
-        
+
     //     const onScroll = () => {
     //       if (!ticking) {
     //         window.requestAnimationFrame(updateScrollDir);
     //         ticking = true;
     //       }
     //     };
-        
+
     //     window.addEventListener("scroll", onScroll);
-      
+
     //     return () => window.removeEventListener("scroll", onScroll);  
     //   }, [scrollUp]);
 
@@ -81,10 +81,10 @@ const Title = ({ userloggedIn }) => {
             </div> */}
             <Header>
                 <HeaderText>
-                    <div className={ userloggedIn ? 'd-flex justify-content-center logo' : 'd-flex justify-content-center' } style={{ width: "140%" }}>
+                    <div className={userloggedIn ? 'd-flex justify-content-center logo' : 'd-flex justify-content-center'} style={{ width: "140%" }}>
                         DebateMe<TM>TM</TM>🗳️
                     </div>
-                    { userloggedIn && <User><AccountCircleIcon sx={{ fontSize: 40 }}/>{Auth.username}</User> }
+                    {userloggedIn && <User><AccountCircleIcon sx={{ fontSize: 40 }} />{Auth.username}</User>}
                 </HeaderText>
             </Header >
         </>

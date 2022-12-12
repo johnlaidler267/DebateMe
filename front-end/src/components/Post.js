@@ -62,6 +62,24 @@ export default function Post() {
     }
   }
 
+  /* Takes you to the voting page */
+  const handleVote = async () => {
+    try {
+      const json = sessionStorage.getItem('token') || "";
+      const token = JSON.parse(json);
+      await axios.post('http://localhost:4006/posts/vote', {
+        userId: token.userId,
+        postId: Thread.postId
+      });
+      fetchThread();
+    } catch (error) {
+      setTimeout(function () {
+        setIsOpen(true);
+        setContent(<div className="text-danger">{error.response.data.error}</div>);
+      }, 1500);
+    }
+  }
+
   useEffect(() => {
     fetchThread();
   }, []);
@@ -110,7 +128,7 @@ export default function Post() {
         width: '75%',
       }}>
         <Card style={{ margin: "10px", padding: "10px" }}>
-          <Button>Vote</Button>
+          <Button onClick={handleVote}>Vote</Button>
           {!Thread ? (
             <div className='top-50 start-50 position-absolute'>
               <CircularProgress sx={{ color: "yellow" }} size={60} />

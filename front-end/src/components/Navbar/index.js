@@ -32,9 +32,6 @@ const Navbar = ({ userloggedIn }) => {
                         Messages
 
                     </NavLink>
-                    <NavLink to="/test" activeStyle>
-                        Test
-                    </NavLink>
                     {
                         !userloggedIn ? (
                             <NavLink to="/sign-up" activeStyle>
