@@ -1,14 +1,19 @@
 TEMP: REMEMBER COMMAND docker system prune -a
 Ethan Stafford - estaff2
 
-This is the comment service. It is resposible for storing all information about comments that are made on debate posts including userId, postId, the content, and the parentId for determining if the comment was directly on another post or another comment. 
+This is the comment service. It is resposible for storing all information about comments that are made on debate posts. This is a major part of the user experience as it is where many different users can communicate with each other.  
 
-This service communicates with the trustDistinction service everytime a comment is created because this is a good measure of activity by that user. 
+The service communicates with the front end service. Anytime a post is clicked on, a request is sent to retrieve all the comments associated with that postId. Before being sent, this service sends a request to the commentVoting service. It retrieves the total number of votes for each of the comments on that post and orders them from highest to lowest. This effectivley orders comments by level of engagement. 
+
+Additionally, every post has an area where users can enter a comment. Whenever someone hits the submit button, this service recieves a request to create that comment. 
+
+This services also communicates with 2 services via the event bus. Everytime a comment is created, that event is sent to the event bus. The trustDistiniction service recieves this and records it because it is a good measure of activity by that user. The moderation event also recieves this event in order to see if it's acceptable. This service subscribes to the commentModerated event, so after the comment has been moderated this service will recieve it, and if the comment was rejected it will be deleted from the database. 
+
 
 Endpoints: 
 
 Use: To create a comment
-URL: /comments/create
+URL: /addComment
 METHOD: POST
 BODY:
 Request Data Constraints:
