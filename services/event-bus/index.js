@@ -129,7 +129,7 @@ app.post('/events', async (req, res) => {
   else if (eventType === "voteCreated") {
     console.log("PORTS SUBSCRIBED TO VOTECREATED: ", voteCreatedPorts)
     for (let i = 0; i < voteCreatedPorts.length; i++) {
-      await axios.post(`http://localhost:${postCreatedPorts[i]}/events`, event).catch((err) => {
+      await axios.post(`http://localhost:${voteCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }

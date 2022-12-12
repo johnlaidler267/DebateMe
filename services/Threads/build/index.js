@@ -50,14 +50,6 @@ app.post('/posts/create', async (req, res) => {
         postDB.insertOne(data);
         res.status(201).send(data);
     }
-    postDB.insertOne(data);
-    await axios
-        .post("http://localhost:4010/events", {
-        type: "PostCreated",
-        data: data,
-    })
-        .catch((err) => console.log(err.message));
-    res.status(201).send(data);
 });
 app.get("/posts/all", async (req, res) => {
     const posts = await postDB
@@ -83,7 +75,6 @@ app.get("/posts/get", async (req, res) => {
 });
 app.put('/posts/update', async (req, res) => {
     const { userId, postId, title, content, candidate } = req.body;
-    console.log(userId, postId, title, content, candidate);
     if (userId == undefined || postId == undefined || title == undefined || content == undefined || candidate == undefined) {
         res.status(400).send({ error: "Request data is incomplete" });
     }

@@ -18,7 +18,7 @@ interface Data {
 
 interface Post {
   userId: string;
-  postId: string;
+  postId: string; 
   title: string;
   content: string;
 }
@@ -76,17 +76,6 @@ app.post('/posts/create', async (req: Request, res: Response) => {
 
         res.status(201).send(data);
     }
-
-    postDB.insertOne(data);
-
-    await axios
-      .post("http://localhost:4010/events", {
-        type: "PostCreated",
-        data: data,
-      })
-      .catch((err) => console.log(err.message));
-
-    res.status(201).send(data);
 });
 
 app.get("/posts/all", async (req: Request, res: Response) => {
@@ -118,7 +107,6 @@ app.get("/posts/get", async (req: Request, res: Response) => {
 
 app.put('/posts/update', async (req: Request, res: Response) => {
     const { userId, postId, title, content, candidate } : { userId: string, postId: string, title: string, content: string, candidate: string[] } = req.body;
-    console.log(userId, postId, title, content, candidate)
     if (userId == undefined || postId == undefined || title == undefined || content == undefined || candidate == undefined) {
         res.status(400).send({ error: "Request data is incomplete" });
     } else {
