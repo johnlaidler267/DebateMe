@@ -39,47 +39,47 @@ app.post('/subscribe', (req, res) => {
     if (eventArray.includes("commentCreated")) {
       if (commentCreatedPorts.includes(port)) continue;
       commentCreatedPorts.push(port);
-      commentCreatedNames.push(name);
+      commentCreatedNames.push(name.toLowerCase());
     }
     if (eventArray.includes("commentModerated")) {
       if (commentModeratedPorts.includes(port)) continue;
       commentModeratedPorts.push(port);
-      commentModeratedNames.push(name);
+      commentModeratedNames.push(name.toLowerCase());
     }
     if (eventArray.includes("postModerated")) {
       if (postModeratedPorts.includes(port)) continue;
       postModeratedPorts.push(port);
-      postModeratedNames.push(name);
+      postModeratedNames.push(name.toLowerCase());
     }
     if (eventArray.includes("commentVoted")) {
       if (commentVotedPorts.includes(port)) continue;
       commentVotedPorts.push(port);
-      commentVotedNames.push(name)
+      commentVotedNames.push(name.toLowerCase())
     }
     if (eventArray.includes("voteCreated")) {
       if (voteCreatedPorts.includes(port)) continue;
       voteCreatedPorts.push(port)
-      voteCreatedNames.push(name)
+      voteCreatedNames.push(name.toLowerCase())
     }
     if (eventArray.includes("postCreated")) {
       if (postCreatedPorts.includes(port)) continue;
       postCreatedPorts.push(port)
-      postCreatedNames.push(name)
+      postCreatedNames.push(name.toLowerCase())
     }
     if (eventArray.includes("postUpdated")) {
       if (postUpdatedPorts.includes(port)) continue;
       postUpdatedPorts.push(port)
-      postUpdatedNames.push(name)
+      postUpdatedNames.push(name.toLowerCase())
     }
     if (eventArray.includes("postDeleted")) {
       if (postDeletedPorts.includes(port)) continue;
       postDeletedPorts.push(port)
-      postDeletedNames.push(name)
+      postDeletedNames.push(name.toLowerCase())
     }
     if (eventArray.includes("userDataRequest")) {
       if (userDataRequestPorts.includes(port)) continue;
       userDataRequestPorts.push(port);
-      userDataRequestNames.push(name);
+      userDataRequestNames.push(name.toLowerCase());
     }
   }
   res.status(200).send("Subscribed successfully!")
