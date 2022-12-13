@@ -19,7 +19,7 @@ interface Data {
 
 interface Post {
   userId: string;
-  postId: string;
+  postId: string; 
   title: string;
   content: string;
 }
@@ -186,7 +186,7 @@ app.put("/posts/update", async (req: Request, res: Response) => {
       })
       .catch((err) => console.log(err.message));
 
-    const user = response.data;
+    const user = await response.data;
 
     if (user) {
       const post: Post = await postDB.findOne({ postId: postId });

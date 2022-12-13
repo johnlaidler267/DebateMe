@@ -97,7 +97,7 @@ app.put("/posts/update", async (req, res) => {
             userId: userId,
         })
             .catch((err) => console.log(err.message));
-        const user = response.data;
+        const user = await response.data;
         if (user) {
             const post = await postDB.findOne({ postId: postId });
             if (post) {
