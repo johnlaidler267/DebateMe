@@ -30,7 +30,7 @@ export class BreakdownDatabase {
     DO $$ BEGIN
       CREATE TYPE candidate AS
       (
-        id varchar(30),
+        id varchar(100),
         voteCount int,
         under25 int,
         to65 int,
@@ -49,7 +49,7 @@ export class BreakdownDatabase {
         WHEN duplicate_object THEN null;
       END $$;
       CREATE TABLE IF NOT EXISTS electionBreakdowns (
-        electionID varchar(30),
+        electionID varchar(100),
         candidate0 candidate,
         candidate1 candidate
       );

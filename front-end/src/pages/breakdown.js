@@ -4,49 +4,96 @@ import {
     VictoryBar, VictoryChart, VictoryAxis,
     VictoryTheme, VictoryPie, VictoryLabel, VictoryStack
 } from 'victory';
-import MapChart from "./MapChart";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from 'react';
 
-const dataRaceA = [
-    { x: "Black", y: 57 },
-    { x: "Asian", y: 40 },
-    { x: "Caucasian", y: 38 },
-    { x: "Hispanic", y: 37 },
-    { x: "Other", y: 25 },
-];
-
-const dataRaceB = dataRaceA.map((point) => {
-    const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-    return { ...point, y };
-});
-
-const dataGenderA = [
-    { x: "Men", y: 57 },
-    { x: "Women", y: 40 },
-    { x: "Other", y: 38 },
-];
-
-const dataGenderB = dataGenderA.map((point) => {
-    const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-    return { ...point, y };
-});
-
-const dataAgeA = [
-    { x: "<25", y: 57 },
-    { x: "25-65", y: 40 },
-    { x: "65+", y: 38 },
-];
-
-const dataAgeB = dataAgeA.map((point) => {
-    const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-    return { ...point, y };
-});
-
-const width = 300;
-const height = 150;
-
+/* Render the breakdown page */
 const Breakdown = () => {
-    const c1 = useRef(null)
-    const c2 = useRef(null)
+    const navigate = useNavigate();
+    const { state } = useLocation();
+
+    /* State variables for the data (state variables are used to rerender the component when the data changes) */
+    const [electionId, setElectionId] = useState({});
+    const [candidate0, setCandidate0] = useState({});
+    const [candidate1, setCandidate1] = useState({});
+
+    /* Hook that runs when the component is mounted, and is used to fetch the breakdown data */
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await axios.get('http://localhost:4009/getBreakdown', { params: { electionId: state.postId } });
+            const { electionId, candidate0, candidate1 } = res.data;
+            console.log("response", res)
+            // setElectionId(electionId);
+            // setCandidate0(candidate0);
+            // setCandidate1(candidate1);
+        }
+        fetchData();
+    }, []);
+
+    // /* Returns the data for the race comparison chart */
+    // const raceData = (cand0, cand1) => {
+    //     const { numBlack0, numAsian0, numCaucasian0, numHispanic0, numOther0, totalVotes0 } = cand0;
+    //     const { numBlack1, numAsian1, numCaucasian1, numHispanic1, numOther1, totalVotes1 } = cand1;
+
+    //     let dataRaceA = [
+    //         { x: "Black", y: numBlack0 / (numBlack0 + numBlack1) },
+    //         { x: "Asian", y: numAsian0 / (numAsian0 + numAsian1) },
+    //         { x: "Caucasian", y: numCaucasian0 / (numCaucasian0 + numCaucasian1) },
+    //         { x: "Hispanic", y: numHispanic0 / (numHispanic0 + numHispanic1) },
+    //         { x: "Other", y: numOther0 / (numOther0 + numOther1) },
+    //     ];
+
+    //     let dataRaceB = dataRaceA.map((point) => {
+    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
+    //         return { ...point, y };
+    //     });
+
+    //     return dataRaceA, dataRaceB;
+    // }
+
+    // /* Returns the data for the gender comparison chart */
+    // const genderData = (cand0, cand1) => {
+    //     const { numMen0, numWomen0, numOther0, totalVotes0 } = cand0;
+    //     const { numMen1, numWomen1, numOther1, totalVotes1 } = cand1;
+
+    //     let dataGenderA = [
+    //         { x: "Men", y: numMen0 / (numMen0 + numMen1) },
+    //         { x: "Women", y: numWomen0 / (numWomen0 + numWomen1) },
+    //         { x: "Other", y: numOther0 / (numOther0 + numOther1) },
+    //     ];
+
+    //     let dataGenderB = dataGenderA.map((point) => {
+    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
+    //         return { ...point, y };
+    //     });
+    //     return dataGenderA, dataGenderB;
+    // }
+
+    // /* Returns the data for the age comparison chart */
+    // const ageData = (cand0, cand1) => {
+    //     const { numUnder25_0, num25_65_0, numOver65_0, totalVotes0 } = cand0;
+    //     const { numUnder25_1, num25_65_1, numOver65_1, totalVotes1 } = cand1;
+    //     let dataAgeA = [
+    //         { x: "<25", y: numUnder25_0 / (numUnder25_0 + numUnder25_1) },
+    //         { x: "25-65", y: num25_65_0 / (num25_65_0 + num25_65_1) },
+    //         { x: "65+", y: numOver65_0 / (numOver65_0 + numOver65_1) },
+    //     ];
+
+    //     let dataAgeB = dataAgeA.map((point) => {
+    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
+    //         return { ...point, y };
+    //     });
+    //     return dataAgeA, dataAgeB;
+    // }
+
+    // /* Gather the data for the charts */
+    // const width = 300;
+    // const height = 150;
+    // let dataAgeA, dataAgeB = ageData(candidate0, candidate1);
+    // let dataGenderA, dataGenderB = genderData(candidate0, candidate1);
+    // let dataRaceA, dataRaceB = raceData(candidate0, candidate1);
+
     return (
         <div className="App">
             <Container fluid style={{
@@ -61,16 +108,16 @@ const Breakdown = () => {
                                 <Col>
                                     <Card>
                                         <Card.Body>
-                                            <h3 className='text-center'> Candidate 1 ✅</h3>
-                                            <h5 className='text-center'> Total Votes: 233 </h5>
+                                            <h3 className='text-center'> {state.candidate[0]} ✅</h3>
+                                            <h5 className='text-center'> Total Votes: {candidate0.voteCount} </h5>
                                         </Card.Body>
                                     </Card>
                                 </Col>
                                 <Col>
                                     <Card>
                                         <Card.Body>
-                                            <h3 className='text-center'> Candidate 2 </h3>
-                                            <h5 className='text-center'> Total Votes: 200 </h5>
+                                            <h3 className='text-center'> {state.candidate[1]} </h3>
+                                            <h5 className='text-center'> Total Votes: {candidate1.voteCounts} </h5>
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -81,7 +128,7 @@ const Breakdown = () => {
                             <Card id="race" style={{ height: "75%", width: "85%", margin: "auto" }}>
                                 <br></br>
                                 <h4 className="text-center">Racial Breakdown</h4>
-                                <VictoryChart horizontal
+                                {/* <VictoryChart horizontal
                                     height={170}
                                     width={width}
                                     padding={30}
@@ -93,12 +140,12 @@ const Breakdown = () => {
                                             style={{ data: { fill: "tomato" } }}
                                             data={dataRaceA}
                                             y={(data) => (-Math.abs(data.y))}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)}%`)}
+                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                         />
                                         <VictoryBar
                                             style={{ data: { fill: "orange" } }}
                                             data={dataRaceB}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)}%`)}
+                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                         />
                                     </VictoryStack>
 
@@ -108,12 +155,6 @@ const Breakdown = () => {
                                             ticks: { stroke: "transparent" },
                                             tickLabels: { fontSize: 5, fill: "black" }
                                         }}
-                                        /*
-                                          Use a custom tickLabelComponent with
-                                          an absolutely positioned x value to position
-                                          your tick labels in the center of the chart. The correct
-                                          y values are still provided by VictoryAxis for each tick
-                                        */
                                         tickLabelComponent={
                                             <VictoryLabel
                                                 x={width / 2}
@@ -122,7 +163,7 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataRaceA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart>
+                                </VictoryChart> */}
                             </Card>
                         </Row>
                         <br></br>
@@ -130,7 +171,8 @@ const Breakdown = () => {
                             <Card id="gender" style={{ height: "75%", width: "85%", margin: "auto" }}>
                                 <br></br>
                                 <h4 className="text-center">Gender Breakdown</h4>
-                                <VictoryChart horizontal
+
+                                {/* <VictoryChart horizontal
                                     height={100}
                                     width={width}
                                     padding={20}
@@ -142,12 +184,12 @@ const Breakdown = () => {
                                             style={{ data: { fill: "tomato" } }}
                                             data={dataGenderA}
                                             y={(data) => (-Math.abs(data.y))}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)}%`)}
+                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                         />
                                         <VictoryBar
                                             style={{ data: { fill: "orange" } }}
                                             data={dataGenderB}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)}%`)}
+                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                         />
                                     </VictoryStack>
 
@@ -157,12 +199,6 @@ const Breakdown = () => {
                                             ticks: { stroke: "transparent" },
                                             tickLabels: { fontSize: 5, fill: "black" }
                                         }}
-                                        /*
-                                          Use a custom tickLabelComponent with
-                                          an absolutely positioned x value to position
-                                          your tick labels in the center of the chart. The correct
-                                          y values are still provided by VictoryAxis for each tick
-                                        */
                                         tickLabelComponent={
                                             <VictoryLabel
                                                 x={width / 2}
@@ -171,7 +207,8 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataGenderA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart>
+                                </VictoryChart> */}
+
                             </Card>
                         </Row>
                         <br></br>
@@ -179,7 +216,8 @@ const Breakdown = () => {
                             <Card id="age" style={{ height: "75%", width: "85%", margin: "auto" }} >
                                 <br></br>
                                 <h4 className="text-center">Age Breakdown</h4>
-                                <VictoryChart horizontal
+
+                                {/* <VictoryChart horizontal
                                     height={100}
                                     width={width}
                                     padding={20}
@@ -191,12 +229,12 @@ const Breakdown = () => {
                                             style={{ data: { fill: "tomato" } }}
                                             data={dataAgeA}
                                             y={(data) => (-Math.abs(data.y))}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)}%`)}
+                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                         />
                                         <VictoryBar
                                             style={{ data: { fill: "orange" } }}
                                             data={dataAgeB}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)}%`)}
+                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                         />
                                     </VictoryStack>
 
@@ -206,12 +244,6 @@ const Breakdown = () => {
                                             ticks: { stroke: "transparent" },
                                             tickLabels: { fontSize: 5, fill: "black" }
                                         }}
-                                        /*
-                                          Use a custom tickLabelComponent with
-                                          an absolutely positioned x value to position
-                                          your tick labels in the center of the chart. The correct
-                                          y values are still provided by VictoryAxis for each tick
-                                        */
                                         tickLabelComponent={
                                             <VictoryLabel
                                                 x={width / 2}
@@ -220,11 +252,12 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataAgeA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart>
+                                </VictoryChart> */}
+
                             </Card>
                         </Row>
                     </Card.Body>
-                    <Button variant="outline-secondary" style={{ width: "10%", margin: "10px" }}>Back To Debate</Button>
+                    <Button variant="outline-secondary" style={{ width: "10%", margin: "10px" }} onClick={() => navigate(-2)}>Back To Debate</Button>
                 </Card>
             </Container>
         </div >

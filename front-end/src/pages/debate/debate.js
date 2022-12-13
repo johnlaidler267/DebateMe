@@ -5,7 +5,7 @@ import axios from "axios";
 import { Button, Card, Container, Row, Col, Pagination, Badge } from 'react-bootstrap';
 
 const Debate = () => {
-    const [ Threads, setThreads ] = useState([]);
+    const [Threads, setThreads] = useState([]);
     const navigate = useNavigate();
 
     const fetchThreads = async () => {
@@ -13,24 +13,26 @@ const Debate = () => {
         setThreads(shuffle(res.data));
     }
 
+    /* Shuffles the threads */
     function shuffle(array) {
-        let currentIndex = array.length,  randomIndex;
-      
+        let currentIndex = array.length, randomIndex;
+
         while (currentIndex != 0) {
-      
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-      
-          [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
+
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
         }
-      
+
         return array;
     }
 
+    /* Renders the threads */
     const renderedThreads = Object.values(Threads).map((t, index) => {
         return (
-            <Card className="mb-3" key={index}>
+            <Card className="mb-2" key={index}>
                 <br></br>
                 <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">{t.title}</Card.Title>
                 <Card.Body>
