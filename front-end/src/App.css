@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:regular,bold,italic&subset=latin,latin-ext");
+
+* {
+  font-family: Poppins;
+}
+
 body {
   background-color: #393f4d;
 }

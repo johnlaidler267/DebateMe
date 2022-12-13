@@ -3,13 +3,8 @@ input[type="checkbox"]:checked {
 }
 
 .custom-btn {
-  background-image: linear-gradient(
-    to right,
-    #393f4d,
-    #feda6a,
-    #393f4d
-  ) !important;
-  border: none;
+  border: 3px black !important;
+  background-color: bisque;
   color: black !important;
   padding: 15px 32px;
   text-align: center;

@@ -2,7 +2,8 @@ import "./debate.css"
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { Button, Card, Container, Row, Col, Pagination, Badge } from 'react-bootstrap';
+import { Button, Card, Container, Pagination, Carousel, Badge } from 'react-bootstrap';
+import { AiOutlineFire } from 'react-icons/ai';
 
 const Debate = () => {
     const [Threads, setThreads] = useState([]);
@@ -12,6 +13,7 @@ const Debate = () => {
         const res = await axios.get('http://localhost:4006/posts/all');
         setThreads(shuffle(res.data));
     }
+
 
     /* Shuffles the threads */
     function shuffle(array) {
@@ -53,11 +55,71 @@ const Debate = () => {
         fetchThreads();
     }, [])
 
+    const debates = Object.values(Threads);
+    const CustomCarousel = () => {
+        let featured = []
+        let featuredTitles = new Set();
+
+        const getRandomDebate = (debates) => {
+            let debate = debates[Math.floor(Math.random() * debates.length)];
+
+            while (featuredTitles.has(debate.title))
+                debate = debates[Math.floor(Math.random() * debates.length)];
+
+            return debate
+        }
+
+        for (let i = 0; i < 4; i++) {
+            if (debates.length < 1) break;
+
+            if (debates.length < i + 1) break;
+            else {
+                const debate = getRandomDebate(debates)
+                const postId = debate.postId;
+                const title = debate.title;
+                let content = debate.content;
+                if (content.length > 200) content = content.substring(0, 200) + "...";
+                featuredTitles.add(title)
+                featured.push(
+                    <Carousel.Item key={title}>
+                        <Card style={{ width: "100%", height: "20rem", color: "black", padding: "5px" }}>
+                            <Card.Body>
+                                <Carousel.Caption>
+                                    <h3>{title}</h3>
+                                    <p>{content}</p>
+                                    <br></br>
+                                    <Button style={{ width: "70%" }} onClick={() => navigate(`/post/${postId}`)} className="custom-btn">Debate</Button>
+                                    <br></br>
+                                    <br></br>
+                                </Carousel.Caption>
+                            </Card.Body>
+                        </Card>
+                    </Carousel.Item>
+                );
+            }
+        }
+        return (
+            <Carousel variant="dark">
+                {featured}
+            </Carousel>
+        )
+    }
+
+
     return (
-        <Container fluid style={{
+
+        < Container fluid style={{
             backgroundColor: '#393f4d',
             width: '90%'
-        }}>
+        }
+        }>
+            <br></br>
+            <div>
+                <h3 style={{ color: "#feda6a" }}>
+                    Featured Debates. <Badge bg="secondary">Hot <AiOutlineFire /></Badge>
+                </h3>
+            </div>
+            <CustomCarousel />
             <br></br>
             <div>
                 <h3 style={{ color: "#feda6a" }}>
@@ -67,6 +129,7 @@ const Debate = () => {
             <div className="threads">
                 {renderedThreads}
             </div>
+            <br></br>
             <Pagination>
                 <Pagination.Item>1</Pagination.Item>
                 <Pagination.Item active>2</Pagination.Item>

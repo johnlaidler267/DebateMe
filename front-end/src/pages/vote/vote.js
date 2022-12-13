@@ -54,7 +54,7 @@ const Vote = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={props.onHide}>Close</Button>
-                    <Button onClick={() => navigate('breakdown', { state: state })}>View Election Results</Button>
+                    <Button onClick={() => navigate(`/post/${state.postId}/breakdown`, { state: state })}>View Election Results</Button>
                 </Modal.Footer>
             </Modal>
         );
