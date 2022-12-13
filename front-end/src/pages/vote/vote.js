@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card, Form, Container, Col, Row, Modal } from 'react-bootstrap';
 import "./vote.css";
 import VoteButton from '../../components/VoteButton/vote-button';
@@ -6,40 +6,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from '@mui/material';
 
-function MyVerticallyCenteredModal(props) {
-    const navigate = useNavigate();
-    const { state } = useLocation();
-    const [Thread, setThread] = useState();
-    return (
-        <Modal
-            {...props}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Congratulations! Your vote was recorded.
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>
-                    To view the results of the election, please click below.
-                </p>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={props.onHide}>Close</Button>
-                <Button onClick={() => navigate('breakdown', { state: state })}>View Election Results</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-}
+
 
 const Vote = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
     const [modalShow, setModalShow] = React.useState(false);
+    const [disabled, setDisabled] = useState(false);
 
+    /* Casts vote to database, emits voteCreated event */
     const handleVote = async (vote) => {
         await axios.post('http://localhost:4004/vote',
             {
@@ -56,6 +31,37 @@ const Vote = () => {
                 console.log(error);
             });
         setModalShow(true);
+        setDisabled(true);
+    }
+
+    const VoteModal = (props) => {
+        const navigate = useNavigate();
+        const { state } = useLocation();
+        const [Thread, setThread] = useState();
+
+        return (
+            <Modal
+                {...props}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Congratulations! Your vote was recorded.
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>
+                        To view the results of the election, please click below.
+                    </p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={props.onHide}>Close</Button>
+                    <Button onClick={() => navigate('breakdown', { state: state })}>View Election Results</Button>
+                </Modal.Footer>
+            </Modal>
+        );
     }
 
     return (
@@ -73,8 +79,8 @@ const Vote = () => {
                                 <Col>
                                     <Card>
                                         <h2 className="text-center" style={{ margin: "10px" }} >{state.candidate[0]}</h2>
-                                        <Button className="tomato-btn" onClick={() => handleVote(state.candidate[0])}>Vote</Button>
-                                        <MyVerticallyCenteredModal
+                                        <Button disabled={disabled} className="tomato-btn" onClick={() => handleVote(state.candidate[0])}>Vote</Button>
+                                        <VoteModal
                                             show={modalShow}
                                             onHide={() => setModalShow(false)}
                                         />
@@ -83,8 +89,8 @@ const Vote = () => {
                                 <Col>
                                     <Card>
                                         <h2 className="text-center" style={{ margin: "10px" }}>{state.candidate[1]}</h2>
-                                        <Button className="orange-btn" onClick={() => handleVote(state.candidate[1])}>Vote</Button>
-                                        <MyVerticallyCenteredModal
+                                        <Button disabled={disabled} className="orange-btn" onClick={() => handleVote(state.candidate[1])}>Vote</Button>
+                                        <VoteModal
                                             show={modalShow}
                                             onHide={() => setModalShow(false)}
                                         />

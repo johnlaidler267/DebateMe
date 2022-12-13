@@ -165,12 +165,9 @@ app.post('/events', async (req, res) => {
     res.send(event);
   }
   else if (eventType === "userDataRequest") {
-    console.log("EVENT!!")
-    console.log(event);
     const response = await axios.post(`http://localhost:4008/events`, event).catch((err) => {
       console.log(err.message)
     });
-    console.log(response.data);
     res.send(response.data);
   }
 

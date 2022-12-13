@@ -44,4 +44,13 @@ export class ElectionDatabase {
     const res = await this.client.query(queryText, [electionID, userID, vote]);
     return res.rows[0];
   }
+
+  /* Checks if a user has voted in an election */
+  async hasVoted(electionID, userID) {
+    const queryText = `SELECT * FROM elections WHERE electionID = $1 AND userID = $2`;
+    const res = await this.client.query(queryText, [electionID, userID]);
+    if (res.rows.length == 0)
+      return false;
+    return true;
+  }
 }

@@ -10,6 +10,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Modal from "./Modal";
 import CommentCreate from './Comments/CommentCreate/CommentCreate'
 import CommentList from './Comments/CommentList/CommentList'
+import { SettingsVoiceOutlined } from "@mui/icons-material";
 
 export default function Post() {
   const [Thread, setThread] = useState();
@@ -21,6 +22,7 @@ export default function Post() {
   const listRef = useRef();
   const navigate = useNavigate();
   const [comments, setComments] = useState({})
+  const [voted, setVoted] = useState(false)
 
   /* Fetches the thread from the backend */
   const fetchThread = async () => {
@@ -66,7 +68,7 @@ export default function Post() {
     fetchThread();
   }, []);
 
-  /* Check if user is the owner of the post */
+  /* On page load, check if the user is the owner of the post */
   useEffect(() => {
     if (sessionStorage.getItem('token') && Thread) {
       const token = JSON.parse(sessionStorage.getItem('token') || "");
@@ -75,6 +77,30 @@ export default function Post() {
       }
     }
   }, [Thread])
+
+  /* On page load, check if the user has already voted in the election */
+  useEffect(() => {
+    console.log("LOADING HAS VOTED")
+    const token = JSON.parse(sessionStorage.getItem('token') || "");
+    fetchData();
+    async function fetchData() {
+      const response = await axios.get('http://localhost:4004/hasVoted',
+        {
+          params:
+          {
+            userID: token.userId,
+            electionID: postId
+          }
+        }).then((response) => {
+          console.log("RESPONSE", response.data)
+          setVoted(response.data);
+        }
+        ).catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
 
   /* Calculate time since post was created */
   function timeSince(date) {
@@ -103,6 +129,16 @@ export default function Post() {
     return Math.floor(seconds) + " seconds";
   }
 
+  /* If the user has voted, display the Cast Vote button, otherwise display the View Election Results button */
+  const VoteOrResults = () => {
+    console.log("VOTED: ", voted)
+    if (!voted) {
+      return <Button onClick={() => navigate('vote', { state: Thread })}> Cast Vote</Button>
+    } else {
+      return <Button onClick={() => navigate('breakdown', { state: Thread })}> View Election Results</ Button>
+    }
+  }
+
   return (
     <>
       <Container fluid style={{
@@ -110,7 +146,7 @@ export default function Post() {
         width: '75%',
       }}>
         <Card style={{ margin: "10px", padding: "10px" }}>
-          <Button onClick={() => navigate('vote', { state: Thread })}> Vote</Button>
+          <VoteOrResults />
           {!Thread ? (
             <div className='top-50 start-50 position-absolute'>
               <CircularProgress sx={{ color: "yellow" }} size={60} />

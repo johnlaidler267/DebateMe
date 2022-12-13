@@ -21,11 +21,11 @@ class ElectionServer {
     this.app.use(cors());
   }
 
-  // Initialize all routes (endpoints) for the server
+  /* Initialize all routes (endpoints) for the server */
   async initRoutes() {
     const self = this;
 
-    /* Casts vote to database, emits voteCreated event */
+    // Casts vote to database, emits voteCreated event 
     this.app.post("/vote", async (req, res) => {
       const { electionID, userID, vote } = req.body.params;
       const Vote = await self.db.createVote(electionID, userID, vote)
@@ -43,6 +43,14 @@ class ElectionServer {
       });
       res.status(200).send(JSON.stringify(Vote))
     });
+
+    // Returns whether or not a user has voted in an election 
+    this.app.get("/hasVoted", async (req, res) => {
+      const { userID, electionID } = req.query;
+      const hasVoted = await self.db.hasVoted(electionID, userID)
+      res.status(200).send(JSON.stringify(hasVoted))
+    });
+
   }
 
   /* Initialize the database connection */
