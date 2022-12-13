@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button, Card, Form, Container, Col, Row, Modal } from 'react-bootstrap';
+import { Button, Card, Form, Container, Col, Row, Accordion } from 'react-bootstrap';
 import {
     VictoryBar, VictoryChart, VictoryAxis,
     VictoryTheme, VictoryPie, VictoryLabel, VictoryStack
@@ -105,163 +105,170 @@ const Breakdown = () => {
             }}>
                 <br></br>
                 <Card>
+                    <Card.Header>
+                        <h2 className='text-center'> Election Breakdown </h2>
+                    </Card.Header>
                     <Card.Body>
                         <Container>
                             <Row>
                                 <Col>
-                                    <Card>
+                                    <Card className="border d-flex align-items-center justify-content-center" style={{ height: '100%', backgroundImage: "linear-gradient(to left top, #FF4040, #800000)", color: "white" }}>
+
                                         <Card.Body>
                                             <h3 className='text-center'> {state.candidate[0]} ✅</h3>
-                                            <h5 className='text-center'> Total Votes: {candidate0[1]} </h5>
+                                            <h5 className='text-center m-0 mb-2' style={{ color: "white" }}> Total Votes: {candidate0[1]} </h5>
                                         </Card.Body>
                                     </Card>
                                 </Col>
                                 <Col>
-                                    <Card>
+                                    <Card className="border d-flex align-items-center justify-content-center" style={{ height: '100%', backgroundImage: "linear-gradient(to right top, #3F3FFF, #000080", color: "white" }}>
+
                                         <Card.Body>
                                             <h3 className='text-center'> {state.candidate[1]} </h3>
-                                            <h5 className='text-center'> Total Votes: {candidate1[1]} </h5>
+                                            <h5 className='text-center m-0 mb-2' style={{ color: "white" }}> Total Votes: {candidate1[1]} </h5>
                                         </Card.Body>
                                     </Card>
                                 </Col>
                             </Row>
-                        </Container >
+                        </Container>
                         <br></br>
-                        <Row>
-                            <Card id="race" style={{ height: "75%", width: "85%", margin: "auto" }}>
-                                <br></br>
-                                <h4 className="text-center">Racial Breakdown</h4>
-                                <VictoryChart horizontal
-                                    height={170}
-                                    width={width}
-                                    padding={30}
-                                >
-                                    <VictoryStack
-                                        style={{ data: { width: 18 }, labels: { fontSize: 5 } }}
+                        <Accordion defaultActiveKey="0">
+                            <Accordion.Item eventKey="0" id="race" style={{ height: "75%", width: "85%", margin: "auto" }}>
+                                <Accordion.Header><h4 className="text-center">Racial Breakdown</h4></Accordion.Header>
+                                <Accordion.Body>
+                                    <VictoryChart horizontal
+                                        height={170}
+                                        width={width}
+                                        padding={30}
                                     >
-                                        <VictoryBar
-                                            style={{ data: { fill: "tomato" } }}
-                                            data={dataRaceA}
-                                            y={(data) => (-Math.abs(data.y))}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
-                                        />
-                                        <VictoryBar
-                                            style={{ data: { fill: "orange" } }}
-                                            data={dataRaceB}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
-                                        />
-                                    </VictoryStack>
-
-                                    <VictoryAxis
-                                        style={{
-                                            axis: { stroke: "transparent" },
-                                            ticks: { stroke: "transparent" },
-                                            tickLabels: { fontSize: 5, fill: "black" }
-                                        }}
-                                        tickLabelComponent={
-                                            <VictoryLabel
-                                                x={width / 2}
-                                                textAnchor="middle"
+                                        <VictoryStack
+                                            style={{ data: { width: 18, }, labels: { fontSize: 5 } }}
+                                        >
+                                            <VictoryBar
+                                                style={{ data: { fill: "#FF4040", color: "white" } }}
+                                                data={dataRaceA}
+                                                y={(data) => (-Math.abs(data.y))}
+                                                labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                             />
-                                        }
-                                        tickValues={dataRaceA.map((point) => point.x).reverse()}
-                                    />
-                                </VictoryChart>
-                            </Card>
-                        </Row>
-                        <br></br>
-                        <Row>
-                            <Card id="gender" style={{ height: "75%", width: "85%", margin: "auto" }}>
-                                <br></br>
-                                <h4 className="text-center">Gender Breakdown</h4>
+                                            <VictoryBar
+                                                style={{ data: { fill: "#3F3FFF" } }}
+                                                data={dataRaceB}
+                                                labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
+                                            />
+                                        </VictoryStack>
 
-                                <VictoryChart horizontal
-                                    height={100}
-                                    width={width}
-                                    padding={20}
-                                >
-                                    <VictoryStack
-                                        style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
+                                        <VictoryAxis
+                                            style={{
+                                                axis: { stroke: "transparent" },
+                                                ticks: { stroke: "transparent" },
+                                                tickLabels: { fontSize: 5, fill: "white" }
+                                            }}
+                                            tickLabelComponent={
+                                                <VictoryLabel
+                                                    x={width / 2}
+                                                    textAnchor="middle"
+                                                />
+                                            }
+                                            tickValues={dataRaceA.map((point) => point.x).reverse()}
+                                        />
+                                    </VictoryChart>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey='1' id="gender" style={{ height: "75%", width: "85%", margin: "auto" }}>
+                                <Accordion.Header>
+                                    <h4 className="text-center">Gender Breakdown</h4>
+                                </Accordion.Header>
+
+                                <Accordion.Body>
+                                    <VictoryChart horizontal
+                                        height={100}
+                                        width={width}
+                                        padding={20}
                                     >
-                                        <VictoryBar
-                                            style={{ data: { fill: "tomato" } }}
-                                            data={dataGenderA}
-                                            y={(data) => (-Math.abs(data.y))}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
-                                        />
-                                        <VictoryBar
-                                            style={{ data: { fill: "orange" } }}
-                                            data={dataGenderB}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
-                                        />
-                                    </VictoryStack>
-
-                                    <VictoryAxis
-                                        style={{
-                                            axis: { stroke: "transparent" },
-                                            ticks: { stroke: "transparent" },
-                                            tickLabels: { fontSize: 5, fill: "black" }
-                                        }}
-                                        tickLabelComponent={
-                                            <VictoryLabel
-                                                x={width / 2}
-                                                textAnchor="middle"
+                                        <VictoryStack
+                                            style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
+                                        >
+                                            <VictoryBar
+                                                style={{ data: { fill: "#FF4040", color: "white" } }}
+                                                data={dataGenderA}
+                                                y={(data) => (-Math.abs(data.y))}
+                                                labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                             />
-                                        }
-                                        tickValues={dataGenderA.map((point) => point.x).reverse()}
-                                    />
-                                </VictoryChart>
+                                            <VictoryBar
+                                                style={{ data: { fill: "#3F3FFF" } }}
+                                                data={dataGenderB}
+                                                labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
+                                            />
+                                        </VictoryStack>
 
-                            </Card>
-                        </Row>
-                        <br></br>
-                        <Row>
-                            <Card id="age" style={{ height: "75%", width: "85%", margin: "auto" }} >
-                                <br></br>
-                                <h4 className="text-center">Age Breakdown</h4>
+                                        <VictoryAxis
+                                            style={{
+                                                axis: { stroke: "transparent" },
+                                                ticks: { stroke: "transparent" },
+                                                tickLabels: { fontSize: 5, fill: "black" }
+                                            }}
+                                            tickLabelComponent={
+                                                <VictoryLabel
+                                                    x={width / 2}
+                                                    textAnchor="middle"
+                                                />
+                                            }
+                                            tickValues={dataGenderA.map((point) => point.x).reverse()}
+                                        />
+                                    </VictoryChart>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey='3' id="age" style={{ height: "75%", width: "85%", margin: "auto" }} >
+                                <Accordion.Header>
+                                    <h4 className="text-center">Age Breakdown</h4>
+                                </Accordion.Header>
 
-                                <VictoryChart horizontal
-                                    height={100}
-                                    width={width}
-                                    padding={20}
-                                >
-                                    <VictoryStack
-                                        style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
+                                <Accordion.Body>
+                                    <VictoryChart horizontal
+                                        height={100}
+                                        width={width}
+                                        padding={20}
                                     >
-                                        <VictoryBar
-                                            style={{ data: { fill: "tomato" } }}
-                                            data={dataAgeA}
-                                            y={(data) => (-Math.abs(data.y))}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
-                                        />
-                                        <VictoryBar
-                                            style={{ data: { fill: "orange" } }}
-                                            data={dataAgeB}
-                                            labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
-                                        />
-                                    </VictoryStack>
-
-                                    <VictoryAxis
-                                        style={{
-                                            axis: { stroke: "transparent" },
-                                            ticks: { stroke: "transparent" },
-                                            tickLabels: { fontSize: 5, fill: "black" }
-                                        }}
-                                        tickLabelComponent={
-                                            <VictoryLabel
-                                                x={width / 2}
-                                                textAnchor="middle"
+                                        <VictoryStack
+                                            style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
+                                        >
+                                            <VictoryBar
+                                                style={{ data: { fill: "#FF4040", color: "white" } }}
+                                                data={dataAgeA}
+                                                y={(data) => (-Math.abs(data.y))}
+                                                labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
                                             />
-                                        }
-                                        tickValues={dataAgeA.map((point) => point.x).reverse()}
-                                    />
-                                </VictoryChart>
+                                            <VictoryBar
+                                                style={{ data: { fill: "#3F3FFF" } }}
+                                                data={dataAgeB}
+                                                labels={({ datum }) => (`${Math.abs(datum.y)} % `)}
+                                            />
+                                        </VictoryStack>
 
-                            </Card>
-                        </Row>
+                                        <VictoryAxis
+                                            style={{
+                                                axis: { stroke: "transparent" },
+                                                ticks: { stroke: "transparent" },
+                                                tickLabels: { fontSize: 5, fill: "black" }
+                                            }}
+                                            tickLabelComponent={
+                                                <VictoryLabel
+                                                    x={width / 2}
+                                                    textAnchor="middle"
+                                                />
+                                            }
+                                            tickValues={dataAgeA.map((point) => point.x).reverse()}
+                                        />
+                                    </VictoryChart>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
                     </Card.Body>
-                    <Button variant="outline-secondary" style={{ width: "10%", margin: "10px" }} onClick={() => navigate(`/post/${state.postId}`)}>Back To Debate</Button>
+                    <Card.Footer>
+                        <Button className="btn-secondary" onClick={() => navigate(`/post/${state.postId}`)}>Back To Debate</Button>
+                    </Card.Footer>
                 </Card>
+
             </Container>
         </div >
     );

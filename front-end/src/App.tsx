@@ -7,7 +7,6 @@ import SignUp from "./pages/signup";
 import Profile from "./pages/profile";
 import CreateElection from "./pages/create-election";
 import UpdateElection from "./components/PostUpdate";
-import VoteHistory from "./pages/vote-history";
 import Messages from "./pages/messages";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -68,14 +67,6 @@ function App() {
             element={
               <PrivateRoute>
                 <UpdateElection />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/vote-history"
-            element={
-              <PrivateRoute>
-                <VoteHistory />
               </PrivateRoute>
             }
           />

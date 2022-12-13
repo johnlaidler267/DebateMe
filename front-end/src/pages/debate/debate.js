@@ -32,7 +32,7 @@ const Debate = () => {
     /* Renders the threads */
     const renderedThreads = Object.values(Threads).map((t, index) => {
         return (
-            <Card className="mb-2" key={index}>
+            <Card className="mb-3" key={index}>
                 <br></br>
                 <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">{t.title}</Card.Title>
                 <Card.Body>

@@ -8,38 +8,38 @@ import { AuthContext } from "../context/AuthProvider";
 // Create  a form element that allows the user to create a new election
 // Create a button that allows the user to submit the election
 const CreateElection = () => {
-    const [ Loading, setLoading ] = useState(false);
+    const [Loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { Auth } = useContext(AuthContext);
-    const [ IsOpen, setIsOpen ] = useState(false);
-    const [ Content, setContent ] = useState("");
+    const [IsOpen, setIsOpen] = useState(false);
+    const [Content, setContent] = useState("");
 
     const onSubmit = async (event) => {
-      event.preventDefault();
-      setLoading(true);
-      
-      const { title, content, candidate1, candidate2 } = event.target;
-      const candidate = [candidate1.value, candidate2.value];
+        event.preventDefault();
+        setLoading(true);
 
-      try {
-          const res = await axios.post('http://localhost:4006/posts/create', {
-            userId: Auth.userId,
-            username: Auth.username,
-            title: title.value,
-            content: content.value,
-            candidate: candidate
-          })
+        const { title, content, candidate1, candidate2 } = event.target;
+        const candidate = [candidate1.value, candidate2.value];
 
-            setTimeout(function() {
+        try {
+            const res = await axios.post('http://localhost:4006/posts/create', {
+                userId: Auth.userId,
+                username: Auth.username,
+                title: title.value,
+                content: content.value,
+                candidate: candidate
+            })
+
+            setTimeout(function () {
                 navigate(`/post/${res.data.postId || ""}`);
             }, 1000);
-      } catch (error) {
-            setTimeout(function() {
+        } catch (error) {
+            setTimeout(function () {
                 setIsOpen(true);
                 setContent(<div className="text-danger">{error.response.data.error}</div>);
                 setLoading(false);
             }, 1500);
-      }
+        }
     }
 
     return (
@@ -51,7 +51,9 @@ const CreateElection = () => {
                 <br></br>
                 <Card className="mb-3 ps-4 pe-4">
                     <br></br>
-                    <Card.Title className="text-center">New Election</Card.Title>
+                    <Card.Header>
+                        <Card.Title className="text-center">New Election</Card.Title>
+                    </Card.Header>
                     <Card.Body>
                         <Container>
                             <Form onSubmit={(e) => onSubmit(e)}>
@@ -75,7 +77,7 @@ const CreateElection = () => {
                                     <Form.Control type="text" placeholder="Enter candidate 2" required />
                                 </Form.Group>
                                 <Button className="mt-4" variant="secondary" type="submit">
-                                    {Loading ? <CircularProgress sx={{color: "yellow"}} size={40}/> : "Create"}
+                                    {Loading ? <CircularProgress sx={{ color: "yellow" }} size={40} /> : "Create"}
                                 </Button>
                             </Form>
                             <br></br>

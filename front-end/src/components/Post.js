@@ -133,9 +133,9 @@ export default function Post() {
   const VoteOrResults = () => {
     console.log("VOTED: ", voted)
     if (!voted) {
-      return <Button onClick={() => navigate('vote', { state: Thread })}> Cast Vote</Button>
+      return <Button className="custom-btn" onClick={() => navigate('vote', { state: Thread })}> Cast Vote</Button>
     } else {
-      return <Button onClick={() => navigate('breakdown', { state: Thread })}> View Election Results</ Button>
+      return <Button className="custom-btn" onClick={() => navigate('breakdown', { state: Thread })}> View Election Results</ Button>
     }
   }
 
@@ -146,13 +146,13 @@ export default function Post() {
         width: '75%',
       }}>
         <Card style={{ margin: "10px", padding: "10px" }}>
-          <VoteOrResults />
+
           {!Thread ? (
             <div className='top-50 start-50 position-absolute'>
               <CircularProgress sx={{ color: "yellow" }} size={60} />
             </div>
           ) : (
-            <Container className="mt-4" style={{ width: "55%" }}>
+            <Container className="mt-4 text-center" style={{ width: "95%" }}>
               <Card className="pt-3 ps-2 pe-2 pb-3">
                 {Toggle && (
                   <div className="toggle">
@@ -165,16 +165,21 @@ export default function Post() {
                 )
                 }
                 <div className="ps-4 pe-4">
-                  <p className="text-black-50 m-0 mt-2 mb-2">Posted by {Thread.username} {timeSince(new Date(Thread.date))} ago</p>
-                  <Card.Title className="fw-bold">{Thread.title}</Card.Title>
+                  <Card.Header>
+                    <p className="text-black-50 m-0 mt-2 mb-2">Posted by {Thread.username} {timeSince(new Date(Thread.date))} ago</p>
+                    <Card.Title className="fw-bold">{Thread.title}</Card.Title>
+                  </Card.Header>
                 </div>
                 <Card.Body>
                   <p>{Thread.content}</p>
                 </Card.Body>
+                <VoteOrResults />
               </Card>
               <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
+
             </Container>
           )}
+
           <div className="container">
             <CommentCreate postId={postId} comments={comments} setComments={setComments} />
             <CommentList postId={postId} comments={comments} setComments={setComments} />

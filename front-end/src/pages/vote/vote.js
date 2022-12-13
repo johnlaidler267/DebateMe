@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Form, Container, Col, Row, Modal } from 'react-bootstrap';
-import "./vote.css";
 import VoteButton from '../../components/VoteButton/vote-button';
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -69,14 +68,17 @@ const Vote = () => {
             }}>
                 <br></br>
                 <Card className="mb-3">
-                    <Button variant="outline-primary" style={{ width: "10%", margin: "10px" }} onClick={() => navigate(-1)}>Back</Button>
+                    <Card.Header>
+                        <Card.Title>
+                            <h3 className="text-center">Vote: {state.title}</h3>
+                        </Card.Title>
+                    </Card.Header>
                     <Card.Body>
                         <Container>
                             <Row>
                                 <Col>
-                                    <Card>
-                                        <h2 className="text-center" style={{ margin: "10px" }} >{state.candidate[0]}</h2>
-                                        <Button disabled={disabled} className="tomato-btn" onClick={() => handleVote(state.candidate[0])}>Vote</Button>
+                                    <Card style={{ padding: "5px", margin: "5px" }}>
+                                        <Button style={{ height: "20rem" }} disabled={disabled} className="tomato-btn" onClick={() => handleVote(state.candidate[0])}>Vote {state.candidate[0]}</Button>
                                         <VoteModal
                                             show={modalShow}
                                             onHide={() => setModalShow(false)}
@@ -84,9 +86,8 @@ const Vote = () => {
                                     </Card>
                                 </Col>
                                 <Col>
-                                    <Card>
-                                        <h2 className="text-center" style={{ margin: "10px" }}>{state.candidate[1]}</h2>
-                                        <Button disabled={disabled} className="orange-btn" onClick={() => handleVote(state.candidate[1])}>Vote</Button>
+                                    <Card style={{ padding: "5px", margin: "5px" }}>
+                                        <Button style={{ height: "20rem" }} disabled={disabled} className="orange-btn" onClick={() => handleVote(state.candidate[1])}>Vote {state.candidate[1]}</Button>
                                         <VoteModal
                                             show={modalShow}
                                             onHide={() => setModalShow(false)}
@@ -95,6 +96,10 @@ const Vote = () => {
                                 </Col>
                             </Row>
                         </Container>
+                        <br></br>
+                        <Card.Footer>
+                            <Button variant="btn btn-secondary" onClick={() => navigate(-1)}>Back To Debate</Button>
+                        </Card.Footer>
                     </Card.Body>
                 </Card >
                 <br></br>

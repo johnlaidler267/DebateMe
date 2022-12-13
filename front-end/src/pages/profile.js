@@ -13,17 +13,17 @@ import Modal from "../components/Modal";
 const Profile = () => {
     let token;
     const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
-    const [ formValues, setFormValues ] = useState(initialValues);
-    const [ formErrors, setFormErrors ] = useState({});
-    const [ isSubmit, setIsSubmit ] = useState(false);
-    const [ Countries, setCountries ] = useState([]);
-    const [ States, setStates ] = useState([]);
-    const [ Cities, setCities ] = useState([]);
-    const [ Loading, setLoading ] = useState(false);
-    const [ IsOpen, setIsOpen ] = useState(false);
-    const [ Content, setContent ] = useState("");
-    const [ User, setUser ] = useState();
-    const [ Editable, setEditable ] = useState(false);
+    const [formValues, setFormValues] = useState(initialValues);
+    const [formErrors, setFormErrors] = useState({});
+    const [isSubmit, setIsSubmit] = useState(false);
+    const [Countries, setCountries] = useState([]);
+    const [States, setStates] = useState([]);
+    const [Cities, setCities] = useState([]);
+    const [Loading, setLoading] = useState(false);
+    const [IsOpen, setIsOpen] = useState(false);
+    const [Content, setContent] = useState("");
+    const [User, setUser] = useState();
+    const [Editable, setEditable] = useState(false);
 
 
 
@@ -52,7 +52,7 @@ const Profile = () => {
         const { id, value } = e.target;
         setFormValues({ ...formValues, [id]: value });
     };
-    
+
     const handleCountry = (e) => {
         const countryName = e.target.value;
         const country = Countries.find((country) => country.name === countryName);
@@ -78,7 +78,7 @@ const Profile = () => {
         setFormErrors(validate(formValues));
         setIsSubmit(true);
     };
-    
+
     const handleUpdate = async () => {
         try {
             setLoading(true);
@@ -91,15 +91,15 @@ const Profile = () => {
                 userId, ...formValues
             });
 
-            setTimeout(function() {
+            setTimeout(function () {
                 setIsOpen(true);
-                setContent(<div className="text-success text-center">Updated successfully!<br></br><CheckCircleIcon sx={{ fontSize: 150 }}/></div>);
-                setTimeout(function() {
+                setContent(<div className="text-success text-center">Updated successfully!<br></br><CheckCircleIcon sx={{ fontSize: 150 }} /></div>);
+                setTimeout(function () {
                     window.location.reload();
                 }, 2000);
             }, 1000);
         } catch (error) {
-            setTimeout(function() {
+            setTimeout(function () {
                 setIsOpen(true);
                 setContent(<div className="text-danger">{error.response.data.error}</div>);
                 setLoading(false);
@@ -111,7 +111,7 @@ const Profile = () => {
         fetchUser();
         fetchCountries();
     }, []);
-    
+
     useEffect(() => {
         if (User && !Editable) {
             setFormValues({ ...User, password: "" });
@@ -123,9 +123,9 @@ const Profile = () => {
         if (Object.keys(formErrors).length === 0 && isSubmit) {
             handleUpdate();
         }
-      }, [formErrors]);
+    }, [formErrors]);
 
-      const validate = (values) => {
+    const validate = (values) => {
         const errors = {};
         let regex;
         if (!values.username) {
@@ -138,21 +138,21 @@ const Profile = () => {
         }
 
         if (!values.email) {
-          errors.email = "Email is required!";
+            errors.email = "Email is required!";
         } else {
-          regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-          if (!regex.test(values.email)) {
-              errors.email = "This is not a valid email format!";
-          }
+            regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+            if (!regex.test(values.email)) {
+                errors.email = "This is not a valid email format!";
+            }
         }
 
         if (!values.password) {
-          errors.password = "Password is required!";
+            errors.password = "Password is required!";
         } else {
-          regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-          if (!regex.test(values.password)) {
-            errors.password = "Your password must contain minimum 8 characters, at least one letter, one number and one special character.";
-          }
+            regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+            if (!regex.test(values.password)) {
+                errors.password = "Your password must contain minimum 8 characters, at least one letter, one number and one special character.";
+            }
         }
 
         if (!values.confirmPassword) {
@@ -192,7 +192,7 @@ const Profile = () => {
         }
 
         return errors;
-      };
+    };
 
     return (
         <Container fluid style={{
@@ -202,15 +202,17 @@ const Profile = () => {
             <br></br>
             <Card className="mb-3 ps-4 pe-4 pb-3">
                 <br></br>
-                <Card.Title className="text-center">Account Information</Card.Title>
+                <Card.Header>
+                    <Card.Title className="text-center">Account Information</Card.Title>
+                </Card.Header>
                 <Card.Body className="p-4">
                     <Form onSubmit={handleSubmit}>
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="username">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="text"
-                                    placeholder="Enter username" 
+                                    placeholder="Enter username"
                                     value={formValues.username}
                                     onChange={handleChange}
                                 />
@@ -219,7 +221,7 @@ const Profile = () => {
 
                             <Form.Group as={Col} controlId="email">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="text"
                                     placeholder="Enter email"
                                     value={formValues.email}
@@ -301,20 +303,22 @@ const Profile = () => {
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="country">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Select 
+                                <Form.Select
                                     value={formValues.country}
-                                    onChange={(e) => {handleChange(e); handleCountry(e)}}
+                                    onChange={(e) => { handleChange(e); handleCountry(e) }}
                                 >
                                     <option disabled>Choose...</option>
                                     {
-                                        Countries.map((country) => { return (
-                                            <option 
-                                                key={country.id}
-                                                value={country.name}
-                                            >
-                                                {country.name}
-                                            </option>
-                                        )})
+                                        Countries.map((country) => {
+                                            return (
+                                                <option
+                                                    key={country.id}
+                                                    value={country.name}
+                                                >
+                                                    {country.name}
+                                                </option>
+                                            )
+                                        })
                                     }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.country}</p>
@@ -322,20 +326,22 @@ const Profile = () => {
 
                             <Form.Group as={Col} controlId="state">
                                 <Form.Label>State/Province</Form.Label>
-                                <Form.Select 
+                                <Form.Select
                                     value={formValues.state}
-                                    onChange={(e) => {handleChange(e); handleState(e)}}
+                                    onChange={(e) => { handleChange(e); handleState(e) }}
                                 >
                                     <option disabled>{formValues.state}</option>
                                     {
-                                        States.map((state) => { return (
-                                            <option 
-                                                key={state.id}
-                                                value={state.name}
-                                            >
-                                                {state.name}
-                                            </option>
-                                        )})
+                                        States.map((state) => {
+                                            return (
+                                                <option
+                                                    key={state.id}
+                                                    value={state.name}
+                                                >
+                                                    {state.name}
+                                                </option>
+                                            )
+                                        })
                                     }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.state}</p>
@@ -349,14 +355,16 @@ const Profile = () => {
                                 >
                                     <option disabled>{formValues.city}</option>
                                     {
-                                        Cities.map((city) => { return (
-                                            <option 
-                                                key={city.id}
-                                                value={city.name}
-                                            >
-                                                {city.name}
-                                            </option>
-                                        )})
+                                        Cities.map((city) => {
+                                            return (
+                                                <option
+                                                    key={city.id}
+                                                    value={city.name}
+                                                >
+                                                    {city.name}
+                                                </option>
+                                            )
+                                        })
                                     }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.city}</p>
@@ -364,7 +372,7 @@ const Profile = () => {
                         </Row>
 
                         <Button className="custom-btn w-100 p-2" type="submit">
-                            {Loading ? <CircularProgress sx={{color: "black"}} size={30} /> : "Update"}
+                            {Loading ? <CircularProgress sx={{ color: "black" }} size={30} /> : "Update"}
                         </Button>
                         <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
                     </Form>

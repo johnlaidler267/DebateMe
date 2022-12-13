@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, Dispatch, SetStateAction } from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card, Container, Row, Col } from "react-bootstrap";
 import Upvote from "../Upvote/Upvote";
 import Downvote from "../Downvote/Downvote";
 import "./commentList.css";
@@ -39,10 +39,16 @@ const CommentList = ({ postId, comments, setComments }: Props) => {
       <div key={c.commentid}>
         <Container className="mt-4" style={{ width: "75%" }}>
           <Card className="pt-3 ps-2 pe-2 pb-3">
-            <Container style={{ display: "flex", alignItems: "center" }}>
-              <Card.Title> {c.username} </Card.Title>
-              <TrustScore userId={c.username} />
-            </Container>
+            <Card.Header>
+              <Row>
+                <Col>
+                  <Card.Title> {c.username} </Card.Title>
+                </Col>
+                <Col>
+                  <TrustScore userId={c.username} />
+                </Col>
+              </Row>
+            </Card.Header>
             <Card.Body className="ps-4 pe-4">
               <div id="upvote">
                 <Upvote commentId={c.commentid} ownerId={c.userid} />
