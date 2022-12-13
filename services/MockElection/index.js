@@ -27,9 +27,8 @@ class ElectionServer {
 
     /* Casts vote to database, emits voteCreated event */
     this.app.post("/vote", async (req, res) => {
-      const { electionID, userID, vote } = req.query;
+      const { electionID, userID, vote } = req.body.params;
       const Vote = await self.db.createVote(electionID, userID, vote)
-      res.status(200).send(JSON.stringify(Vote))
 
       console.log("Election Server Vote::", electionID, userID, vote);
 
@@ -38,12 +37,12 @@ class ElectionServer {
         type: "voteCreated",
         data: {
           electionID: electionID,
-          userId: userID,
+          userID: userID,
           vote: vote,
         },
       });
+      res.status(200).send(JSON.stringify(Vote))
     });
-
   }
 
   /* Initialize the database connection */

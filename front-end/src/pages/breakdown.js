@@ -17,82 +17,85 @@ const Breakdown = () => {
     const [electionId, setElectionId] = useState({});
     const [candidate0, setCandidate0] = useState({});
     const [candidate1, setCandidate1] = useState({});
+    const [dataRaceA, setDataRaceA] = useState([]);
+    const [dataRaceB, setDataRaceB] = useState([]);
+    const [dataGenderA, setDataGenderA] = useState([]);
+    const [dataGenderB, setDataGenderB] = useState([]);
+    const [dataAgeA, setDataAgeA] = useState([]);
+    const [dataAgeB, setDataAgeB] = useState([]);
 
     /* Hook that runs when the component is mounted, and is used to fetch the breakdown data */
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get('http://localhost:4009/getBreakdown', { params: { electionId: state.postId } });
-            const { electionId, candidate0, candidate1 } = res.data;
-            console.log("response", res)
-            // setElectionId(electionId);
-            // setCandidate0(candidate0);
-            // setCandidate1(candidate1);
+            const res = await axios.get('http://localhost:4009/getBreakdown', { params: { electionID: state.postId } });
+            let { electionid, candidate0, candidate1 } = res.data;
+            candidate0 = candidate0.replace(/[{()}]/g, '').split(",");
+            candidate1 = candidate1.replace(/[{()}]/g, '').split(",");
+            setElectionId(electionId);
+            setCandidate0(candidate0);
+            setCandidate1(candidate1);
+            setDataRaceA(raceData(candidate0, candidate1)[0]);
+            setDataRaceB(raceData(candidate0, candidate1)[1]);
+            setDataGenderA(genderData(candidate0, candidate1)[0]);
+            setDataGenderB(genderData(candidate0, candidate1)[1]);
+            setDataAgeA(ageData(candidate0, candidate1)[0]);
+            setDataAgeB(ageData(candidate0, candidate1)[1]);
         }
         fetchData();
     }, []);
 
-    // /* Returns the data for the race comparison chart */
-    // const raceData = (cand0, cand1) => {
-    //     const { numBlack0, numAsian0, numCaucasian0, numHispanic0, numOther0, totalVotes0 } = cand0;
-    //     const { numBlack1, numAsian1, numCaucasian1, numHispanic1, numOther1, totalVotes1 } = cand1;
+    /* Returns the data for the race comparison chart */
+    const raceData = (cand0, cand1) => {
 
-    //     let dataRaceA = [
-    //         { x: "Black", y: numBlack0 / (numBlack0 + numBlack1) },
-    //         { x: "Asian", y: numAsian0 / (numAsian0 + numAsian1) },
-    //         { x: "Caucasian", y: numCaucasian0 / (numCaucasian0 + numCaucasian1) },
-    //         { x: "Hispanic", y: numHispanic0 / (numHispanic0 + numHispanic1) },
-    //         { x: "Other", y: numOther0 / (numOther0 + numOther1) },
-    //     ];
+        let dataRaceA = [
+            { x: "Black", y: Math.round((cand0[5] / (parseInt(cand0[5]) + parseInt(cand1[5]))) * 100) || 50 },
+            { x: "Asian", y: Math.round((cand0[6] / (parseInt(cand0[6]) + parseInt(cand1[6]))) * 100) || 50 },
+            { x: "Caucasian", y: Math.round((cand0[7] / (parseInt(cand0[7]) + parseInt(cand1[7]))) * 100) || 50 },
+            { x: "Hispanic", y: Math.round((cand0[8] / (parseInt(cand0[8]) + parseInt(cand1[8]))) * 100) || 50 },
+            { x: "Other", y: Math.round((cand0[9] / (parseInt(cand0[9]) + parseInt(cand1[9]))) * 100) || 50 },
+        ];
 
-    //     let dataRaceB = dataRaceA.map((point) => {
-    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-    //         return { ...point, y };
-    //     });
+        let dataRaceB = dataRaceA.map((point) => {
+            const y = Math.round(100 - point.y);
+            return { ...point, y };
+        });
 
-    //     return dataRaceA, dataRaceB;
-    // }
+        return [dataRaceA, dataRaceB];
+    }
 
-    // /* Returns the data for the gender comparison chart */
-    // const genderData = (cand0, cand1) => {
-    //     const { numMen0, numWomen0, numOther0, totalVotes0 } = cand0;
-    //     const { numMen1, numWomen1, numOther1, totalVotes1 } = cand1;
+    /* Returns the data for the gender comparison chart */
+    const genderData = (cand0, cand1) => {
+        let dataGenderA = [
+            { x: "Men", y: Math.round(parseInt(cand0[11]) / (parseInt(cand0[11]) + parseInt(cand1[11])) * 100) || 50 },
+            { x: "Women", y: Math.round(parseInt(cand0[12]) / (parseInt(cand0[12]) + parseInt(cand1[12])) * 100) || 50 },
+            { x: "Other", y: Math.round(parseInt(cand0[13]) / (parseInt(cand0[13]) + parseInt(cand1[13])) * 100) || 50 },
+        ];
 
-    //     let dataGenderA = [
-    //         { x: "Men", y: numMen0 / (numMen0 + numMen1) },
-    //         { x: "Women", y: numWomen0 / (numWomen0 + numWomen1) },
-    //         { x: "Other", y: numOther0 / (numOther0 + numOther1) },
-    //     ];
+        let dataGenderB = dataGenderA.map((point) => {
+            const y = Math.round(100 - point.y);
+            return { ...point, y };
+        });
+        return [dataGenderA, dataGenderB];
+    }
 
-    //     let dataGenderB = dataGenderA.map((point) => {
-    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-    //         return { ...point, y };
-    //     });
-    //     return dataGenderA, dataGenderB;
-    // }
+    /* Returns the data for the age comparison chart */
+    const ageData = (cand0, cand1) => {
+        let dataAgeA = [
+            { x: "<25", y: Math.round(parseInt(cand0[2]) / (parseInt(cand0[2]) + parseInt(cand1[2])) * 100) || 50 },
+            { x: "25-65", y: Math.round(parseInt(cand0[3]) / (parseInt(cand0[3]) + parseInt(cand1[3])) * 100) || 50 },
+            { x: "65+", y: Math.round(parseInt(cand0[4]) / (parseInt(cand0[4]) + parseInt(cand1[4])) * 100) || 50 },
+        ];
 
-    // /* Returns the data for the age comparison chart */
-    // const ageData = (cand0, cand1) => {
-    //     const { numUnder25_0, num25_65_0, numOver65_0, totalVotes0 } = cand0;
-    //     const { numUnder25_1, num25_65_1, numOver65_1, totalVotes1 } = cand1;
-    //     let dataAgeA = [
-    //         { x: "<25", y: numUnder25_0 / (numUnder25_0 + numUnder25_1) },
-    //         { x: "25-65", y: num25_65_0 / (num25_65_0 + num25_65_1) },
-    //         { x: "65+", y: numOver65_0 / (numOver65_0 + numOver65_1) },
-    //     ];
-
-    //     let dataAgeB = dataAgeA.map((point) => {
-    //         const y = Math.round(point.y + 3 * (Math.random() - 0.5));
-    //         return { ...point, y };
-    //     });
-    //     return dataAgeA, dataAgeB;
-    // }
+        let dataAgeB = dataAgeA.map((point) => {
+            const y = Math.round(100 - point.y);
+            return { ...point, y };
+        });
+        return [dataAgeA, dataAgeB];
+    }
 
     // /* Gather the data for the charts */
-    // const width = 300;
-    // const height = 150;
-    // let dataAgeA, dataAgeB = ageData(candidate0, candidate1);
-    // let dataGenderA, dataGenderB = genderData(candidate0, candidate1);
-    // let dataRaceA, dataRaceB = raceData(candidate0, candidate1);
+    const width = 300;
+    const height = 150;
 
     return (
         <div className="App">
@@ -109,7 +112,7 @@ const Breakdown = () => {
                                     <Card>
                                         <Card.Body>
                                             <h3 className='text-center'> {state.candidate[0]} ✅</h3>
-                                            <h5 className='text-center'> Total Votes: {candidate0.voteCount} </h5>
+                                            <h5 className='text-center'> Total Votes: {candidate0[1]} </h5>
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -117,7 +120,7 @@ const Breakdown = () => {
                                     <Card>
                                         <Card.Body>
                                             <h3 className='text-center'> {state.candidate[1]} </h3>
-                                            <h5 className='text-center'> Total Votes: {candidate1.voteCounts} </h5>
+                                            <h5 className='text-center'> Total Votes: {candidate1[1]} </h5>
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -128,13 +131,13 @@ const Breakdown = () => {
                             <Card id="race" style={{ height: "75%", width: "85%", margin: "auto" }}>
                                 <br></br>
                                 <h4 className="text-center">Racial Breakdown</h4>
-                                {/* <VictoryChart horizontal
+                                <VictoryChart horizontal
                                     height={170}
                                     width={width}
                                     padding={30}
                                 >
                                     <VictoryStack
-                                        style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
+                                        style={{ data: { width: 18 }, labels: { fontSize: 5 } }}
                                     >
                                         <VictoryBar
                                             style={{ data: { fill: "tomato" } }}
@@ -163,7 +166,7 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataRaceA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart> */}
+                                </VictoryChart>
                             </Card>
                         </Row>
                         <br></br>
@@ -172,7 +175,7 @@ const Breakdown = () => {
                                 <br></br>
                                 <h4 className="text-center">Gender Breakdown</h4>
 
-                                {/* <VictoryChart horizontal
+                                <VictoryChart horizontal
                                     height={100}
                                     width={width}
                                     padding={20}
@@ -207,7 +210,7 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataGenderA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart> */}
+                                </VictoryChart>
 
                             </Card>
                         </Row>
@@ -217,7 +220,7 @@ const Breakdown = () => {
                                 <br></br>
                                 <h4 className="text-center">Age Breakdown</h4>
 
-                                {/* <VictoryChart horizontal
+                                <VictoryChart horizontal
                                     height={100}
                                     width={width}
                                     padding={20}
@@ -252,7 +255,7 @@ const Breakdown = () => {
                                         }
                                         tickValues={dataAgeA.map((point) => point.x).reverse()}
                                     />
-                                </VictoryChart> */}
+                                </VictoryChart>
 
                             </Card>
                         </Row>

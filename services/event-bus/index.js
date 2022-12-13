@@ -87,6 +87,7 @@ app.post('/subscribe', (req, res) => {
 
 /* Send events to all ports that want to receive them */
 app.post('/events', async (req, res) => {
+  console.log("RECIEVED A NEW EVENT")
   const event = req.body;
   const eventType = event.type;
 
@@ -164,6 +165,7 @@ app.post('/events', async (req, res) => {
     res.send(event);
   }
   else if (eventType === "userDataRequest") {
+    console.log("EVENT!!")
     console.log(event);
     const response = await axios.post(`http://localhost:4008/events`, event).catch((err) => {
       console.log(err.message)

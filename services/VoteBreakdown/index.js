@@ -28,7 +28,6 @@ class BreakdownServer {
     // Get the breakdown for a given election
     this.app.get("/getBreakdown", async (req, res) => {
       const { electionID } = req.query;
-      console.log("query sent to the breakdown service", req.query)
       const breakdown = await this.db.getBreakdown(electionID);
       res.status(200).send(JSON.stringify(breakdown));
     });
@@ -39,14 +38,22 @@ class BreakdownServer {
       const { type, data } = req.body;
 
       if (type === "voteCreated") {
+        console.log("RECIEVED A NEW VOTE EVENT")
         // update the existing election breakdown w/ the new vote
-        const { electionID, userId, vote } = data;
+        const { electionID, userID, vote } = data;
+
+        console.log("userId", userID)
+        console.log("vote", vote)
+        console.log("electionID", electionID)
+
         const response = await axios.post("http://localhost:4010/events", {
           // Get the user demographics (send request to User service via event-bus)
           type: "userDataRequest",
-          userId: userId,
+          userId: userID
         });
+        console.log("response from user service", response.data)
         const { race, gender, age } = response.data;
+
         const breakdown = await this.db.updateBreakdown(
           electionID,
           vote,

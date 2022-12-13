@@ -30,9 +30,9 @@ export class ElectionDatabase {
     const queryText = `
       create table if not exists elections 
       (
-        electionID varchar(30),
-        userID varchar(30),
-        vote varchar(30)
+        electionID varchar(100),
+        userID varchar(100),
+        vote varchar(100)
       );
       `;
     const res = await this.client.query(queryText);

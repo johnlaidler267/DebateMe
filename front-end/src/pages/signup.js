@@ -12,15 +12,15 @@ import Modal from "../components/Modal";
 
 function Signup() {
     const initialValues = { username: "", email: "", password: "", confirmPassword: "", age: "", gender: "Choose...", race: "Choose...", country: "Choose...", state: "Choose...", city: "Choose..." };
-    const [ formValues, setFormValues ] = useState(initialValues);
-    const [ formErrors, setFormErrors ] = useState({});
-    const [ isSubmit, setIsSubmit ] = useState(false);
-    const [ Countries, setCountries ] = useState([]);
-    const [ States, setStates ] = useState([]);
-    const [ Cities, setCities ] = useState([]);
-    const [ Loading, setLoading ] = useState(false);
-    const [ IsOpen, setIsOpen ] = useState(false);
-    const [ Content, setContent ] = useState("");
+    const [formValues, setFormValues] = useState(initialValues);
+    const [formErrors, setFormErrors] = useState({});
+    const [isSubmit, setIsSubmit] = useState(false);
+    const [Countries, setCountries] = useState([]);
+    const [States, setStates] = useState([]);
+    const [Cities, setCities] = useState([]);
+    const [Loading, setLoading] = useState(false);
+    const [IsOpen, setIsOpen] = useState(false);
+    const [Content, setContent] = useState("");
     const navigate = useNavigate();
 
 
@@ -35,7 +35,7 @@ function Signup() {
         const { id, value } = e.target;
         setFormValues({ ...formValues, [id]: value });
     };
-    
+
     const handleCountry = (e) => {
         const countryName = e.target.value;
         const country = Countries.find((country) => country.name === countryName);
@@ -61,7 +61,7 @@ function Signup() {
         setFormErrors(validate(formValues));
         setIsSubmit(true);
     };
-    
+
     const handleRegister = async () => {
         try {
             setLoading(true);
@@ -73,16 +73,16 @@ function Signup() {
             const token = { userId: res.data.userId, username: res.data.username };
             sessionStorage.setItem('token', JSON.stringify(token));
 
-            setTimeout(function() {
+            setTimeout(function () {
                 setIsOpen(true);
-                setContent(<div className="text-success text-center">You have successfully registered!<br></br><CheckCircleIcon sx={{ fontSize: 150 }}/><br></br>Welcome, {formValues.username || ""}!</div>);
-                setTimeout(function() {
+                setContent(<div className="text-success text-center">You have successfully registered!<br></br><CheckCircleIcon sx={{ fontSize: 150 }} /><br></br>Welcome, {formValues.username || ""}!</div>);
+                setTimeout(function () {
                     navigate(`/`);
                     window.location.reload();
                 }, 2000);
             }, 1000);
         } catch (error) {
-            setTimeout(function() {
+            setTimeout(function () {
                 setIsOpen(true);
                 setContent(<div className="text-danger">{error.response.data.error}</div>);
                 setLoading(false);
@@ -93,14 +93,14 @@ function Signup() {
     useEffect(() => {
         fetchCountries();
     }, []);
-    
+
     useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit) {
             handleRegister();
         }
-      }, [formErrors]);
+    }, [formErrors]);
 
-      const validate = (values) => {
+    const validate = (values) => {
         const errors = {};
         let regex;
         if (!values.username) {
@@ -113,21 +113,21 @@ function Signup() {
         }
 
         if (!values.email) {
-          errors.email = "Email is required!";
+            errors.email = "Email is required!";
         } else {
-          regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-          if (!regex.test(values.email)) {
-              errors.email = "This is not a valid email format!";
-          }
+            regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+            if (!regex.test(values.email)) {
+                errors.email = "This is not a valid email format!";
+            }
         }
 
         if (!values.password) {
-          errors.password = "Password is required!";
+            errors.password = "Password is required!";
         } else {
-          regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-          if (!regex.test(values.password)) {
-            errors.password = "Your password must contain minimum 8 characters, at least one letter, one number and one special character.";
-          }
+            regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+            if (!regex.test(values.password)) {
+                errors.password = "Your password must contain minimum 8 characters, at least one letter, one number and one special character.";
+            }
         }
 
         if (!values.confirmPassword) {
@@ -167,7 +167,7 @@ function Signup() {
         }
 
         return errors;
-      };
+    };
 
     return (
         <Container fluid style={{
@@ -183,9 +183,9 @@ function Signup() {
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="username">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="text"
-                                    placeholder="Enter username" 
+                                    placeholder="Enter username"
                                     value={formValues.username}
                                     onChange={handleChange}
                                 />
@@ -194,7 +194,7 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="email">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="text"
                                     placeholder="Enter email"
                                     value={formValues.email}
@@ -249,8 +249,7 @@ function Signup() {
                                     <option disabled>Choose...</option>
                                     <option>Man</option>
                                     <option>Woman</option>
-                                    <option>Non-binary</option>
-                                    <option>Prefer not to respond</option>
+                                    <option>Other</option>
                                 </Form.Select>
                                 <p className="form-error">{formErrors.gender}</p>
                             </Form.Group>
@@ -262,12 +261,11 @@ function Signup() {
                                     onChange={handleChange}
                                 >
                                     <option disabled>Choose...</option>
-                                    <option>American Indian or Alaska Native</option>
                                     <option>Asian</option>
-                                    <option>Black or African American</option>
-                                    <option>Hispanic or Latino</option>
-                                    <option>White</option>
-                                    <option>Native Hawaiian or Other Pacific Islander</option>
+                                    <option>Black</option>
+                                    <option>Hispanic</option>
+                                    <option>Caucasian</option>
+                                    <option>Other</option>
                                 </Form.Select>
                                 <p className="form-error">{formErrors.race}</p>
                             </Form.Group>
@@ -276,20 +274,22 @@ function Signup() {
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="country">
                                 <Form.Label>Country</Form.Label>
-                                <Form.Select 
+                                <Form.Select
                                     value={formValues.country}
-                                    onChange={(e) => {handleChange(e); handleCountry(e)}}
+                                    onChange={(e) => { handleChange(e); handleCountry(e) }}
                                 >
                                     <option disabled>Choose...</option>
                                     {
-                                        Countries.map((country) => { return (
-                                            <option 
-                                                key={country.id}
-                                                value={country.name}
-                                            >
-                                                {country.name}
-                                            </option>
-                                        )})
+                                        Countries.map((country) => {
+                                            return (
+                                                <option
+                                                    key={country.id}
+                                                    value={country.name}
+                                                >
+                                                    {country.name}
+                                                </option>
+                                            )
+                                        })
                                     }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.country}</p>
@@ -297,22 +297,23 @@ function Signup() {
 
                             <Form.Group as={Col} controlId="state">
                                 <Form.Label>State/Province</Form.Label>
-                                <Form.Select 
+                                <Form.Select
                                     value={formValues.state}
-                                    onChange={(e) => {handleChange(e); handleState(e)}}
+                                    onChange={(e) => { handleChange(e); handleState(e) }}
                                 >
                                     <option disabled>Choose...</option>
                                     {
-                                        States.map((state) => { 
+                                        States.map((state) => {
                                             console.log(state);
-                                        return (
-                                            <option 
-                                                key={state.id}
-                                                value={state.name}
-                                            >
-                                                {state.name}
-                                            </option>
-                                        )})
+                                            return (
+                                                <option
+                                                    key={state.id}
+                                                    value={state.name}
+                                                >
+                                                    {state.name}
+                                                </option>
+                                            )
+                                        })
                                     }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.state}</p>
@@ -326,14 +327,16 @@ function Signup() {
                                 >
                                     <option disabled>Choose...</option>
                                     {
-                                        Cities.map((city) => { return (
-                                            <option 
-                                                key={city.id}
-                                                value={city.name}
-                                            >
-                                                {city.name}
-                                            </option>
-                                        )})
+                                        Cities.map((city) => {
+                                            return (
+                                                <option
+                                                    key={city.id}
+                                                    value={city.name}
+                                                >
+                                                    {city.name}
+                                                </option>
+                                            )
+                                        })
                                     }
                                 </Form.Select>
                                 <p className="form-error">{formErrors.city}</p>
@@ -341,7 +344,7 @@ function Signup() {
                         </Row>
 
                         <Button className="custom-btn w-100 p-2" type="submit">
-                            {Loading ? <CircularProgress sx={{color: "black"}} size={30} /> : "Submit"}
+                            {Loading ? <CircularProgress sx={{ color: "black" }} size={30} /> : "Submit"}
                         </Button>
                         <div className="text-center p-3">Already a member? <Link className="link" to="/login">Log In</Link></div>
                         <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>

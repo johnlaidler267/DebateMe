@@ -39,7 +39,25 @@ const Vote = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
     const [modalShow, setModalShow] = React.useState(false);
-    console.log(state)
+
+    const handleVote = async (vote) => {
+        await axios.post('http://localhost:4004/vote',
+            {
+                params:
+                {
+                    electionID: state.postId,
+                    userID: state.userId,
+                    vote: vote
+                }
+            })
+            .then((response) => {
+                console.log(response);
+            }, (error) => {
+                console.log(error);
+            });
+        setModalShow(true);
+    }
+
     return (
         <div className="App">
             <Container fluid style={{
@@ -55,7 +73,7 @@ const Vote = () => {
                                 <Col>
                                     <Card>
                                         <h2 className="text-center" style={{ margin: "10px" }} >{state.candidate[0]}</h2>
-                                        <Button className="tomato-btn" onClick={() => setModalShow(true)}>Vote</Button>
+                                        <Button className="tomato-btn" onClick={() => handleVote(state.candidate[0])}>Vote</Button>
                                         <MyVerticallyCenteredModal
                                             show={modalShow}
                                             onHide={() => setModalShow(false)}
@@ -65,7 +83,7 @@ const Vote = () => {
                                 <Col>
                                     <Card>
                                         <h2 className="text-center" style={{ margin: "10px" }}>{state.candidate[1]}</h2>
-                                        <Button className="orange-btn" onClick={() => setModalShow(true)}>Vote</Button>
+                                        <Button className="orange-btn" onClick={() => handleVote(state.candidate[1])}>Vote</Button>
                                         <MyVerticallyCenteredModal
                                             show={modalShow}
                                             onHide={() => setModalShow(false)}
