@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from "express";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
-import { TrustDatabase } from "./trust-db.js";
+import { TrustDatabase } from "./trust-db";
 
 const app = express();
 
@@ -105,5 +105,5 @@ class TrustServer {
 }
 
 // Start the server
-const server = new TrustServer(process.env.DATABASE_URL);
+const server = new TrustServer(process.env.DATABASE_URL!);
 server.start();

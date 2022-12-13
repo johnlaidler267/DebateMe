@@ -2,8 +2,7 @@ import express, { Express, Request, Response } from "express";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
-import { ElectionDatabase } from "./election-db.js";
-import { threadId } from "worker_threads";
+import { ElectionDatabase } from "./election-db";
 
 const app = express();
 
@@ -78,5 +77,5 @@ class ElectionServer {
 }
 
 /* Start the server */
-const server = new ElectionServer(process.env.DATABASE_URL);
+const server: ElectionServer = new ElectionServer(process.env.DATABASE_URL!);
 server.start();
