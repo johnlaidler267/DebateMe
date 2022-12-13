@@ -260,7 +260,7 @@ const Breakdown = () => {
                             </Card>
                         </Row>
                     </Card.Body>
-                    <Button variant="outline-secondary" style={{ width: "10%", margin: "10px" }} onClick={() => navigate(-2)}>Back To Debate</Button>
+                    <Button variant="outline-secondary" style={{ width: "10%", margin: "10px" }} onClick={() => navigate(`/post/${state.postId}`)}>Back To Debate</Button>
                 </Card>
             </Container>
         </div >

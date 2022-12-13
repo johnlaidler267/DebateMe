@@ -1,22 +1,31 @@
-import express from 'express';
-import logger from 'morgan';
-import cors from 'cors';
-import axios from 'axios';
-import { ElectionDatabase } from './election-db.js';
-import { threadId } from 'worker_threads';
+import express, { Express, Request, Response } from "express";
+import logger from "morgan";
+import cors from "cors";
+import axios from "axios";
+import { ElectionDatabase } from "./election-db.js";
+import { threadId } from "worker_threads";
 
 const app = express();
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
 
-class ElectionServer {
+interface Vote {
+  electionID: string;
+  userID: string;
+  vote: string;
+}
 
-  constructor(dburl) {
+class ElectionServer {
+  app: Express;
+  dburl: string;
+  db: any;
+
+  constructor(dburl: string) {
     this.dburl = dburl;
     this.app = express();
-    this.app.use(logger('dev'));
+    this.app.use(logger("dev"));
     this.app.use(express.json());
     this.app.use(cors());
   }
@@ -25,12 +34,10 @@ class ElectionServer {
   async initRoutes() {
     const self = this;
 
-    // Casts vote to database, emits voteCreated event 
+    // Casts vote to database, emits voteCreated event
     this.app.post("/vote", async (req, res) => {
       const { electionID, userID, vote } = req.body.params;
-      const Vote = await self.db.createVote(electionID, userID, vote)
-
-      console.log("Election Server Vote::", electionID, userID, vote);
+      const Vote: Vote = await self.db.createVote(electionID, userID, vote);
 
       // Send event to event bus
       await axios.post("http://localhost:4010/events", {
@@ -41,16 +48,15 @@ class ElectionServer {
           vote: vote,
         },
       });
-      res.status(200).send(JSON.stringify(Vote))
+      res.status(200).send(JSON.stringify(Vote));
     });
 
-    // Returns whether or not a user has voted in an election 
+    // Returns whether or not a user has voted in an election
     this.app.get("/hasVoted", async (req, res) => {
       const { userID, electionID } = req.query;
-      const hasVoted = await self.db.hasVoted(electionID, userID)
-      res.status(200).send(JSON.stringify(hasVoted))
+      const hasVoted: boolean = await self.db.hasVoted(electionID, userID);
+      res.status(200).send(JSON.stringify(hasVoted));
     });
-
   }
 
   /* Initialize the database connection */
@@ -73,4 +79,4 @@ class ElectionServer {
 
 /* Start the server */
 const server = new ElectionServer(process.env.DATABASE_URL);
-server.start()
+server.start();

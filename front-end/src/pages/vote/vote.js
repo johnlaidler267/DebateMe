@@ -6,8 +6,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from '@mui/material';
 
-
-
 const Vote = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
@@ -37,7 +35,6 @@ const Vote = () => {
     const VoteModal = (props) => {
         const navigate = useNavigate();
         const { state } = useLocation();
-        const [Thread, setThread] = useState();
 
         return (
             <Modal

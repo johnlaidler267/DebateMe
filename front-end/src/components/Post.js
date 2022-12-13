@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Container, Button } from 'react-bootstrap';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
@@ -13,6 +13,7 @@ import CommentList from './Comments/CommentList/CommentList'
 import { SettingsVoiceOutlined } from "@mui/icons-material";
 
 export default function Post() {
+  const navigate = useNavigate();
   const [Thread, setThread] = useState();
   const { postId } = useParams();
   const [Toggle, setIsToggle] = useState(false);
@@ -20,7 +21,6 @@ export default function Post() {
   const [IsOpen, setIsOpen] = useState(false);
   const [Content, setContent] = useState("");
   const listRef = useRef();
-  const navigate = useNavigate();
   const [comments, setComments] = useState({})
   const [voted, setVoted] = useState(false)
 

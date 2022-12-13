@@ -112,7 +112,7 @@ function App() {
             }
           />
           <Route
-            path="/post/:postId/vote/breakdown"
+            path="/post/:postId/breakdown"
             element={
               <PrivateRoute>
                 <Breakdown />

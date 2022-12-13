@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Express, Request, Response } from "express";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
@@ -11,11 +11,11 @@ app.use(express.json());
 app.use(cors());
 
 class BreakdownServer {
-  app//: Express;
-  dburl//: string;
-  db//: any;
+  app: Express;
+  dburl: string;
+  db: any;
 
-  constructor(dburl) {
+  constructor(dburl: string) {
     this.dburl = dburl;
     this.app = express();
     this.app.use(logger("dev"));
@@ -27,31 +27,25 @@ class BreakdownServer {
   async initRoutes() {
     // Get the breakdown for a given election
     this.app.get("/getBreakdown", async (req, res) => {
-      const { electionID } = req.query;
+      const electionID = req.query.electionID as string;
       const breakdown = await this.db.getBreakdown(electionID);
       res.status(200).send(JSON.stringify(breakdown));
     });
 
     // Respond to a voteCreated or postCreated event from the event bus
-    this.app.post("/events", async (req, res) => {
+    this.app.post("/events", async (req: Request, res: Response) => {
       // req = the incoming request from the event bus
       const { type, data } = req.body;
 
       if (type === "voteCreated") {
-        console.log("RECIEVED A NEW VOTE EVENT")
         // update the existing election breakdown w/ the new vote
         const { electionID, userID, vote } = data;
-
-        console.log("userId", userID)
-        console.log("vote", vote)
-        console.log("electionID", electionID)
 
         const response = await axios.post("http://localhost:4010/events", {
           // Get the user demographics (send request to User service via event-bus)
           type: "userDataRequest",
-          userId: userID
+          userId: userID,
         });
-        console.log("response from user service", response.data)
         const { race, gender, age } = response.data;
 
         const breakdown = await this.db.updateBreakdown(
@@ -73,8 +67,6 @@ class BreakdownServer {
         );
         res.status(200).send(JSON.stringify(breakdown));
       } else res.status(400).send("Invalid event type");
-
-      res.send(res.data);
     });
   }
 
