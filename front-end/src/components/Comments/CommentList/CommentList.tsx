@@ -25,7 +25,7 @@ type Props = {
 const CommentList = ({ postId, comments, setComments }: Props) => {
   const retrieveComments = async () => {
     const result = await axios.get(
-      `http://localhost:4001/comments/get?postId=${postId}`
+      `http://comments:4001/comments/get?postId=${postId}`
     );
     setComments(result.data);
   };

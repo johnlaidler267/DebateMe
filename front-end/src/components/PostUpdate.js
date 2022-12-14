@@ -24,7 +24,7 @@ const UpdateElection = () => {
         const candidate = [candidate1.value, candidate2.value];
 
         try {
-            const res = await axios.put('http://localhost:4006/posts/update', {
+            const res = await axios.put('http://threads:4006/posts/update', {
                 userId: state.userId,
                 postId: state.postId,
                 title: title.value,

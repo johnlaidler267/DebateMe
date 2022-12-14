@@ -16,7 +16,7 @@ const Messages = () => {
         setContent(<CircularProgress sx={{color: "yellow"}} size={60}/>);
         const { username } = e.target;
         try {
-            const res = await axios.get(`http://localhost:4008/users/username/get?username=${username.value}`);
+            const res = await axios.get(`http://users:4008/users/username/get?username=${username.value}`);
 
             navigate('inbox', { state: { userId: res.data.userId }});
         } catch (error) {

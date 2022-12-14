@@ -24,7 +24,7 @@ export default function Post() {
 
   /* Fetches the thread from the backend */
   const fetchThread = async () => {
-    const res = await axios.get(`http://localhost:4006/posts/get?postId=${postId}`);
+    const res = await axios.get(`http://threads:4006/posts/get?postId=${postId}`);
     setThread(res.data);
   }
 
@@ -38,7 +38,7 @@ export default function Post() {
     try {
       const json = sessionStorage.getItem('token') || "";
       const token = JSON.parse(json);
-      await axios.delete('http://localhost:4006/posts/delete', {
+      await axios.delete('http://threads:4006/posts/delete', {
         data: {
           userId: token.userId,
           postId: Thread.postId

@@ -37,7 +37,7 @@ class CommentServer{
       const content: string = req.query.content as string
       const commentId: string = randomBytes(4).toString("hex");
       const comment = await self.db.createComment(username, userId, parentId, commentId, postId, content)
-      await axios.post('http://localhost:4010/events', { 
+      await axios.post('http://eventbus:4010/events', { 
       type: 'commentCreated',
       data: {
         username: username,
@@ -81,7 +81,7 @@ class CommentServer{
     let orderedArray = [];
     let numVotes = [];
     for( let i = 0; i< commentList.length; i++){
-      let voteObj = await axios.get(`http://localhost:4002/comments/getVotes?commentId=${commentList[i].commentid}`)
+      let voteObj = await axios.get(`http://commentvoting:4002/comments/getVotes?commentId=${commentList[i].commentid}`)
       if (voteObj.data.length === 0){
         orderedArray.push(commentList[i]);
         numVotes.push(0);
@@ -119,7 +119,7 @@ class CommentServer{
   async start() {
     await this.initRoutes();
     await this.initDb();
-    await axios.post("http://localhost:4010/subscribe", {
+    await axios.post("http://eventbus:4010/subscribe", {
       port: 4001,
       name: "Comments",
       eventArray: ["commentModerated"]

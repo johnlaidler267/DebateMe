@@ -31,7 +31,7 @@ const Profile = () => {
         try {
             if (sessionStorage.getItem('token')) {
                 token = JSON.parse(sessionStorage.getItem('token') || "");
-                const res = await axios.get(`http://localhost:4008/users/get?userId=${token.userId}`);
+                const res = await axios.get(`http://users:4008/users/get?userId=${token.userId}`);
                 setUser(res.data);
             } else {
                 setUser(initialValues);
@@ -87,7 +87,7 @@ const Profile = () => {
             if (token) {
                 userId = token.id;
             }
-            await axios.put('http://localhost:4008/users/update', {
+            await axios.put('http://users:4008/users/update', {
                 userId, ...formValues
             });
 

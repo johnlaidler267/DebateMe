@@ -21,7 +21,7 @@ const Breakdown = () => {
     /* Hook that runs when the component is mounted, and is used to fetch the breakdown data */
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get('http://localhost:4009/getBreakdown', { params: { electionId: state.postId } });
+            const res = await axios.get('http://votebreakdown:4009/getBreakdown', { params: { electionId: state.postId } });
             const { electionId, candidate0, candidate1 } = res.data;
             console.log("response", res)
             // setElectionId(electionId);

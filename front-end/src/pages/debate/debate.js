@@ -9,7 +9,7 @@ const Debate = () => {
     const navigate = useNavigate();
 
     const fetchThreads = async () => {
-        const res = await axios.get('http://localhost:4006/posts/all');
+        const res = await axios.get('http://threads:4006/posts/all');
         setThreads(shuffle(res.data));
     }
 

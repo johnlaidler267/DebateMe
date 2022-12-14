@@ -22,7 +22,7 @@ const CreateElection = () => {
       const candidate = [candidate1.value, candidate2.value];
 
       try {
-          const res = await axios.post('http://localhost:4006/posts/create', {
+          const res = await axios.post('http://threads:4006/posts/create', {
             userId: Auth.userId,
             username: Auth.username,
             title: title.value,

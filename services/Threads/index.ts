@@ -115,7 +115,7 @@ app.post("/posts/create", async (req: Request, res: Response) => {
     };
 
     await axios
-      .post("http://localhost:4010/events", {
+      .post("http://eventbus:4010/events", {
         type: "postCreated",
         data: data,
       })
@@ -178,7 +178,7 @@ app.put("/posts/update", async (req: Request, res: Response) => {
     res.status(400).send({ error: "Request data is incomplete" });
   } else {
     const response = await axios
-      .post("http://localhost:4010/events", {
+      .post("http://eventbus:4010/events", {
         port: port,
         name: "thread",
         type: "userDataRequest",
@@ -208,7 +208,7 @@ app.put("/posts/update", async (req: Request, res: Response) => {
           );
 
           await axios
-            .post("http://localhost:4010/events", {
+            .post("http://eventbus:4010/events", {
               type: "postUpdated",
               data: data,
             })
@@ -238,7 +238,7 @@ app.delete("/posts/delete", async (req: Request, res: Response) => {
   }
 
   const response = await axios
-    .post("http://localhost:4010/events", {
+    .post("http://eventbus:4010/events", {
       port: port,
       name: "thread",
       type: "userDataRequest",
@@ -264,7 +264,7 @@ app.delete("/posts/delete", async (req: Request, res: Response) => {
         postDB.deleteOne({ postId: postId });
 
         await axios
-          .post("http://localhost:4010/events", {
+          .post("http://eventbus:4010/events", {
             type: "postDeleted",
             data: data,
           })

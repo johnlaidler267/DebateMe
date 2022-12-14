@@ -36,7 +36,7 @@ function Login() {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post('http://localhost:4008/users/login', {
+            const res = await axios.post('http://users:4008/users/login', {
                 username: formValues.username,
                 password: formValues.password
             });

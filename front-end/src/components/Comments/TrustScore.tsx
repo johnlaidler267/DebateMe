@@ -17,7 +17,7 @@ const TrustScore = ({ userId }: Props) => {
 
   const getTrustScore = async () => {
     score = await axios.get(
-      `http://localhost:4002/getTrustScore?userId=${userId}`
+      `http://trustdistinction:4007/getTrustScore?userId=${userId}`
     );
     setScore(score);
   };

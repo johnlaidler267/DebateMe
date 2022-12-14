@@ -32,14 +32,14 @@ app.post('/messages/create', async (req, res) => {
   if (senderId == undefined || receiverId == undefined || content == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   } else {
-    const responseUser = await axios.post('http://localhost:4010/events', {
+    const responseUser = await axios.post('http://eventbus:4010/events', {
       port: port,
       name: 'message',
       type: 'userDataRequest',
       userId: senderId,
     }).catch((err) => console.log(err.message));
   
-    const responseFriend = await axios.post('http://localhost:4010/events', {
+    const responseFriend = await axios.post('http://eventbus:4010/events', {
       port: port,
       name: 'message',
       type: 'userDataRequest',
@@ -73,14 +73,14 @@ app.get('/messages/all', async (req, res) => {
   if (userId == undefined || friendId == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   } else {
-    const responseUser = await axios.post('http://localhost:4010/events', {
+    const responseUser = await axios.post('http://eventbus:4010/events', {
       port: port,
       name: 'message',
       type: 'userDataRequest',
       userId: userId,
     }).catch((err) => console.log(err.message));
   
-    const responseFriend = await axios.post('http://localhost:4010/events', {
+    const responseFriend = await axios.post('http://eventbus:4010/events', {
       port: port,
       name: 'message',
       type: 'userDataRequest',

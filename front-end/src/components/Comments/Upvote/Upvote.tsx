@@ -17,7 +17,7 @@ const Upvote = ({ commentId, ownerId }: Props) => {
     } else {
       const token = JSON.parse(jsonToken);
       let response = await axios.post(
-        `http://localhost:4002/comments/vote?userId=${token.userId}&commentId=${commentId}&vote=up&ownerId=${ownerId}`
+        `http://commentvoting:4002/comments/vote?userId=${token.userId}&commentId=${commentId}&vote=up&ownerId=${ownerId}`
       );
       if (response.data !== "No Changes") {
         window.location.reload();
@@ -26,7 +26,7 @@ const Upvote = ({ commentId, ownerId }: Props) => {
   };
   const retrieveVotes = async () => {
     const result = await axios.get(
-      `http://localhost:4002/comments/getVotes?commentId=${commentId}`
+      `http://commentvoting:4002/comments/getVotes?commentId=${commentId}`
     );
     if (result.data.length === 0) {
       setVotes(0);

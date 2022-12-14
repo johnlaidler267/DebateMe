@@ -53,7 +53,7 @@ class ModerationServer {
         }
     }
     if (post){
-      await axios.post('http://event-bus:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
+      await axios.post('http://eventbus:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
       type: 'postModerated',
       data: {
         userId: userId,
@@ -64,7 +64,7 @@ class ModerationServer {
     });
     }
     else{
-    await axios.post('http://localhost:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
+    await axios.post('http://eventbus:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
         type: 'commentModerated',
         data: {
           userId: userId,
@@ -108,12 +108,7 @@ class ModerationServer {
   async initRoutes(){
     const self = this;
 
-    //do I need this? depends on trust distinction implemenation 
-    this.app.get("/rejected/user", (req,res) => {
-      //get UserID
-      //retrieve there history
-      //send rejectedComments, just number? or actual content? 
-    });
+
 
     this.app.post("/events", async (req, res) => { //should only recieve events I care about
       let data = req.body.data
@@ -139,7 +134,7 @@ class ModerationServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    await axios.post("http://localhost:4010/subscribe", {
+    await axios.post("http://eventbus:4010/subscribe", {
       port: 4005,
       name: "Moderation",
       eventArray: ["commentCreated", "postCreated"]
