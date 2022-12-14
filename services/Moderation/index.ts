@@ -44,7 +44,7 @@ class ModerationServer {
     this.app.use(cors())
   }
   async scanContent(content:string, userId:string, Id:string, post: boolean){
-    let rejected_words: string[] = ["hate", "crap", "noob", "insult"] //maybe phrases for added diffuculty? 
+    let rejected_words: string[] = ["hate", "crap", "noob", "insult", "death", "dying", "die", "kill", "killing", "violence", "hatred", "killed", "despise", "ass", "violent"] 
     let word_array: string[] = content.split(" "); //makes an array of words to check in the comment
     let acceptable:string = "accepted"; 
     for(let i = 0; i< word_array.length; i++){
@@ -81,7 +81,7 @@ class ModerationServer {
   async updateDatabase(userId:string, content:string, status:string){
       console.log(userId)
       let userObj = await this.db.retrieveUser(userId);
-      if(userObj.length === 0){
+      if(userObj.length === 0){  //if user has not created a comment/post before
         let accepted:string[] = []
         let rejected:string[] =[]
         if(status === 'rejected'){
@@ -121,7 +121,7 @@ class ModerationServer {
      }
       await this.updateDatabase(data.userId, data.content, status)
       //console.log(req.body.type);
-      res.status(200).send("Successfully moderated");
+      res.status(200).send(req.body);
     });
 
   }

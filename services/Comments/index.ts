@@ -11,6 +11,7 @@ interface Comment {
   commentId: string;
   postId: string;
   content: string;
+  username:string;
   //parentType? Is this neccessary?
 }
 
@@ -48,7 +49,7 @@ class CommentServer {
         content: content
      },
     });
-    res.status(200).send(JSON.stringify(comment))
+    res.status(201).send(JSON.stringify(comment))
     });
 
     //get all comments for a given postID
@@ -77,7 +78,7 @@ class CommentServer {
         this.db.deleteComment(data.commentId);
       }
 
-      res.send({});
+      res.status(200).send(req.body);
     });
   }
 

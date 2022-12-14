@@ -6,7 +6,9 @@ This is the event bus. It is responsible for orcherstrating communication and ex
 
 The way this works is that other services will send a request to the subscribe end point on startup (or any time if they want). The information they send will contain the port number, the name of the service per the dockercompose file, and all the events they want to subscribe to. Each event will have 2 assocaited arrays, one to store the ports that want that event, and one to store the names of the services that want that event. 
 When the event bus receives an event via the /events endpoint, it will use these arrays to send the event to all the services that want to recieve it. 
-Due to the dynamic registration component, the event bus has the ability to communicate with every service in the project. For more info on how each service uses the event bus for communication, please refer to the README.md file within every service. 
+Due to the dynamic registration component, the event bus has the ability to communicate with every service in the project. For more info on how each service uses the event bus for communication, please refer to the README.md file within every service. There are no 3rd party services involved 
+
+Instructions to run: To run this service from scratch you will need to run npm install, have the port 4010 available, and then run npm start. 
 
 Endpoints:
 URL: /subscribe

@@ -29,7 +29,7 @@ const CommentCreate = ({ postId }: Props) => {
     }
     await axios.post(
       `http://localhost:4001/addComment?userId=${userId}&postId=${postId}&content=${Value}&parentId=${postId}1&username=${username}`
-    ); //maye need to change/get rid of parentId
+    ); 
   };
 
   return (
