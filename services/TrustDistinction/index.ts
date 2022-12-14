@@ -26,7 +26,7 @@ class TrustServer {
   /* Initialize all routes (endpoints) for the server - i.e. things other services can connect to */
   async initRoutes() {
     /* Update score when an event is recieved from the event bus */
-    this.app.post("/events", async (req, res) => {
+    this.app.post("/events", async (req: Request, res: Response) => {
       console.log(req.body);
       const type = req.body.type;
       const body = req.body.data;
@@ -55,7 +55,7 @@ class TrustServer {
     });
 
     /* Get the trust score for a user */
-    this.app.get("/getTrust", async (req, res) => {
+    this.app.get("/getTrust", async (req: Request, res: Response) => {
       const userID = req.query.userId;
       console.log("recived this query in trust", userID);
       const engagementScore = await this.db.getEngagement(userID);
