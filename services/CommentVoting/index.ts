@@ -59,7 +59,7 @@ class CommentVoteServer {
           downvotes,
           ownerId
         );
-        res.status(201).send(JSON.stringify(voteObj)); //voteObj not sending right object? need to debug
+        res.status(201).send(JSON.stringify(voteObj)); 
       } else {
         let votesStored: CommentStoredVotes = storedVotes[0];
         let newUpvotes: string[] = votesStored.upvotes;
@@ -95,7 +95,7 @@ class CommentVoteServer {
           newDownvotes
         );
         console.log(voteObj);
-        res.status(201).send(JSON.stringify(voteObj)); //voteObj not sending right object? need to debug
+        res.status(201).send(JSON.stringify(voteObj)); 
       }
       await axios.post("http://eventbus:4010/events", {
         type: "commentVoted",

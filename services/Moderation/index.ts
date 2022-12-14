@@ -53,7 +53,7 @@ class ModerationServer {
         }
     }
     if (post){
-      await axios.post('http://eventbus:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
+      await axios.post('http://eventbus:4010/events', { 
       type: 'postModerated',
       data: {
         userId: userId,
@@ -64,7 +64,7 @@ class ModerationServer {
     });
     }
     else{
-    await axios.post('http://eventbus:4010/events', { //sends the CommentModerated event and data to the event bus. Call This without local host?
+    await axios.post('http://eventbus:4010/events', { 
         type: 'commentModerated',
         data: {
           userId: userId,
