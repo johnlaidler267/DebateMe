@@ -13,7 +13,6 @@ interface Comment {
   postId: string;
   content: string;
   username: string;
-  //parentType? Is this neccessary?
 }
 
 type Props = {

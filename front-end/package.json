@@ -17,7 +17,6 @@
       "@types/react-dom": "^18.0.8",
       "axios": "^1.2.1",
       "bootstrap": "^5.2.3",
-      "mdb-react-template": "file:../../../../../Downloads/MDB5-REACT-UI-KIT-Free-5.0.0",
       "mobiscroll": "^3.0.0-beta6",
       "react": "^18.2.0",
       "react-bootstrap": "^2.6.0",
