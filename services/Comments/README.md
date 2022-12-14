@@ -146,4 +146,4 @@ Response Data Example:
     }
 }
 
-Exceeds Expectations: I believe this service exceeds expectations for a couple reasons. First I believe that the neccessity to interact with a large variety of services adds diffuculty. I also think that my documentation is fairly thorugh for this service. 
+Exceeds Expectations: I believe this service exceeds expectations for a couple reasons. First I believe that the neccessity to interact with a large variety of services adds diffuculty. The ordering of comments by number of votes adds good functionality to the front end. I also think that my documentation is fairly thorugh for this service. 

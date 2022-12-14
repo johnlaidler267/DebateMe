@@ -17,7 +17,7 @@ Ethan Stafford Components:
 
     To run specically all my services, you will need to npm install in the front end folder. You then need to start the following services: event bus, comment, commentVoting, commentModeration, threads, users. If you would like to see trust scores you will also need to start the trustDistinction service, but this is not completly essential. Then you will need to run npm start in the front-end folder.
 
-    I think that my front-end services exceeds expecattions for a couple reasons. First off I think that I have code that is overall easy to read and follow. I think my code demonstrates a solid understanding of react and I use a good variety of tools/capabilites of react. Additonally, my front end responds well to a variety of different http requests and always renders the screen correctly based on these responses.
+    I think that my front-end services exceeds expecattions for a couple reasons. First off I think that I have code that is overall easy to read and follow. I think my code demonstrates a solid understanding of react and I use a good variety of tools/capabilites of react. Additonally, my front end responds well to a variety of different http requests and always renders the screen correctly and in an intuitive manner based on the responses.
 
 Chou Heng Ieong's Components:
     The services I was responsbile for are in the src/components folder: Post, PostUpdate and Message, and in the serc/pages folder: debate (Posts), create-election (PostCreate), profile (userUpdated), signup (userRegister) and login (userLogin). 8 components in total.
