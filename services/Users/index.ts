@@ -5,6 +5,53 @@ import { MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import axios from 'axios';
+
+interface User {
+  userId: string;
+  username: string; 
+  password: string;
+  email: string;
+  age: string;
+  gender: string;
+  race: string;
+  country: string;
+  state: string;
+  city: string;
+  DirectMessage: [];
+}
+
+interface Users {
+  insertOne(data: User): unknown;
+  find(): unknown;
+  findOne(arg0: {
+    postId:
+      | string
+      | string[]
+      | import("qs").ParsedQs
+      | import("qs").ParsedQs[]
+      | undefined;
+  }): User | PromiseLike<User>;
+  updateOne(
+    arg0: { userId: string },
+    arg1: {
+      $set: {
+        username: string; 
+        password: string;
+        email: string;
+        age: string;
+        gender: string;
+        race: string;
+        country: string;
+        state: string;
+        city: string;
+        DirectMessage: [];
+      };
+    },
+    arg2: { upsert: boolean }
+  ): unknown;
+  deleteOne(arg0: { userId: string }): unknown;
+}
+
 const app = express();
 const port = process.env.PORT || 4008;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
@@ -28,7 +75,19 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 app.post('/users/register', async (req, res) => {
-  const { username, password, email, age, gender, race, country, state, city } = req.body;
+  const { username, password, email, age, gender, race, country, state, city }: 
+  {
+    username: string,
+    password: string,
+    email: string,
+    age: string,
+    gender: string,
+    race: string,
+    country: string,
+    state: string,
+    city: string
+  }
+   = req.body;
   if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   }
@@ -66,7 +125,7 @@ app.post('/users/register', async (req, res) => {
 });
 
 app.post('/users/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password }: { username: string, password: string } = req.body;
   if (username == undefined || password == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   };
@@ -87,7 +146,7 @@ app.post('/users/login', async (req, res) => {
 });
 
 app.get('/users/get', async (req, res) => {
-  const { userId } = req.query;
+  const { userId }: { userId: string } = req.query;
   if (userId == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   }
@@ -102,7 +161,7 @@ app.get('/users/get', async (req, res) => {
 });
 
 app.get('/users/username/get', async (req, res) => {
-  const { username } = req.query;
+  const { username }: { username:string } = req.query;
   if (username == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   }
@@ -119,7 +178,20 @@ app.get('/users/username/get', async (req, res) => {
 });
 
 app.put('/users/update', async (req, res) => {
-  const { userId, username, password, email, age, gender, race, country, state, city } = req.body;
+  const { userId, username, password, email, age, gender, race, country, state, city }:
+  {
+    userId: string,
+    username: string,
+    password: string,
+    email: string,
+    age: string,
+    gender: string,
+    race: string,
+    country: string,
+    state: string,
+    city: string
+  }
+   = req.body;
   if (username == undefined || password == undefined || email == undefined || age == undefined || gender == undefined || race == undefined || country == undefined || state == undefined || city == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   }

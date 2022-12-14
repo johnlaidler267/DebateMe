@@ -1,15 +1,47 @@
 import 'dotenv/config';
-import express from 'express';
+import express, { Express, Request, Response } from "express";
 import logger from 'morgan';
 import axios from 'axios';
 import { MongoClient } from 'mongodb';
 import {v4 as uuidv4} from 'uuid';
 import cors from 'cors';
 
-const app = express();
+interface Message {
+  messageId: string;
+  senderId: string; 
+  receiverId: string;
+  content: string;
+}
+
+interface Messages {
+  insertOne(data: Message): unknown;
+  find(): unknown;
+  findOne(arg0: {
+    postId:
+      | string
+      | string[]
+      | import("qs").ParsedQs
+      | import("qs").ParsedQs[]
+      | undefined;
+  }): Message | PromiseLike<Message>;
+  updateOne(
+    arg0: { messageId: string },
+    arg1: {
+      $set: {
+        senderId: string; 
+        receiverId: string;
+        content: string;
+      };
+    },
+    arg2: { upsert: boolean }
+  ): unknown;
+  deleteOne(arg0: { messageId: string }): unknown;
+}
+
+const app: Express = express();
 const port = process.env.PORT || 4003;
 const DATABASE_URL = process.env.DATABASE_URL ? process.env.DATABASE_URL : "";
-let messageDB = [];
+let messageDB: Messages = [];
 
 const connectDB = async () => {
   try {
@@ -28,7 +60,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/messages/create', async (req, res) => {
-  const { senderId, receiverId, content } = req.body;
+  const { senderId, receiverId, content }: { senderId: string, receiverId: string, content: string } = req.body;
   if (senderId == undefined || receiverId == undefined || content == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   } else {
@@ -69,7 +101,7 @@ app.post('/messages/create', async (req, res) => {
 });
 
 app.get('/messages/all', async (req, res) => {
-  const { userId, friendId } = req.query;
+  const { userId, friendId }: { userId: string, friendId: string } = req.query;
   if (userId == undefined || friendId == undefined) {
     res.status(400).send({ error: "Request data is incomplete" });
   } else {
@@ -92,7 +124,7 @@ app.get('/messages/all', async (req, res) => {
     if (!usersExist) {
       res.status(404).send({ error: "User not found" });
     } else {
-        const messages = await messageDB.find({ 
+        const messages: Message = await messageDB.find({ 
           "senderId": { "$in": [userId, friendId] },
           "receiverId": { "$in": [userId, friendId] }
          }).toArray();
@@ -101,6 +133,58 @@ app.get('/messages/all', async (req, res) => {
         }
   }
 });
+
+app.get('/messages/get', async (req, res) => {
+  const { messageId }: { messageId: string } = req.query;
+  if (messageId == undefined) {
+    res.status(400).send({ error: "Request data is incomplete" });
+  } else {
+    const message = messageDB.find({ messageId: messageId });
+
+    if (!message) {
+      res.status(404).send({ error: "message not found" });
+    } else {
+        res.status(200).send(message);
+    }
+  }
+});
+
+app.put('/messages/update', async (req, res) => {
+  const { messageId, content }: { messageId: string, content: string } = req.body;
+  if (messageId == undefined || content == undefined) {
+    res.status(400).send({ error: "Request data is incomplete" });
+  } else {
+    const message = messageDB.find({ messageId: messageId });
+
+    if (!message) {
+      res.status(404).send({ error: "message not found" });
+    } else {
+        message.updateOne(
+          { messageId: messageId },
+          { $set: { content: content } },
+          { upsert: true }
+        );
+        res.status(201).send(message);
+    }
+  }
+});
+
+app.put('/messages/delete', async (req, res) => {
+  const { messageId }: { messageId: string } = req.body;
+  if (messageId == undefined) {
+    res.status(400).send({ error: "Request data is incomplete" });
+  } else {
+    const message = messageDB.find({ messageId: messageId });
+
+    if (!message) {
+      res.status(404).send({ error: "message not found" });
+    } else {
+        message.deleteOne({ messageId: messageId });
+        res.status(200).send(message);
+    }
+  }
+});
+
 
 app.post('/events', (req, res) => {
   const { type } = req.body;

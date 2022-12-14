@@ -114,16 +114,31 @@ app.post("/posts/create", async (req: Request, res: Response) => {
       date: new Date(),
     };
 
-    await axios
-      .post("http://eventbus:4010/events", {
-        type: "postCreated",
-        data: data,
-      })
-      .catch((err) => console.log(err.message));
+    const response = await axios
+    .post("http://eventbus:4010/events", {
+      port: port,
+      name: "thread",
+      type: "userDataRequest",
+      userId: userId,
+    })
+    .catch((err) => console.log(err.message));
 
-    postDB.insertOne(data);
+    const user = await response.data;
 
-    res.status(201).send(data);
+    if (user) {
+      await axios
+        .post("http://eventbus:4010/events", {
+          type: "postCreated",
+          data: data,
+        })
+        .catch((err) => console.log(err.message));
+  
+      postDB.insertOne(data);
+  
+      res.status(201).send(data);
+    } else {
+      res.status(404).send({ error: "User not found" });
+    }
   }
 });
 
@@ -292,6 +307,12 @@ app.delete("/posts/delete", async (req: Request, res: Response) => {
 
 app.post("/events", (req: Request, res: Response) => {
   const { type }: { type: string } = req.body;
+  if (type === "postModerated") {
+    const { postId, status } = req.body;
+    if (status === "rejected") {
+      postDB.deleteOne({ postId: postId });
+    }
+  }
   console.log(type);
   res.send({ type: type });
 });
