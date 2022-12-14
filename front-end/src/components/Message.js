@@ -16,7 +16,7 @@ export default function Inbox() {
     try {
         const json = sessionStorage.getItem('token') || "";
         const token = JSON.parse(json);
-        const res = await axios.get(`http://messages:4003/messages/all?userId=${token.userId}&friendId=${state.userId}`);
+        const res = await axios.get(`http://localhost:4003/messages/all?userId=${token.userId}&friendId=${state.userId}`);
         setMessages(res.data);
     } catch (error) {
         setTimeout(function() {
@@ -35,7 +35,7 @@ export default function Inbox() {
     try {
         const json = sessionStorage.getItem('token') || "";
         const token = JSON.parse(json);
-        await axios.post(`http://messages:4003/messages/create`, {
+        await axios.post(`http://localhost:4003/messages/create`, {
             senderId: token.userId,
             receiverId: state.userId,
             content: message.value

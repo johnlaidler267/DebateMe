@@ -66,7 +66,7 @@ function Signup() {
         try {
             setLoading(true);
 
-            const res = await axios.post('http://users:4008/users/register', {
+            const res = await axios.post('http://localhost:4008/users/register', {
                 ...formValues
             });
 

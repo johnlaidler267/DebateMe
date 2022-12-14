@@ -86,7 +86,7 @@ class CommentServer {
     let numVotes = [];
     for (let i = 0; i < commentList.length; i++) {
       let voteObj = await axios.get(
-        `http://localhost:4002/comments/getVotes?commentId=${commentList[i].commentid}`
+        `http://commentvoting:4002/comments/getVotes?commentId=${commentList[i].commentid}`
       );
       if (voteObj.data.length === 0) {
         orderedArray.push(commentList[i]);

@@ -39,7 +39,7 @@ class ElectionServer {
       const Vote: Vote = await self.db.createVote(electionID, userID, vote);
 
       // Send event to event bus
-      await axios.post("http://localhost:4010/events", {
+      await axios.post("http://eventbus:4010/events", {
         type: "voteCreated",
         data: {
           electionID: electionID,

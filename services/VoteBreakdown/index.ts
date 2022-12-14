@@ -41,7 +41,7 @@ class BreakdownServer {
         // update the existing election breakdown w/ the new vote
         const { electionID, userID, vote } = data;
 
-        const response = await axios.post("http://localhost:4010/events", {
+        const response = await axios.post("http://eventbus:4010/events", {
           // Get the user demographics (send request to User service via event-bus)
           type: "userDataRequest",
           userId: userID,

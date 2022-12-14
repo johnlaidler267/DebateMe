@@ -109,10 +109,10 @@ app.post('/events', async (req, res) => {
       //await axios.post(`http:/${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
       //   console.log(err.message)
       //  });
-      await axios.post(`http://localhost:4007/events`, event).catch((err) => {
-        console.log(err.message)
-      });
-      await axios.post(`http://localhost:${commentCreatedPorts[i]}/events`, event).catch((err) => {
+     /// await axios.post(`http://localhost:4007/events`, event).catch((err) => {
+      //  console.log(err.message)
+     // });
+      await axios.post(`http://${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
       console.log(event)
@@ -181,14 +181,14 @@ app.post('/events', async (req, res) => {
    // res.send(event);
   }
   else if (eventType === "userDataRequest") {
-    const response = await axios.post(`http://localhost:4008/events`, event).catch((err) => {
+    const response = await axios.post(`http://${userDataRequestNames[0]}:${userDataRequestPorts[0]}/events`, event).catch((err) => {
       console.log(err.message)
     });
     res.send(response.data);
   }
   else if (eventType === "userCreated") {
     for (let i = 0; i < userCreatedPorts.length; i++) {
-      await axios.post(`http://localhost:${userCreatedPorts[i]}/events`, event).catch((err) => {
+      await axios.post(`http://${userCreatedNames[i]}:${userCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
       });
     }

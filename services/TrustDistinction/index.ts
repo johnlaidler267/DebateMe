@@ -99,7 +99,7 @@ class TrustServer {
   async start() {
     await this.initRoutes();
     await this.initDb();
-    await axios.post("http://localhost:4010/subscribe", {
+    await axios.post("http://eventbus:4010/subscribe", {
       port: 4007,
       name: "trust",
       eventArray: ["userCreated", "voteCreated", "commentCreated"],

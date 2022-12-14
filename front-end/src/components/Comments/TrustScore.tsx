@@ -17,18 +17,11 @@ const TrustScore = ({ userId }: Props) => {
   let [score, setScore] = useState(0);
 
   const getTrustScore = async () => {
-<<<<<<< HEAD
-    score = await axios.get(
-      `http://trustdistinction:4007/getTrustScore?userId=${userId}`
-    );
-    setScore(score);
-=======
     await axios
       .get(`http://localhost:4007/getTrust?userId=${userId}`)
       .then((responseScore) => {
         setScore(responseScore.data);
       });
->>>>>>> 15f8b6f67b8f0781c671e58ff9b1b81e37d4b211
   };
 
   // Runs the getTrustScore function when the component is mounted

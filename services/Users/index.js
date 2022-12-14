@@ -54,7 +54,7 @@ app.post('/users/register', async (req, res) => {
 
     userDB.insertOne(data);
 
-    await axios.post("http://localhost:4010/events", {
+    await axios.post("http://eventbus:4010/events", {
       type: "userCreated",
       data: {
         userID: username

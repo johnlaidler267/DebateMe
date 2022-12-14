@@ -28,7 +28,7 @@ const CommentCreate = ({ postId }: Props) => {
       userId = token.userId;
     }
     await axios.post(
-      `http://comment:4001/addComment?userId=${userId}&postId=${postId}&content=${Value}&parentId=${postId}1&username=${username}`
+      `http://localhost:4001/addComment?userId=${userId}&postId=${postId}&content=${Value}&parentId=${postId}1&username=${username}`
     ); //maye need to change/get rid of parentId
   };
 
