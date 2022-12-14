@@ -131,7 +131,6 @@ export default function Post() {
 
   /* If the user has voted, display the Cast Vote button, otherwise display the View Election Results button */
   const VoteOrResults = () => {
-    console.log("VOTED: ", voted)
     if (!voted) {
       return <Button className="custom-btn" onClick={() => navigate('vote', { state: Thread })}> Cast Vote</Button>
     } else {

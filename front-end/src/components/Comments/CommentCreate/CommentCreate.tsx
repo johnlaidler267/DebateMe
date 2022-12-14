@@ -39,7 +39,7 @@ const CommentCreate = ({ postId }: Props) => {
         <Card>
           <Card.Body>
             <form onSubmit={newComment}>
-              <label id="create">
+              <label id="create" style={{ width: "97%", height: "100%" }}>
                 <textarea
                   placeholder="What are your thoughts?"
                   id="commentBox"
@@ -47,8 +47,8 @@ const CommentCreate = ({ postId }: Props) => {
                   onChange={(e) => setValue(e.target.value)}
                   style={{
                     padding: "12px 20px",
-                    width: "310%",
-                    height: "100px",
+                    width: "100%",
+                    height: "100%",
                     backgroundColor: "#f8f8f8",
                     border: "3px solid #ccc",
                     borderRadius: "4px",

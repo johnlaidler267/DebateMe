@@ -28,6 +28,8 @@ let postDeletedPorts = []
 let postDeletedNames = []
 let userDataRequestPorts = []
 let userDataRequestNames = []
+let userCreatedPorts = []
+let userCreatedNames = []
 
 /* Add routes to the array of ports that want to receive events */
 app.post('/subscribe', (req, res) => {
@@ -81,26 +83,42 @@ app.post('/subscribe', (req, res) => {
       userDataRequestPorts.push(port);
       userDataRequestNames.push(name.toLowerCase());
     }
+    if (eventArray.includes("userCreated")) {
+      if (userCreatedPorts.includes(port)) continue;
+      userCreatedPorts.push(port);
+      userCreatedNames.push(name.toLowerCase());
+    }
   }
   res.status(200).send("Subscribed successfully!")
 });
 
 /* Send events to all ports that want to receive them */
 app.post('/events', async (req, res) => {
-  console.log("RECIEVED A NEW EVENT")
+
   const event = req.body;
   const eventType = event.type;
 
+  console.log("RECIEVED A NEW EVENT", event)
+
   if (eventType === "commentCreated") {
+    console.log("commentCreatedPorts", commentCreatedPorts)
     for (let i = 0; i < commentCreatedPorts.length; i++) {
 
+      console.log("sending to port", commentCreatedPorts[i])
       // console.log(`http://${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`)
       //await axios.post(`http:/${commentCreatedNames[i]}:${commentCreatedPorts[i]}/events`, event).catch((err) => {
       //   console.log(err.message)
       //  });
-      await axios.post(`http://localhost:${commentCreatedPorts[i]}/events`, event)
+      await axios.post(`http://localhost:4007/events`, event).catch((err) => {
+        console.log(err.message)
+      });
+      await axios.post(`http://localhost:${commentCreatedPorts[i]}/events`, event).catch((err) => {
+        console.log(err.message)
+      });
+      console.log(event)
+
     }
-    //res.send(event);
+    res.send(event);
   }
   else if (eventType === "commentModerated") {
     for (let i = 0; i < commentModeratedPorts.length; i++) {
@@ -128,7 +146,6 @@ app.post('/events', async (req, res) => {
     res.send(event);
   }
   else if (eventType === "voteCreated") {
-    console.log("PORTS SUBSCRIBED TO VOTECREATED: ", voteCreatedPorts)
     for (let i = 0; i < voteCreatedPorts.length; i++) {
       await axios.post(`http://localhost:${voteCreatedPorts[i]}/events`, event).catch((err) => {
         console.log(err.message)
@@ -170,9 +187,19 @@ app.post('/events', async (req, res) => {
     });
     res.send(response.data);
   }
-
-  //console.log(event.type);
+  else if (eventType === "userCreated") {
+    for (let i = 0; i < userCreatedPorts.length; i++) {
+      await axios.post(`http://localhost:${userCreatedPorts[i]}/events`, event).catch((err) => {
+        console.log(err.message)
+      });
+    }
+    res.send(event);
+  }
+  else {
+    res.send("Event type not recognized")
+  }
 });
+
 
 /* Start the server */
 app.listen(4010, () => {

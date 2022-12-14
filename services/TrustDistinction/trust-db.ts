@@ -32,7 +32,7 @@ export class TrustDatabase {
   async init() {
     const queryText = `
       create table if not exists scores (
-        userID varchar(30),
+        userID varchar(100),
         engagement float,
         reliability float
       );
@@ -48,29 +48,30 @@ export class TrustDatabase {
   }
 
   /* Get the engagement score for a user */
-  async getEngagement(userID: string) {
-    const queryText = `SELECT engagement FROM scores WHERE userID = $1;`;
+  async getEngagement(userID: any) {
+    console.log("userID", userID);
+    const queryText = `SELECT engagement FROM scores WHERE userID = $1`;
     const res = await this.client.query(queryText, [userID]);
     return res.rows[0].engagement;
   }
 
   /* Get the reliability score for a user */
   async getReliability(userID: string) {
-    const queryText = `SELECT reliability FROM scores WHERE userID = $1;`;
+    const queryText = `SELECT reliability FROM scores WHERE userID = $1`;
     const res = await this.client.query(queryText, [userID]);
     return res.rows[0].reliability;
   }
 
   /* Update the engagement score for a user */
   async updateEngagement(userID: string, score: number) {
-    const queryText = `UPDATE scores SET engagement = $2 WHERE userID = $1;`;
+    const queryText = `UPDATE scores SET engagement = $2 WHERE userID = $1`;
     const res = await this.client.query(queryText, [userID, score]);
     return res.rows[0];
   }
 
   /* Update the reliability score for a user */
   async updateReliability(userID: string, reliability: number) {
-    const queryText = `UPDATE scores SET reliability = $2 WHERE userID = $1;`;
+    const queryText = `UPDATE scores SET reliability = $2 WHERE userID = $1`;
     const res = await this.client.query(queryText, [userID, reliability]);
     return res.rows[0];
   }

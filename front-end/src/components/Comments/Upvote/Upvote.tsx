@@ -40,7 +40,13 @@ const Upvote = ({ commentId, ownerId }: Props) => {
 
   return (
     <div>
-      <Button onClick={registerVote}>
+      <Button
+        className="btn btn-primary"
+        onClick={registerVote}
+        style={{
+          borderRadius: "10px",
+        }}
+      >
         {" "}
         <ArrowUp> </ArrowUp> {Votes}
       </Button>

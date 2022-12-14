@@ -34,15 +34,17 @@ const Debate = () => {
     /* Renders the threads */
     const renderedThreads = Object.values(Threads).map((t, index) => {
         return (
-            <Card className="mb-3" key={index}>
+            <Card className="mb-3" key={index} style={{ padding: "0px 5px 5px 5px !important", marginTop: "0px !important" }}>
                 <br></br>
-                <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">{t.title}</Card.Title>
+                <Card.Header>
+                    <Card.Title className="text-center ps-3 pe-3 pt-2 pb-1">{t.title}</Card.Title>
+                </Card.Header>
                 <Card.Body>
                     <Container>
                         <p>{t.content}</p>
                     </Container>
                 </Card.Body>
-                <Button onClick={() => postHandler(t.postId)} className="custom-btn">Debate</Button>
+                <Button style={{ border: "7px black !important" }} onClick={() => postHandler(t.postId)} className="custom-btn">Debate</Button>
             </Card>
         );
     });

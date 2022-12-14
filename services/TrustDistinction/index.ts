@@ -29,20 +29,25 @@ class TrustServer {
     this.app.post("/events", async (req, res) => {
       console.log(req.body);
       const type = req.body.type;
-      const userID = req.body.data.userID;
+      const body = req.body.data;
 
-      console.log("TrustServer Event Recieved From EventBus::", type, userID);
+      console.log("TrustServer Event Recieved From EventBus::", type, body);
 
       if (
         type === "commentCreated" ||
         type === "voteCreated" ||
         type === "postCreated"
-      )
-        await this.updateEngagement(type, userID);
-      else if (type === "commentVoted" || type === "commentModerated")
+      ) {
+        const username = body.username;
+        console.log("updating enagement");
+        await this.updateEngagement(type, username);
+      } else if (type === "commentVoted" || type === "commentModerated") {
+        const userID = body.userId;
+        console.log("updating reliability", userID);
         await this.updateReliability(type, userID);
-      else if (type === "userCreated") {
-        console.log("initializing user");
+      } else if (type === "userCreated") {
+        const userID = body.userID;
+        console.log("initializing user", userID);
         await this.db.initializeUser(userID);
       } else console.log("Invalid event type recieved");
 
@@ -51,7 +56,8 @@ class TrustServer {
 
     /* Get the trust score for a user */
     this.app.get("/getTrust", async (req, res) => {
-      const { userID } = req.query;
+      const userID = req.query.userId;
+      console.log("recived this query in trust", userID);
       const engagementScore = await this.db.getEngagement(userID);
       const reliabilityScore = await this.db.getReliability(userID);
       const score = this.calculateScore(engagementScore, reliabilityScore);
@@ -60,7 +66,8 @@ class TrustServer {
   }
 
   /* Update the engagement score for a user */
-  async updateEngagement(type: string, userID: any) {
+  async updateEngagement(type: string, userID: string) {
+    console.log("INSIDE ENGAGEMENT UPDATE", type, userID);
     let score = await this.db.getEngagement(userID);
 
     if (type === "postCreated") score += 1;
@@ -95,7 +102,7 @@ class TrustServer {
     await axios.post("http://localhost:4010/subscribe", {
       port: 4007,
       name: "trust",
-      eventArray: ["userCreated", "voteCreated"],
+      eventArray: ["userCreated", "voteCreated", "commentCreated"],
     });
     const port = process.env.PORT || 4007;
     this.app.listen(port, () => {

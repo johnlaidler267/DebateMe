@@ -7,6 +7,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from 'react';
+import { FaCheckCircle } from 'react-icons/fa';
 
 /* Render the breakdown page */
 const Breakdown = () => {
@@ -94,8 +95,29 @@ const Breakdown = () => {
     }
 
     // /* Gather the data for the charts */
-    const width = 300;
-    const height = 150;
+    const width = 350;
+
+    const Cand0Header = () => {
+        let header = <h3 className='text-center'> {candidate0[0]} </h3>
+        if (candidate0[0] > candidate1[0]) header = <h3 className='text-center'> {candidate0[0]} <FaCheckCircle /></h3>
+        return (
+            <div>
+                {header}
+                <h5 className='text-center m-0 mb-2' style={{ color: "white" }}> Total Votes: {candidate0[1]} </h5>
+            </div>
+        );
+    };
+
+    const Cand1Header = () => {
+        let header = <h3 className='text-center'> {candidate1[0]} </h3>
+        if (candidate1[0] > candidate0[0]) header = <h3 className='text-center'> {candidate1[0]} <FaCheckCircle /></h3>
+        return (
+            <div>
+                {header}
+                <h5 className='text-center m-0 mb-2' style={{ color: "white" }}> Total Votes: {candidate1[1]} </h5>
+            </div>
+        );
+    };
 
     return (
         <div className="App">
@@ -113,19 +135,15 @@ const Breakdown = () => {
                             <Row>
                                 <Col>
                                     <Card className="border d-flex align-items-center justify-content-center" style={{ height: '100%', backgroundImage: "linear-gradient(to left top, #FF4040, #800000)", color: "white" }}>
-
                                         <Card.Body>
-                                            <h3 className='text-center'> {state.candidate[0]} ✅</h3>
-                                            <h5 className='text-center m-0 mb-2' style={{ color: "white" }}> Total Votes: {candidate0[1]} </h5>
+                                            <Cand0Header />
                                         </Card.Body>
                                     </Card>
                                 </Col>
                                 <Col>
                                     <Card className="border d-flex align-items-center justify-content-center" style={{ height: '100%', backgroundImage: "linear-gradient(to right top, #3F3FFF, #000080", color: "white" }}>
-
                                         <Card.Body>
-                                            <h3 className='text-center'> {state.candidate[1]} </h3>
-                                            <h5 className='text-center m-0 mb-2' style={{ color: "white" }}> Total Votes: {candidate1[1]} </h5>
+                                            <Cand1Header />
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -137,12 +155,12 @@ const Breakdown = () => {
                                 <Accordion.Header><h4 className="text-center">Racial Breakdown</h4></Accordion.Header>
                                 <Accordion.Body>
                                     <VictoryChart horizontal
-                                        height={170}
+                                        height={150}
                                         width={width}
-                                        padding={30}
+                                        padding={25}
                                     >
                                         <VictoryStack
-                                            style={{ data: { width: 18, }, labels: { fontSize: 5 } }}
+                                            style={{ data: { width: 15, }, labels: { fontSize: 5 } }}
                                         >
                                             <VictoryBar
                                                 style={{ data: { fill: "#FF4040", color: "white" } }}
@@ -183,7 +201,7 @@ const Breakdown = () => {
                                     <VictoryChart horizontal
                                         height={100}
                                         width={width}
-                                        padding={20}
+                                        padding={25}
                                     >
                                         <VictoryStack
                                             style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
@@ -205,7 +223,7 @@ const Breakdown = () => {
                                             style={{
                                                 axis: { stroke: "transparent" },
                                                 ticks: { stroke: "transparent" },
-                                                tickLabels: { fontSize: 5, fill: "black" }
+                                                tickLabels: { fontSize: 5, fill: "white" }
                                             }}
                                             tickLabelComponent={
                                                 <VictoryLabel
@@ -227,7 +245,7 @@ const Breakdown = () => {
                                     <VictoryChart horizontal
                                         height={100}
                                         width={width}
-                                        padding={20}
+                                        padding={25}
                                     >
                                         <VictoryStack
                                             style={{ data: { width: 15 }, labels: { fontSize: 5 } }}
@@ -249,7 +267,7 @@ const Breakdown = () => {
                                             style={{
                                                 axis: { stroke: "transparent" },
                                                 ticks: { stroke: "transparent" },
-                                                tickLabels: { fontSize: 5, fill: "black" }
+                                                tickLabels: { fontSize: 5, fill: "white" }
                                             }}
                                             tickLabelComponent={
                                                 <VictoryLabel

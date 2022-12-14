@@ -53,6 +53,14 @@ app.post('/users/register', async (req, res) => {
     };
 
     userDB.insertOne(data);
+
+    await axios.post("http://localhost:4010/events", {
+      type: "userCreated",
+      data: {
+        userID: username
+      },
+    });
+
     res.status(201).send(data);
   }
 });
@@ -157,7 +165,6 @@ app.put('/users/update', async (req, res) => {
 });
 
 app.post('/events', async (req, res) => {
-  console.log("RECIEVED A NEW USER DATA REQUEST EVENT")
   console.log("Request Body: ", req.body.data)
   const { type } = req.body;
   if (type === "userDataRequest") {
