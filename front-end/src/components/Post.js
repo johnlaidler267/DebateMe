@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Container, Button } from 'react-bootstrap';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
@@ -10,8 +10,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Modal from "./Modal";
 import CommentCreate from './Comments/CommentCreate/CommentCreate'
 import CommentList from './Comments/CommentList/CommentList'
+import { SettingsVoiceOutlined } from "@mui/icons-material";
 
 export default function Post() {
+  const navigate = useNavigate();
   const [Thread, setThread] = useState();
   const { postId } = useParams();
   const [Toggle, setIsToggle] = useState(false);
@@ -19,8 +21,8 @@ export default function Post() {
   const [IsOpen, setIsOpen] = useState(false);
   const [Content, setContent] = useState("");
   const listRef = useRef();
-  const navigate = useNavigate();
   const [comments, setComments] = useState({})
+  const [voted, setVoted] = useState(false)
 
   /* Fetches the thread from the backend */
   const fetchThread = async () => {
@@ -66,7 +68,7 @@ export default function Post() {
     fetchThread();
   }, []);
 
-  /* Check if user is the owner of the post */
+  /* On page load, check if the user is the owner of the post */
   useEffect(() => {
     if (sessionStorage.getItem('token') && Thread) {
       const token = JSON.parse(sessionStorage.getItem('token') || "");
@@ -75,6 +77,30 @@ export default function Post() {
       }
     }
   }, [Thread])
+
+  /* On page load, check if the user has already voted in the election */
+  useEffect(() => {
+    console.log("LOADING HAS VOTED")
+    const token = JSON.parse(sessionStorage.getItem('token') || "");
+    fetchData();
+    async function fetchData() {
+      const response = await axios.get('http://localhost:4004/hasVoted',
+        {
+          params:
+          {
+            userID: token.userId,
+            electionID: postId
+          }
+        }).then((response) => {
+          console.log("RESPONSE", response.data)
+          setVoted(response.data);
+        }
+        ).catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
 
   /* Calculate time since post was created */
   function timeSince(date) {
@@ -103,6 +129,15 @@ export default function Post() {
     return Math.floor(seconds) + " seconds";
   }
 
+  /* If the user has voted, display the Cast Vote button, otherwise display the View Election Results button */
+  const VoteOrResults = () => {
+    if (!voted) {
+      return <Button className="custom-btn" onClick={() => navigate('vote', { state: Thread })}> Cast Vote</Button>
+    } else {
+      return <Button className="custom-btn" onClick={() => navigate('breakdown', { state: Thread })}> View Election Results</ Button>
+    }
+  }
+
   return (
     <>
       <Container fluid style={{
@@ -110,13 +145,13 @@ export default function Post() {
         width: '75%',
       }}>
         <Card style={{ margin: "10px", padding: "10px" }}>
-          <Button onClick={() => navigate('vote', { state: Thread })}> Vote</Button>
+
           {!Thread ? (
             <div className='top-50 start-50 position-absolute'>
               <CircularProgress sx={{ color: "yellow" }} size={60} />
             </div>
           ) : (
-            <Container className="mt-4" style={{ width: "55%" }}>
+            <Container className="mt-4 text-center" style={{ width: "95%" }}>
               <Card className="pt-3 ps-2 pe-2 pb-3">
                 {Toggle && (
                   <div className="toggle">
@@ -129,16 +164,21 @@ export default function Post() {
                 )
                 }
                 <div className="ps-4 pe-4">
-                  <p className="text-black-50 m-0 mt-2 mb-2">Posted by {Thread.username} {timeSince(new Date(Thread.date))} ago</p>
-                  <Card.Title className="fw-bold">{Thread.title}</Card.Title>
+                  <Card.Header>
+                    <p className="text-black-50 m-0 mt-2 mb-2">Posted by {Thread.username} {timeSince(new Date(Thread.date))} ago</p>
+                    <Card.Title className="fw-bold">{Thread.title}</Card.Title>
+                  </Card.Header>
                 </div>
                 <Card.Body>
                   <p>{Thread.content}</p>
                 </Card.Body>
+                <VoteOrResults />
               </Card>
               <Modal open={IsOpen} onClose={() => setIsOpen(false)}>{Content}</Modal>
+
             </Container>
           )}
+
           <div className="container">
             <CommentCreate postId={postId} comments={comments} setComments={setComments} />
             <CommentList postId={postId} comments={comments} setComments={setComments} />

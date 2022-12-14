@@ -20,10 +20,7 @@ const Navbar = ({ userloggedIn }) => {
                         Debate
                     </NavLink>
                     <NavLink to="/create-election" activeStyle>
-                        Create Election
-                    </NavLink>
-                    <NavLink to="/vote-history" activeStyle>
-                        Voting History
+                        Create Debate
                     </NavLink>
                     <NavLink to="/view-profile" activeStyle>
                         Manage Profile

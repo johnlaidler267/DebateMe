@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, Dispatch, SetStateAction } from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card, Container, Row, Col } from "react-bootstrap";
 import Upvote from "../Upvote/Upvote";
 import Downvote from "../Downvote/Downvote";
 import "./commentList.css";
@@ -37,19 +37,23 @@ const CommentList = ({ postId, comments, setComments }: Props) => {
   const renderedComments = Object.values(comments).map((c) => {
     return (
       <div key={c.commentid}>
-        <Container className="mt-4" style={{ width: "75%" }}>
+        <Container className="mt-4" style={{ width: "65%" }}>
           <Card className="pt-3 ps-2 pe-2 pb-3">
-            <Container style={{ display: "flex", alignItems: "center" }}>
-              <Card.Title> {c.username} </Card.Title>
-              <TrustScore userId={c.username} />
-            </Container>
+            <Card.Header>
+              <Card.Title style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ margin: "5px" }}>{c.username}</div>
+                <TrustScore userId={c.username} />
+              </Card.Title>
+            </Card.Header>
             <Card.Body className="ps-4 pe-4">
-              <div id="upvote">
-                <Upvote commentId={c.commentid} ownerId={c.userid} />
-              </div>
               <p id="content">{c.content}</p>
-              <div id="downvote">
-                <Downvote commentId={c.commentid} ownerId={c.userid} />
+              <div style={{ display: "flex", justifyContent: "left" }}>
+                <div id="upvote" style={{ padding: "2px" }}>
+                  <Upvote commentId={c.commentid} ownerId={c.userid} />
+                </div>
+                <div id="downvote" style={{ padding: "2px" }}>
+                  <Downvote commentId={c.commentid} ownerId={c.userid} />
+                </div>
               </div>
             </Card.Body>
           </Card>

@@ -3,13 +3,8 @@ input[type="checkbox"]:checked {
 }
 
 .custom-btn {
-  background-image: linear-gradient(
-    to right,
-    #393f4d,
-    #feda6a,
-    #393f4d
-  ) !important;
-  border: none;
+  border: 3px black !important;
+  background-color: bisque;
   color: black !important;
   padding: 15px 32px;
   text-align: center;
@@ -30,7 +25,7 @@ input[type="checkbox"]:checked {
 }
 
 .tomato-btn {
-  background-color: tomato !important;
+  background-color: #ff4040 !important;
   color: black !important;
   padding: 15px 32px;
   text-align: center;
@@ -50,7 +45,7 @@ input[type="checkbox"]:checked {
 }
 
 .orange-btn {
-  background-color: orange !important;
+  background-color: #3f3fff !important;
   color: black !important;
   padding: 15px 32px;
   text-align: center;
@@ -136,7 +131,8 @@ input[type="checkbox"]:checked {
   color: rgb(155, 145, 145);
 }
 
-.toggle-button:focus, .toggle-button:active {
+.toggle-button:focus,
+.toggle-button:active {
   color: rgb(21, 21, 21);
 }
 

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import "./comment.css";
+import { Card, Container, Col, Row, ListGroup } from "react-bootstrap";
+import { List } from "react-bootstrap-icons";
 
 type Props = {
   postId: string;
@@ -32,30 +34,44 @@ const CommentCreate = ({ postId }: Props) => {
 
   return (
     <div id="commentCreate">
-      <form onSubmit={newComment}>
-        <label id="create">
-          <input
-            placeholder="Enter your comment here"
-            id="commentBox"
-            type="text"
-            value={Value}
-            onChange={(e) => setValue(e.target.value)}
-            style={{
-              width: "100%",
-              height: "100%",
-              padding: "12px 20px",
-              backgroundColor: "#f8f8f8",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-              resize: "none",
-            }}
-          ></input>
-        </label>
-        <button className="btn btn-primary" style={{ margin: "3px" }}>
-          Submit
-        </button>
-      </form>
+      <br></br>
+      <Container style={{ width: "80%" }}>
+        <Card>
+          <Card.Body>
+            <form onSubmit={newComment}>
+              <label id="create" style={{ width: "97%", height: "100%" }}>
+                <textarea
+                  placeholder="What are your thoughts?"
+                  id="commentBox"
+                  value={Value}
+                  onChange={(e) => setValue(e.target.value)}
+                  style={{
+                    padding: "12px 20px",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#f8f8f8",
+                    border: "3px solid #ccc",
+                    borderRadius: "4px",
+                    boxSizing: "border-box",
+                    resize: "none",
+                  }}
+                ></textarea>
+              </label>
+              <Card.Footer>
+                <button
+                  className="btn btn-secondary"
+                  style={{
+                    width: "30%",
+                    justifyContent: "center",
+                  }}
+                >
+                  Comment
+                </button>
+              </Card.Footer>
+            </form>
+          </Card.Body>
+        </Card>
+      </Container>
     </div>
   );
 };
