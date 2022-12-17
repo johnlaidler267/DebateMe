@@ -99,7 +99,7 @@ const Breakdown = () => {
 
     const Cand0Header = () => {
         let header = <h3 className='text-center'> {candidate0[0]} </h3>
-        if (candidate0[0] > candidate1[0]) header = <h3 className='text-center'> {candidate0[0]} <FaCheckCircle /></h3>
+        if (parseInt(candidate0[0]) > parseInt(candidate1[0])) header = <h3 className='text-center'> {candidate0[0]} <FaCheckCircle /></h3>
         return (
             <div>
                 {header}
@@ -110,7 +110,7 @@ const Breakdown = () => {
 
     const Cand1Header = () => {
         let header = <h3 className='text-center'> {candidate1[0]} </h3>
-        if (candidate1[0] > candidate0[0]) header = <h3 className='text-center'> {candidate1[0]} <FaCheckCircle /></h3>
+        if (parseInt(candidate1[0]) > parseInt(candidate0[0])) header = <h3 className='text-center'> {candidate1[0]} <FaCheckCircle /></h3>
         return (
             <div>
                 {header}

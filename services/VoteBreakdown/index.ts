@@ -26,7 +26,7 @@ class BreakdownServer {
   /* Initialize all routes (endpoints) for the server */
   async initRoutes() {
     // Get the breakdown for a given election
-    this.app.get("/getBreakdown", async (req, res) => {
+    this.app.get("/getBreakdown", async (req: Request, res: Response) => {
       const electionID = req.query.electionID as string;
       const breakdown = await this.db.getBreakdown(electionID);
       res.status(200).send(JSON.stringify(breakdown));
@@ -41,11 +41,21 @@ class BreakdownServer {
         // update the existing election breakdown w/ the new vote
         const { electionID, userID, vote } = data;
 
-        const response = await axios.post("http://eventbus:4010/events", {
-          // Get the user demographics (send request to User service via event-bus)
-          type: "userDataRequest",
-          userId: userID,
-        });
+        if (!electionID || !userID || !vote)
+          res.status(400).send("Invalid request");
+        if (!(await this.db.containsElection(electionID)))
+          res.status(404).send("Election not found");
+
+        const response = await axios
+          .post("http://eventbus:4010/events", {
+            // Get the user demographics (send request to User service via event-bus)
+            type: "userDataRequest",
+            userId: userID,
+          })
+          .catch((err: any) => {
+            res.status(500).send("Error getting user data");
+          });
+
         const { race, gender, age } = response.data;
 
         const breakdown = await this.db.updateBreakdown(
@@ -57,8 +67,8 @@ class BreakdownServer {
         );
         res.status(200).send(JSON.stringify(breakdown));
       } else if (type === "postCreated") {
-        // create/push a blank election breakdown
         const { postId, candidate } = data;
+        if (!candidate || !postId) res.status(400).send("Invalid request");
         const electionID = postId;
         const breakdown = await this.db.createBreakdown(
           electionID,
@@ -66,7 +76,7 @@ class BreakdownServer {
           candidate[1]
         );
         res.status(200).send(JSON.stringify(breakdown));
-      } else res.status(400).send("Invalid event type");
+      }
     });
   }
 

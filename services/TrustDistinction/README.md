@@ -19,19 +19,107 @@ The Trust Distinction service interacts with the following services:
 
 ### GET /getTrustScore
 
-This endpoint is used to get the trust score of a user. The request body should contain the following fields:
+This endpoint is used to get the trust score of a user.
 
-- userId - The id of the user that the trust score is being retrieved for
+#### Request Data Constraints:
+
+<pre>
+{ 	
+    userID varchar(100)
+}
+
+</pre>
+
+#### Request Data Example:
+
+<pre>
+{ 	
+    userID: "user12343"
+}
+</pre>
+
+#### Response Data Constraints:
+
+<pre>
+{
+    engagmentScore int,
+    reliabilityScore int,
+}
+</pre>
+
+<pre>
+{
+    engagmentScore: 0,
+    reliabilityScore: 0,
+}
+</pre>
+
+#### 200 SENT: If the userID exists.
+
+#### 400 INVALID: If there is a problem with the request data.
 
 ### GET /events
 
 This endpoint is used to listen for events emitted by the event bus. These events include the following:
 
-- commentFlagged - This event is emitted by the Moderation service when a comment is flagged. The Trust Distinction service listens for this event and uses the userId associated with the comment to update the reliability score of the user.
--
+- userCreated - This event is emitted when a new user is created. The Trust Distinction service listens for this event and uses the userId associated with the event to create a new entry in the database for the user.
+- voteCreated - This event is emitted when a user casts a vote for a candidate. The Trust Distinction service listens for this event and uses the userId associated with the event to update the engagment score of the user.
+- commentCreated - This event is emitted when a user creates a comment. The Trust Distinction service listens for this event and uses the userId associated with the event to update the engagment score of the user.
+- commentModerated - This event is emitted when a user's comment is moderated. The Trust Distinction service listens for this event and uses the userId associated with the event to update the reliability score of the user.
+- commentVoted - This event is emitted when a user upvotes a comment. The Trust Distinction service listens for this event and uses the userId associated with the event to update the reliability score of the user.
+
+#### Request Data Constraints:
+
+<pre>
+{
+    "type": [name of an event],
+    "data": [JSON]
+}
+</pre>
+
+#### Request Data Example:
+
+<pre>
+{
+    "type": commentModerated,
+    "data": {
+        userId: 1234,
+        username: Ethan,
+        parentId: 5678,
+        commentId: 4912,
+        postId: 5678,
+        content: insightful comment
+    }
+}
+</pre>
+
+#### Response Data Constraints:
+
+<pre>
+{
+    "type": [name of an event],
+    "data": [JSON]
+}
+</pre>
+
+#### Response Data Example:
+
+<pre>
+{
+    "type": commentModerated,
+    "data": {
+        userId: 1234,
+        username: Ethan,
+        parentId: 5678,
+        commentId: 4912,
+        postId: 5678,
+        content: insightful comment
+    }
+}
+</pre>
+
+#### 200: If event is processed successfully.
 
 ## How to Run
 
-To run the Trust Distinction service, first make sure that you have the following installed:
-
-- Docker
+To run this service you will need to run npm install, have the port 4009 available, have the event bus started, and then run npm start. Or simply run docker-compose up from the root directory of the project to start all services.

@@ -27,11 +27,9 @@ class TrustServer {
   async initRoutes() {
     /* Update score when an event is recieved from the event bus */
     this.app.post("/events", async (req: Request, res: Response) => {
-      console.log(req.body);
       const type = req.body.type;
       const body = req.body.data;
-
-      console.log("TrustServer Event Recieved From EventBus::", type, body);
+      if (!type || !body) res.status(400).send("Invalid request");
 
       if (
         type === "commentCreated" ||
@@ -39,25 +37,26 @@ class TrustServer {
         type === "postCreated"
       ) {
         const username = body.username;
-        console.log("updating enagement");
-        await this.updateEngagement(type, username);
+        if (!username) res.status(400).send("Invalid request");
+        let engagement = await this.updateEngagement(type, username);
+        res.status(200).send(JSON.stringify(engagement));
       } else if (type === "commentVoted" || type === "commentModerated") {
         const userID = body.userId;
-        console.log("updating reliability", userID);
-        await this.updateReliability(type, userID);
+        if (!userID) res.status(400).send("Invalid request");
+        let reliability = await this.updateReliability(type, userID);
+        res.status(200).send(JSON.stringify(reliability));
       } else if (type === "userCreated") {
         const userID = body.userID;
-        console.log("initializing user", userID);
-        await this.db.initializeUser(userID);
-      } else console.log("Invalid event type recieved");
-
-      res.send({});
+        if (!userID) res.status(400).send("Invalid request");
+        let user = await this.db.initializeUser(userID);
+        res.status(200).send(JSON.stringify(user));
+      }
     });
 
     /* Get the trust score for a user */
     this.app.get("/getTrust", async (req: Request, res: Response) => {
       const userID = req.query.userId;
-      console.log("recived this query in trust", userID);
+      if (!userID) res.status(400).send("Invalid request");
       const engagementScore = await this.db.getEngagement(userID);
       const reliabilityScore = await this.db.getReliability(userID);
       const score = this.calculateScore(engagementScore, reliabilityScore);
@@ -67,21 +66,22 @@ class TrustServer {
 
   /* Update the engagement score for a user */
   async updateEngagement(type: string, userID: string) {
-    console.log("INSIDE ENGAGEMENT UPDATE", type, userID);
     let score = await this.db.getEngagement(userID);
+    if (score == undefined) return await this.db.initializeUser(userID);
 
     if (type === "postCreated") score += 1;
     else if (type === "commentCreated") score += 0.5;
     else score += 0.25;
 
-    await this.db.updateEngagement(userID, score);
+    return await this.db.updateEngagement(userID, score);
   }
 
   /* Update the reliability score for a user */
   async updateReliability(type: string, userID: any) {
     let score = await this.db.getReliability(userID);
+    if (score == undefined) return await this.db.initializeUser(userID);
     score += type === "commentVoted" ? 1 : -1;
-    await this.db.updateReliability(userID, score);
+    return await this.db.updateReliability(userID, score);
   }
 
   /* Calculate the trust score for a user */

@@ -132,4 +132,11 @@ export class BreakdownDatabase {
     const res = await this.client.query(queryText, [electionID]);
     return res.rows[0];
   }
+
+  /* Checks if a given election has a breakdown */
+  async containsElection(electionID: string) {
+    const queryText = `SELECT * FROM electionBreakdowns WHERE electionID = $1`;
+    const res = await this.client.query(queryText, [electionID]);
+    return res.rows.length > 0;
+  }
 }

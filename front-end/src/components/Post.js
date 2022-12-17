@@ -80,7 +80,6 @@ export default function Post() {
 
   /* On page load, check if the user has already voted in the election */
   useEffect(() => {
-    console.log("LOADING HAS VOTED")
     const token = JSON.parse(sessionStorage.getItem('token') || "");
     fetchData();
     async function fetchData() {
@@ -92,7 +91,6 @@ export default function Post() {
             electionID: postId
           }
         }).then((response) => {
-          console.log("RESPONSE", response.data)
           setVoted(response.data);
         }
         ).catch((error) => {

@@ -19,7 +19,7 @@ const TrustScore = ({ userId }: Props) => {
   const getTrustScore = async () => {
     await axios
       .get(`http://localhost:4007/getTrust?userId=${userId}`)
-      .then((responseScore) => {
+      .then((responseScore: { data: react.SetStateAction<number> }) => {
         setScore(responseScore.data);
       });
   };
@@ -32,7 +32,7 @@ const TrustScore = ({ userId }: Props) => {
 
   const TrustIcon = () => {
     let icon = null;
-    if (score > 1000) icon = <VscWorkspaceTrusted />;
+    if (score > 5000) icon = <VscWorkspaceTrusted />;
     else icon = <VscWorkspaceUntrusted />;
     return (
       <div>
@@ -45,7 +45,7 @@ const TrustScore = ({ userId }: Props) => {
   return (
     <Badge
       pill
-      bg={score > 0 ? "success" : "danger"}
+      bg={score > 500 ? "success" : "danger"}
       style={{
         alignItems: "center",
         padding: "4px",

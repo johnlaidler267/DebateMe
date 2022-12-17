@@ -34,26 +34,46 @@ class ElectionServer {
     const self = this;
 
     // Casts vote to database, emits voteCreated event
-    this.app.post("/vote", async (req, res) => {
+    this.app.post("/vote", async (req: Request, res: Response) => {
       const { electionID, userID, vote } = req.body.params;
+
+      if (!electionID || !userID || !vote)
+        res.status(400).send("Invalid request");
+
+      if (!(await self.db.containsElection(electionID)))
+        res.status(404).send("Election does not exist");
+
       const Vote: Vote = await self.db.createVote(electionID, userID, vote);
 
       // Send event to event bus
-      await axios.post("http://eventbus:4010/events", {
-        type: "voteCreated",
-        data: {
-          electionID: electionID,
-          userID: userID,
-          vote: vote,
-        },
-      });
-      res.status(200).send(JSON.stringify(Vote));
+      await axios
+        .post("http://eventbus:4010/events", {
+          type: "voteCreated",
+          data: {
+            electionID: electionID,
+            userID: userID,
+            vote: vote,
+          },
+        })
+        .then((res: Response) => {
+          res.status(200).send(JSON.stringify(Vote));
+        })
+        .catch((err: any) => {
+          res.status(500).send("Error sending event to event bus");
+        });
     });
 
     // Returns whether or not a user has voted in an election
-    this.app.get("/hasVoted", async (req, res) => {
+    this.app.get("/hasVoted", async (req: Request, res: Response) => {
       const { userID, electionID } = req.query;
+
+      if (!userID || !electionID) res.status(400).send("Invalid request");
+
+      if (!(await self.db.containsElection(electionID)))
+        res.status(404).send("Election does not exist");
+
       const hasVoted: boolean = await self.db.hasVoted(electionID, userID);
+
       res.status(200).send(JSON.stringify(hasVoted));
     });
   }

@@ -16,20 +16,107 @@ VoteBreakdown - The Mock Election service emits a voteCreated event to the event
 
 ### POST /vote
 
-This endpoint is used to cast a vote for a candidate. The request body should contain the following fields:
+This endpoint is used to cast a vote for a candidate.
 
-- electionId - The id of the election that the vote is being cast for
-- userId - The id of the user that the vote is being cast for
-- vote - The vote that is being cast. This should be either a string representing the candidateID.
+#### Request Data Constraints:
 
-### GET /getVote
+<pre>
+{ 	
+    electionID varchar(100),
+    userID varchar(100),
+    vote varchar(100)
+}
+</pre>
 
-This endpoint is used to get the vote that a user has cast for a given candidate. The request body should contain the following fields:
+#### Request Data Example:
 
-- userId - The id of the user that the vote is being retrieved for
+<pre>
+{ 	
+    electionID "van-11-343-ffffgg-3343",
+    userID "user12343",
+    vote "Vanilla"
+}
+</pre>
+
+<br>
+
+#### Response Data Constraints:
+
+<pre>
+{ 	
+    electionID varchar(100),
+    userID varchar(100),
+    vote varchar(100)
+}
+</pre>
+
+#### Response Data Example:
+
+<pre>
+{ 	
+    electionID "van-11-343-ffffgg-3343",
+    userID "user12343",
+    vote "Vanilla"
+}
+</pre>
+
+#### 200 SENT: If the electionID and userID exist.
+
+#### 400 BAD REQUEST: If request data is incomplete.
+
+#### 404 NOT FOUND: If the election/user doesn't exist, or if the user hasn’t voted in that election.
+
+#### 500 INTERNAL SERVER ERROR: If there is an exception or other error condition that is rare or shouldn't occur
+
+<br>
+
+### GET /hasVoted
+
+This endpoint is used to check if a user has voted in a given election.
+
+#### Request Data Constraints:
+
+<pre>
+{ 	
+    electionID varchar(100),
+    userID varchar(100)
+}
+</pre>
+
+#### Request Data Example:
+
+<pre>
+{
+    electionID "van-11-343-ffffgg-3343",
+    userID "user12343",
+    vote "Vanilla"
+}
+</pre>
+
+#### 201 SENT: If the electionID and userID exist.
+
+#### Response Data Constraints:
+
+<pre>
+{ 	
+    hasVoted boolean
+}
+</pre>
+
+#### Response Data Example:
+
+<pre>
+{
+    hasVoted true
+}
+</pre>
+
+#### 400 BAD REQUEST: If request data is incomplete.
+
+#### 404 NOT FOUND: If the election/user doesn't exist, or if the user hasn’t voted in that election.
+
+<br>
 
 ## How to Run
 
-To run the Mock Election service, first make sure that you have the following installed:
-
-- Docker
+To run this service you will need to run npm install, have the port 4004 available, have the event bus started, and then run npm start. Or simply run docker-compose up from the root directory of the project to start all services.
