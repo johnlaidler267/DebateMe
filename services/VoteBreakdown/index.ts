@@ -27,7 +27,7 @@ class BreakdownServer {
   async initRoutes() {
     // Get the breakdown for a given election
     this.app.get("/getBreakdown", async (req: Request, res: Response) => {
-      const electionID = req.query.electionID as string;
+      const electionID: string = req.query.electionID as string;
       const breakdown = await this.db.getBreakdown(electionID);
       res.status(200).send(JSON.stringify(breakdown));
     });

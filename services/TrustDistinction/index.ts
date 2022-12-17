@@ -27,7 +27,7 @@ class TrustServer {
   async initRoutes() {
     /* Update score when an event is recieved from the event bus */
     this.app.post("/events", async (req: Request, res: Response) => {
-      const type = req.body.type;
+      const type: string = req.body.type;
       const body = req.body.data;
       if (!type || !body) res.status(400).send("Invalid request");
 
@@ -36,17 +36,17 @@ class TrustServer {
         type === "voteCreated" ||
         type === "postCreated"
       ) {
-        const username = body.username;
+        const username: string = body.username;
         if (!username) res.status(400).send("Invalid request");
         let engagement = await this.updateEngagement(type, username);
         res.status(200).send(JSON.stringify(engagement));
       } else if (type === "commentVoted" || type === "commentModerated") {
-        const userID = body.userId;
+        const userID: string = body.userId;
         if (!userID) res.status(400).send("Invalid request");
         let reliability = await this.updateReliability(type, userID);
         res.status(200).send(JSON.stringify(reliability));
       } else if (type === "userCreated") {
-        const userID = body.userID;
+        const userID: string = body.userID;
         if (!userID) res.status(400).send("Invalid request");
         let user = await this.db.initializeUser(userID);
         res.status(200).send(JSON.stringify(user));
